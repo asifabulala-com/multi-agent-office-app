@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Revenue Assurance Dashboard</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.15);
+      --danger: #f97373;
+      --warning: #facc15;
+      --success: #22c55e;
+      --border-subtle: #334155;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 180px;
+      background: #020617;
+      border-right: 1px solid #111827;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      inset: 0 auto 0 0;
+    }
+
+    .sidebar-header {
+      margin-bottom: 24px;
+    }
+
+    .sidebar-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .sidebar-product {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .sidebar-section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .nav-group {
+      margin-bottom: 18px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #cbd5f5;
+      cursor: default;
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      color: var(--text);
+    }
+
+    .nav-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .role-badges {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .role-badges-title {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .role-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .role-badge {
+      padding: 3px 6px;
+      border-radius: 999px;
+      border: 1px solid #1e293b;
+      background: #020617;
+    }
+
+    .main {
+      margin-left: 180px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 16px 24px 10px;
+      border-bottom: 1px solid #111827;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 55%);
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #bbf7d0;
+      background: rgba(22, 163, 74, 0.15);
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 520px;
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .stack-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .stack-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid #1e293b;
+      background: #020617;
+    }
+
+    .content {
+      padding: 14px 24px 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      border: 1px solid #111827;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .kpi-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .kpi-emoji {
+      font-size: 18px;
+    }
+
+    .kpi-main {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .kpi-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .kpi-unit {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .kpi-trend {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.12);
+      color: #bbf7d0;
+    }
+
+    .kpi-trend.down {
+      background: rgba(248, 113, 113, 0.12);
+      color: #fecaca;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .section-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .add-btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--accent);
+      color: #e5edff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    .add-btn span {
+      font-size: 14px;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .table-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid #111827;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    thead {
+      background: #020617;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      font-weight: 500;
+      color: #9ca3af;
+      border-bottom: 1px solid #111827;
+      position: sticky;
+      top: 0;
+      background: #020617;
+      z-index: 1;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #111827;
+    }
+
+    tbody tr:hover {
+      background: #0b1220;
+    }
+
+    td {
+      border-bottom: 1px solid #111827;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid var(--border-subtle);
+      background: #020617;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+    }
+
+    .status-open .status-dot {
+      background: var(--danger);
+    }
+
+    .status-investigating .status-dot {
+      background: var(--warning);
+    }
+
+    .status-recovered .status-dot {
+      background: var(--success);
+    }
+
+    .status-closed .status-dot {
+      background: #38bdf8;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #020617;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pill-soft {
+      background: var(--accent-soft);
+      border-color: rgba(37, 99, 235, 0.4);
+      color: #bfdbfe;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-muted {
+      color: var(--muted);
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 960px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .sidebar {
+        display: none;
+      }
+      .main {
+        margin-left: 0;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-right {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Revenue Assurance</div>
+      <div class="sidebar-product">Telecom Finance Control</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="sidebar-section-label">Workspace</div>
+      <div class="nav-item active">
+        <div class="nav-dot"></div>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item">
+        <span>CDR Feeds</span>
+      </div>
+      <div class="nav-item">
+        <span>Billing Feeds</span>
+      </div>
+      <div class="nav-item">
+        <span>Reconciliation</span>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="sidebar-section-label">Access</div>
+      <div class="nav-item">
+        <span>Rules &amp; Roles</span>
+      </div>
+      <div class="nav-item">
+        <span>Audit Trail</span>
+      </div>
+    </div>
+
+    <div class="role-badges">
+      <div class="role-badges-title">Roles</div>
+      <div class="role-badge-row">
+        <span class="role-badge">Analyst</span>
+        <span class="role-badge">Manager</span>
+        <span class="role-badge">Auditor</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header>
+      <div class="header-left">
+        <div class="title-row">
+          <div class="title">Revenue Assurance Dashboard</div>
+          <span class="status-badge">Realtime Reconciliation · Healthy</span>
+        </div>
+        <div class="subtitle">
+          Daily CDR and billing feeds reconciled to detect revenue leakage, quantify revenue at risk, and track recovery across regions, products, and time.
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="stack-row">
+          <span class="stack-pill">FastAPI · Python 3.11</span>
+          <span class="stack-pill">React 18 · TypeScript</span>
+        </div>
+        <div class="stack-row">
+          <span class="stack-pill">PostgreSQL 15</span>
+          <span class="stack-pill">Redis 7 cache</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="content">
+      <section class="kpi-grid" aria-label="Key performance indicators">
+        <article class="kpi-card">
+          <div class="kpi-top">
+            <span>Revenue at Risk (24h)</span>
+            <span class="kpi-emoji">💸</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value">$482.3k</span>
+            <span class="kpi-unit">unbilled usage</span>
+          </div>
+          <div class="kpi-top">
+            <span class="kpi-trend down">▼ -7.4% vs. yesterday</span>
+            <span class="pill">Leakage threshold: $750k</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-top">
+            <span>Recovery Rate (MTD)</span>
+            <span class="kpi-emoji">📈</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value">86.2%</span>
+            <span class="kpi-unit">of identified leakage</span>
+          </div>
+          <div class="kpi-top">
+            <span class="kpi-trend">▲ +3.1 pts vs. last month</span>
+            <span class="pill-soft">Target ≥ 90%</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-top">
+            <span>Open Leakage Cases</span>
+            <span class="kpi-emoji">🧾</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value">37</span>
+            <span class="kpi-unit">active investigations</span>
+          </div>
+          <div class="kpi-top">
+            <span class="kpi-trend down">▼ -5 cases vs. 7d avg</span>
+            <span class="pill">SLA: 10 days</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-top">
+            <span>Reconciled Volume (24h)</span>
+            <span class="kpi-emoji">🛰️</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value">128.4M</span>
+            <span class="kpi-unit">CDRs processed</span>
+          </div>
+          <div class="kpi-top">
+            <span class="kpi-trend">▲ +9.8% traffic</span>
+            <span class="pill">Cache hit rate: 94%</span>
+          </div>
+        </article>
+      </section>
+
+      <section>
+        <div class="section-header">
+          <div>
+            <div class="section-title">Leakage Cases by Region &amp; Product</div>
+            <div class="section-subtitle">Auto-generated from reconciliation rules between network usage and billed amounts.</div>
+          </div>
+          <div class="section-actions">
+            <button class="add-btn" id="addRowBtn" type="button">
+              <span>＋</span>
+              <span>Add case</span>
+            </button>
+            <span class="hint">Use the button to append a mock case via prompt.</span>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div style="max-height: 360px; overflow: auto;">
+            <table id="casesTable">
+              <thead>
+                <tr>
+                  <th>Case ID</th>
+                  <th>Region</th>
+                  <th>Product</th>
+                  <th class="text-right">Revenue at Risk</th>
+                  <th class="text-right">Recovery Rate</th>
+                  <th>Status</th>
+                  <th>Owner Role</th>
+                  <th>Detected</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="nowrap">RA-2024-1042</td>
+                  <td>EMEA</td>
+                  <td>Postpaid Voice</td>
+                  <td class="text-right">$128,900</td>
+                  <td class="text-right text-muted">72.4%</td>
+                  <td>
+                    <span class="status-chip status-open">
+                      <span class="status-dot"></span>
+                      Open
+                    </span>
+                  </td>
+                  <td>
+                    <span class="pill">Analyst</span>
+                  </td>
+                  <td class="text-muted">2024-06-01</td>
+                </tr>
+                <tr>
+                  <td class="nowrap">RA-2024-1037</td>
+                  <td>APAC</td>
+                  <td>Roaming Data</td>
+                  <td class="text-right">$342,110</td>
+                  <td class="text-right text-muted">64.9%</td>
+                  <td>
+                    <span class="status-chip status-investigating">
+                      <span class="status-dot"></span>
+                      Investigating
+                    </span>
+                  </td>
+                  <td>
+                    <span class="pill">Manager</span>
+                  </td>
+                  <td class="text-muted">2024-05-29</td>
+                </tr>
+                <tr>
+                  <td class="nowrap">RA-2024-1021</td>
+                  <td>LATAM</td>
+                  <td>Prepaid Data</td>
+                  <td class="text-right">$58,430</td>
+                  <td class="text-right text-muted">91.3%</td>
+                  <td>
+                    <span class="status-chip status-recovered">
+                      <span class="status-dot"></span>
+                      Recovered
+                    </span>
+                  </td>
+                  <td>
+                    <span class="pill">Analyst</span>
+                  </td>
+                  <td class="text-muted">2024-05-24</td>
+                </tr>
+                <tr>
+                  <td class="nowrap">RA-2024-0998</td>
+                  <td>North America</td>
+                  <td>5G Enterprise</td>
+                  <td class="text-right">$412,760</td>
+                  <td class="text-right text-muted">38.7%</td>
+                  <td>
+                    <span class="status-chip status-open">
+                      <span class="status-dot"></span>
+                      Open
+                    </span>
+                  </td>
+                  <td>
+                    <span class="pill">Manager</span>
+                  </td>
+                  <td class="text-muted">2024-05-21</td>
+                </tr>
+                <tr>
+                  <td class="nowrap">RA-2024-0972</td>
+                  <td>MEA</td>
+                  <td>IoT SIM</td>
+                  <td class="text-right">$23,510</td>
+                  <td class="text-right text-muted">100.0%</td>
+                  <td>
+                    <span class="status-chip status-closed">
+                      <span class="status-dot"></span>
+                      Closed</span>
+                  </td>
+                  <td>
+                    <span class="pill">Auditor</span>
+                  </td>
+                  <td class="text-muted">2024-05-17</td>
+                </tr>
+                <tr>
+                  <td class="nowrap">RA-2024-0955</td>
+                  <td>Europe</td>
+                  <td>Wholesale Interconnect</td>
+                  <td class="text-right">$287,940</td>
+                  <td class="text-right text-muted">57.2%</td>
+                  <td>
+                    <span class="status-chip status-investigating">
+                      <span class="status-dot"></span>
+                      Investigating
+                    </span>
+                  </td>
+                  <td>
+                    <span class="pill">Analyst</span>
+                  </td>
+                  <td class="text-muted">2024-05-13</td>
+                </tr>
+                <tr>
+                  <td class="nowrap">RA-2024-0931</td>
+                  <td>Global</td>
+                  <td>OTT Bundles</td>
+                  <td class="text-right">$74,220</td>
+                  <td class="text-right text-muted">83.5%</td>
+                  <td>
+                    <span class="status-chip status-recovered">
+                      <span class="status-dot"></span>
+                      Recovered
+                    </span>
+                  </td>
+                  <td>
+                    <span class="pill">Manager</span>
+                  </td>
+                  <td class="text-muted">2024-05-09</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var addBtn = document.getElementById('addRowBtn');
+      var table = document.getElementById('casesTable');
+      if (!addBtn || !table) return;
+
+      function promptOrDefault(message, fallback) {
+        var value = window.prompt(message, fallback);
+        if (value === null) return null;
+        value = String(value).trim();
+        return value || fallback;
+      }
+
+      addBtn.addEventListener('click', function () {
+        var tbody = table.tBodies[0];
+        if (!tbody) return;
+
+        var caseId = promptOrDefault('Case ID', 'RA-2024-NEW');
+        if (caseId === null) return;
+        var region = promptOrDefault('Region', 'EMEA');
+        if (region === null) return;
+        var product = promptOrDefault('Product', 'Postpaid Data');
+        if (product === null) return;
+        var risk = promptOrDefault('Revenue at risk (e.g. 125000)', '125000');
+        if (risk === null) return;
+        var recovery = promptOrDefault('Recovery rate % (e.g. 75.0)', '75.0');
+        if (recovery === null) return;
+        var status = promptOrDefault('Status (open / investigating / recovered / closed)', 'open');
+        if (status === null) return;
+        var role = promptOrDefault('Owner role (Analyst / Manager / Auditor)', 'Analyst');
+        if (role === null) return;
+
+        var riskNum = parseFloat(risk.replace(/,/g, ''));
+        if (!isFinite(riskNum) || riskNum < 0) riskNum = 0;
+        var riskFormatted = '$' + riskNum.toLocaleString('en-US', { maximumFractionDigits: 0 });
+
+        var recoveryNum = parseFloat(recovery);
+        if (!isFinite(recoveryNum) || recoveryNum < 0) recoveryNum = 0;
+        var recoveryFormatted = recoveryNum.toFixed(1) + '%';
+
+        var normalizedStatus = String(status).toLowerCase();
+        var statusClass = 'status-open';
+        var statusLabel = 'Open';
+        if (normalizedStatus.indexOf('invest') === 0) {
+          statusClass = 'status-investigating';
+          statusLabel = 'Investigating';
+        } else if (normalizedStatus.indexOf('recover') === 0) {
+          statusClass = 'status-recovered';
+          statusLabel = 'Recovered';
+        } else if (normalizedStatus.indexOf('closed') === 0) {
+          statusClass = 'status-closed';
+          statusLabel = 'Closed';
+        }
+
+        var today = new Date();
+        var detected = today.toISOString().slice(0, 10);
+
+        var tr = document.createElement('tr');
+        tr.innerHTML = '' +
+          '<td class="nowrap"></td>' +
+          '<td></td>' +
+          '<td></td>' +
+          '<td class="text-right"></td>' +
+          '<td class="text-right text-muted"></td>' +
+          '<td></td>' +
+          '<td></td>' +
+          '<td class="text-muted"></td>';
+
+        var cells = tr.children;
+        cells[0].textContent = caseId;
+        cells[1].textContent = region;
+        cells[2].textContent = product;
+        cells[3].textContent = riskFormatted;
+        cells[4].textContent = recoveryFormatted;
+
+        var statusCell = cells[5];
+        var statusSpan = document.createElement('span');
+        statusSpan.className = 'status-chip ' + statusClass;
+        var dot = document.createElement('span');
+        dot.className = 'status-dot';
+        statusSpan.appendChild(dot);
+        statusSpan.appendChild(document.createTextNode(' ' + statusLabel));
+        statusCell.appendChild(statusSpan);
+
+        var roleCell = cells[6];
+        var roleSpan = document.createElement('span');
+        roleSpan.className = 'pill';
+        roleSpan.textContent = role;
+        roleCell.appendChild(roleSpan);
+
+        cells[7].textContent = detected;
+
+        tbody.insertBefore(tr, tbody.firstChild);
+      });
+    })();
+  </script>
+</body>
+</html>

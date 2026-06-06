@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Multi-Agent PM System — Judge Presentation</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --navy:   #0d1b2a;
+    --blue:   #1b4f8a;
+    --accent: #2563eb;
+    --teal:   #0891b2;
+    --green:  #16a34a;
+    --amber:  #d97706;
+    --red:    #dc2626;
+    --purple: #7c3aed;
+    --bg:     #f1f5f9;
+    --card:   #ffffff;
+    --border: #e2e8f0;
+    --text:   #0f172a;
+    --muted:  #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--navy); color: #fff;
+    padding: 0 40px; display: flex; align-items: center; gap: 32px;
+    height: 52px; box-shadow: 0 2px 12px rgba(0,0,0,.35);
+  }
+  nav .brand { font-weight: 700; font-size: 1rem; white-space: nowrap; color: #7dd3fc; }
+  nav a { color: #94a3b8; text-decoration: none; font-size: .82rem;
+          font-weight: 500; transition: color .2s; white-space: nowrap; }
+  nav a:hover { color: #fff; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 50%, #0c2240 100%);
+    color: #fff; padding: 64px 40px 56px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; }
+  .hero-tag {
+    display: inline-block; background: rgba(37,99,235,.35); border: 1px solid rgba(96,165,250,.4);
+    color: #93c5fd; padding: 4px 14px; border-radius: 20px; font-size: .78rem;
+    font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .hero h1 { font-size: 2.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+  .hero h1 span { color: #7dd3fc; }
+  .hero p { font-size: 1.05rem; color: #94a3b8; max-width: 680px; margin-bottom: 36px; }
+  .hero-stats { display: flex; gap: 32px; flex-wrap: wrap; }
+  .stat-box {
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px; padding: 16px 24px; min-width: 130px; text-align: center;
+  }
+  .stat-num { font-size: 2rem; font-weight: 800; color: #7dd3fc; }
+  .stat-lbl { font-size: .78rem; color: #94a3b8; margin-top: 2px; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 40px auto; padding: 0 24px; }
+  .section {
+    background: var(--card); border-radius: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.05);
+    padding: 32px 36px; margin-bottom: 32px;
+  }
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 24px; padding-bottom: 16px;
+    border-bottom: 2px solid var(--bg);
+  }
+  .section-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .section h2 { font-size: 1.25rem; font-weight: 700; color: var(--navy); }
+  .section-sub { font-size: .85rem; color: var(--muted); margin-top: 2px; }
+
+  /* ── USE CASE CARDS ── */
+  .uc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .uc-card {
+    border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px;
+    border-left: 4px solid var(--accent); transition: box-shadow .2s;
+  }
+  .uc-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+  .uc-id { font-size: .72rem; font-weight: 700; color: var(--accent);
+           letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+  .uc-title { font-size: .97rem; font-weight: 700; margin-bottom: 6px; }
+  .uc-desc { font-size: .85rem; color: var(--muted); }
+
+  /* ── AGENT TABLE ── */
+  .agent-table { width: 100%; border-collapse: collapse; }
+  .agent-table th {
+    text-align: left; padding: 10px 14px; background: var(--bg);
+    font-size: .78rem; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  .agent-table td { padding: 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .agent-table tr:last-child td { border-bottom: none; }
+  .agent-table tr:hover td { background: #f8fafc; }
+  .agent-name { font-weight: 700; font-size: .95rem; }
+  .agent-pill {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: .72rem; font-weight: 700; margin-bottom: 6px;
+  }
+  .pill-pm     { background: #dbeafe; color: #1d4ed8; }
+  .pill-eng    { background: #dcfce7; color: #15803d; }
+  .pill-qa     { background: #fef3c7; color: #b45309; }
+  .pill-risk   { background: #fee2e2; color: #b91c1c; }
+  .pill-stake  { background: #f3e8ff; color: #7e22ce; }
+  .cannot { font-size: .82rem; color: var(--muted); font-style: italic; }
+
+  /* ── FLOW DIAGRAM ── */
+  .mermaid-wrap {
+    background: #fafbfc; border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px; overflow-x: auto;
+  }
+
+  /* ── PRESSURE TEST ── */
+  .pt-grid { display: flex; flex-direction: column; gap: 16px; }
+  .pt-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden;
+  }
+  .pt-q {
+    background: var(--bg); padding: 14px 20px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .pt-num {
+    background: var(--accent); color: #fff;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem; font-weight: 800; flex-shrink: 0;
+  }
+  .pt-q-text { font-weight: 700; font-size: .95rem; color: var(--navy); }
+  .pt-a { padding: 16px 20px; font-size: .88rem; line-height: 1.7; color: #334155; }
+  .pt-a code {
+    background: #f1f5f9; border: 1px solid #e2e8f0;
+    padding: 1px 6px; border-radius: 4px; font-size: .83rem;
+    font-family: "SF Mono", "Fira Code", monospace; color: #0f172a;
+  }
+  .pt-a ul { margin: 8px 0 0 20px; }
+  .pt-a li { margin-bottom: 4px; }
+  .highlight-yes {
+    background: #dcfce7; border: 1px solid #86efac;
+    border-radius: 6px; padding: 4px 10px; font-weight: 700;
+    color: #15803d; display: inline-block; margin-bottom: 6px;
+  }
+  .highlight-no {
+    background: #fee2e2; border: 1px solid #fca5a5;
+    border-radius: 6px; padding: 4px 10px; font-weight: 700;
+    color: #b91c1c; display: inline-block; margin-bottom: 6px;
+  }
+
+  /* ── SAMPLE IO ── */
+  .io-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width:700px) { .io-grid { grid-template-columns: 1fr; } }
+  .io-box { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .io-header {
+    padding: 10px 16px; font-size: .8rem; font-weight: 700;
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+  .io-input .io-header  { background: #dbeafe; color: #1d4ed8; }
+  .io-output .io-header { background: #dcfce7; color: #15803d; }
+  .io-body { padding: 16px; }
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 16px 18px;
+    border-radius: 8px; font-size: .8rem; overflow-x: auto;
+    font-family: "SF Mono","Fira Code","Consolas",monospace; line-height: 1.6;
+  }
+  .output-items { list-style: none; }
+  .output-items li {
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 10px; font-size: .88rem;
+  }
+  .output-items li:last-child { border-bottom: none; }
+  .output-items .oi-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── PRIMITIVES ── */
+  .prim-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media(max-width:700px) { .prim-grid { grid-template-columns: 1fr; } }
+  .prim-card {
+    border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .prim-icon { font-size: 1.8rem; }
+  .prim-title { font-weight: 700; font-size: .95rem; }
+  .prim-answer {
+    font-size: .82rem; font-weight: 700; padding: 3px 10px;
+    border-radius: 20px; display: inline-block; width: fit-content;
+  }
+  .ans-no  { background: #fef3c7; color: #92400e; }
+  .ans-yes { background: #dcfce7; color: #15803d; }
+  .prim-desc { font-size: .85rem; color: var(--muted); line-height: 1.55; }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px; border-radius: 8px; font-size: .9rem;
+  }
+  .checklist li.pass { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .checklist li .ck-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .checklist li .ck-label { font-weight: 700; }
+  .checklist li .ck-detail { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+
+  /* ── MEMORY / COLLAB NOTES ── */
+  .memory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:700px) { .memory-grid { grid-template-columns: 1fr; } }
+  .mem-card {
+    background: var(--bg); border-radius: 10px; padding: 18px;
+    border-left: 4px solid var(--teal);
+  }
+  .mem-key { font-family: "SF Mono","Fira Code",monospace; font-size: .8rem;
+             color: var(--teal); font-weight: 700; margin-bottom: 8px; }
+  .mem-desc { font-size: .85rem; color: #334155; line-height: 1.55; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 32px; color: var(--muted);
+    font-size: .82rem; border-top: 1px solid var(--border);
+    margin-top: 40px; background: var(--card);
+  }
+
+  /* ── MERMAID OVERRIDE ── */
+  .mermaid svg { max-width: 100% !important; }
+  .mermaid { min-height: 100px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="brand">Multi-Agent PM</span>
+  <a href="#problem">Problem</a>
+  <a href="#agents">Agents</a>
+  <a href="#flow">Flow</a>
+  <a href="#sample">Input/Output</a>
+  <a href="#memory">Memory</a>
+  <a href="#pressure">Pressure Test</a>
+  <a href="#primitives">Primitives</a>
+  <a href="#checklist">Checklist</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">AI Agenthon — Judge Presentation</div>
+    <h1>Multi-Agent <span>Project Management</span><br>System</h1>
+    <p>Five specialised AI agents collaborate through a LangGraph state machine to autonomously plan, implement, quality-review, risk-assess and obtain business sign-off on any software project — end-to-end.</p>
+    <div class="hero-stats">
+      <div class="stat-box"><div class="stat-num">5</div><div class="stat-lbl">Distinct Agents</div></div>
+      <div class="stat-box"><div class="stat-num">5</div><div class="stat-lbl">Use Cases</div></div>
+      <div class="stat-box"><div class="stat-num">4</div><div class="stat-lbl">Branch Conditions</div></div>
+      <div class="stat-box"><div class="stat-num">3</div><div class="stat-lbl">Feedback Loops</div></div>
+      <div class="stat-box"><div class="stat-num">Text</div><div class="stat-lbl">Output Type</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ── PROBLEM STATEMENT ── -->
+  <div class="section" id="problem">
+    <div class="section-header">
+      <div class="section-icon" style="background:#dbeafe">🎯</div>
+      <div>
+        <div class="section h2" style="font-size:1.25rem;font-weight:700;color:var(--navy)">Problem Statement</div>
+        <div class="section-sub">What use cases are we solving?</div>
+      </div>
+    </div>
+    <p style="margin-bottom:20px;color:#334155;line-height:1.7">
+      Software delivery fails not from lack of skill but from <strong>coordination failures</strong>: risks are identified too late, implementation quality goes unchecked, and business stakeholders are misaligned until the final sprint. Existing PM tools are <em>passive</em> — they track work but never reason about it. This system replaces that passive layer with a <strong>collaborative AI agent team</strong> that acts, critiques, escalates and adapts in real time.
+    </p>
+    <div class="uc-grid">
+      <div class="uc-card">
+        <div class="uc-id">UC-1</div>
+        <div class="uc-title">Automated Project Decomposition</div>
+        <div class="uc-desc">Given a natural-language project brief, automatically produce a phased task plan with tech stack, effort estimates, acceptance criteria and deliverables.</div>
+      </div>
+      <div class="uc-card" style="border-left-color:var(--red)">
+        <div class="uc-id" style="color:var(--red)">UC-2</div>
+        <div class="uc-title">Risk-Aware Adaptive Planning</div>
+        <div class="uc-desc">Detect delivery risks before any implementation starts. If high-severity risks are found, trigger a full replan before the Engineer touches a single task.</div>
+      </div>
+      <div class="uc-card" style="border-left-color:var(--amber)">
+        <div class="uc-id" style="color:var(--amber)">UC-3</div>
+        <div class="uc-title">Quality-Gated Implementation Loop</div>
+        <div class="uc-desc">Engineer produces output; QA critiques it with structured issues and severity ratings; Engineer revises — up to 2 retries before escalation to Risk Analyst.</div>
+      </div>
+      <div class="uc-card" style="border-left-color:var(--teal)">
+        <div class="uc-id" style="color:var(--teal)">UC-4</div>
+        <div class="uc-title">Mid-Execution Risk Monitoring</div>
+        <div class="uc-desc">After each engineering task, Risk Analyst re-evaluates the risk register. Critical risks trigger an in-flight replan without stopping the workflow.</div>
+      </div>
+      <div class="uc-card" style="border-left-color:var(--purple)">
+        <div class="uc-id" style="color:var(--purple)">UC-5</div>
+        <div class="uc-title">Business Stakeholder Alignment</div>
+        <div class="uc-desc">A Stakeholder agent approves the initial plan, monitors mid-execution progress, and produces a final satisfaction score with actionable business feedback.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── AGENT ROSTER ── -->
+  <div class="section" id="agents">
+    <div class="section-header">
+      <div class="section-icon" style="background:#dcfce7">🤖</div>
+      <div>
+        <div class="section h2" style="font-size:1.25rem;font-weight:700;color:var(--navy)">Agent Roster</div>
+        <div class="section-sub">5 agents — zero role overlap</div>
+      </div>
+    </div>
+    <table class="agent-table">
+      <thead>
+        <tr>
+          <th>Agent</th>
+          <th>Mandate</th>
+          <th>LLM Trigger</th>
+          <th>Cannot Do</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="agent-pill pill-pm">ProjectManager</div>
+            <div class="agent-name">Planner &amp; Coordinator</div>
+          </td>
+          <td>Decomposes requirements into tasks; distributes work to agents; replans on risk/stakeholder escalation. Stores plan in SharedMemory for all agents to read.</td>
+          <td>Called at: plan_project, replan_project, mid_replan</td>
+          <td class="cannot">Cannot write code, run tests, or classify risks</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="agent-pill pill-eng">Engineer</div>
+            <div class="agent-name">Implementer</div>
+          </td>
+          <td>Writes complete source files to <code>output_examples/</code>. On QA critique, reads the exact issue list and produces revised files.</td>
+          <td>Called at: implement_task, engineer_revise</td>
+          <td class="cannot">Cannot assess risk, approve plans, or run QA</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="agent-pill pill-qa">QAAgent</div>
+            <div class="agent-name">Quality Gatekeeper</div>
+          </td>
+          <td>Reads Engineer's implementation from SharedMemory. Returns structured JSON issues with severity. Drives the revision loop. Runs final quality gate checks.</td>
+          <td>Called at: qa_critique, check_quality_gates</td>
+          <td class="cannot">Cannot plan tasks, write code, or escalate risk</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="agent-pill pill-risk">RiskAnalyst</div>
+            <div class="agent-name">Risk Intelligence</div>
+          </td>
+          <td>Pre-execution: classifies risks from the PM plan. Mid-execution: monitors after each task for critical escalation. Generates final risk register report.</td>
+          <td>Called at: assess_risks, monitor_risks, generate_risk_report</td>
+          <td class="cannot">Cannot implement, test, or approve plans</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="agent-pill pill-stake">Stakeholder</div>
+            <div class="agent-name">Business Voice</div>
+          </td>
+          <td>Approves initial plan (with satisfaction score). Monitors mid-execution progress. Escalates concerns to PM if score &lt; 65. Provides final business feedback.</td>
+          <td>Called at: stakeholder_approve, stakeholder_progress, stakeholder_final</td>
+          <td class="cannot">Cannot write code, assess technical risk, or build tasks</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── INTERACTION FLOW ── -->
+  <div class="section" id="flow">
+    <div class="section-header">
+      <div class="section-icon" style="background:#fef3c7">🔄</div>
+      <div>
+        <div class="section h2" style="font-size:1.25rem;font-weight:700;color:var(--navy)">Interaction Flow</div>
+        <div class="section-sub">LangGraph StateGraph — how agents pass work</div>
+      </div>
+    </div>
+    <div class="mermaid-wrap">
+      <div class="mermaid">
+flowchart TD
+    S([START]) --> A[plan_project\nProjectManager: LLM decomposes\nrequirements → task list\nstores plan in SharedMemory]
+
+    A --> B[assess_risks\nRiskAnalyst: reads PM plan\nfrom SharedMemory → classifies\nrisks by severity]
+
+    B --> C{High-severity\nrisks detected?}
+    C -- Yes --> D[replan_project\nProjectManager: reads risk register\nfrom SharedMemory → LLM adjusts\ntasks + adds mitigations]
+    C -- No  --> E
+
+    D --> E[stakeholder_approve\nStakeholder: reviews full plan\nLLM → approval + score\nbuilds engineer_task_queue]
+
+    E --> F[set_next_task\nrouting: picks next\ntask_id from queue]
+    F --> G{Tasks\nremaining?}
+
+    G -- Yes --> H[implement_task\nEngineer: calls LLM\nwrites source files\nstores output in SharedMemory]
+
+    H --> I[qa_critique\nQA: reads Engineer output\nfrom SharedMemory → LLM\nreturns issues + severity]
+
+    I --> J{Approved?\nor max retries?}
+    J -- No, retry available --> K[engineer_revise\nEngineer: reads qa_issues\nfrom state → LLM fixes\nall flagged issues]
+    K --> I
+
+    J -- Yes / exhausted --> L[monitor_risks\nRiskAnalyst: re-evaluates\nrisk register after\neach engineering task]
+
+    L --> M{Critical risk\ndetected?}
+    M -- Yes --> N[mid_replan\nProjectManager: reads updated\nrisk summary → LLM\nadjusts remaining tasks]
+    N --> F
+    M -- No  --> F
+
+    G -- No more tasks --> O[stakeholder_progress\nStakeholder: monitors progress\nsatisfaction < 65 → PM\nreceives escalation message]
+
+    O --> P[check_quality_gates\nQA: evaluates all test\nreports across all tasks\nfinal quality gate check]
+
+    P --> Q[generate_risk_report\nRiskAnalyst: produces\nfinal risk register\nand mitigation summary]
+
+    Q --> R[stakeholder_final\nStakeholder: final\nsatisfaction score\nbusiness feedback]
+
+    R --> T[finalize_project\nbuild collaboration\nsummary + HTML report]
+
+    T --> U[submit_compass\nsubmit to evaluation API]
+    U --> V([END])
+
+    style A fill:#dbeafe,stroke:#93c5fd,color:#1d4ed8
+    style D fill:#dbeafe,stroke:#93c5fd,color:#1d4ed8
+    style E fill:#f3e8ff,stroke:#c4b5fd,color:#7e22ce
+    style O fill:#f3e8ff,stroke:#c4b5fd,color:#7e22ce
+    style R fill:#f3e8ff,stroke:#c4b5fd,color:#7e22ce
+    style H fill:#dcfce7,stroke:#86efac,color:#15803d
+    style K fill:#dcfce7,stroke:#86efac,color:#15803d
+    style I fill:#fef3c7,stroke:#fcd34d,color:#92400e
+    style P fill:#fef3c7,stroke:#fcd34d,color:#92400e
+    style B fill:#fee2e2,stroke:#fca5a5,color:#b91c1c
+    style L fill:#fee2e2,stroke:#fca5a5,color:#b91c1c
+    style Q fill:#fee2e2,stroke:#fca5a5,color:#b91c1c
+    style N fill:#dbeafe,stroke:#93c5fd,color:#1d4ed8
+    style C fill:#f8fafc,stroke:#94a3b8
+    style G fill:#f8fafc,stroke:#94a3b8
+    style J fill:#f8fafc,stroke:#94a3b8
+    style M fill:#f8fafc,stroke:#94a3b8
+      </div>
+    </div>
+    <p style="margin-top:14px;font-size:.82rem;color:var(--muted);text-align:center">
+      Blue = ProjectManager &nbsp;|&nbsp; Green = Engineer &nbsp;|&nbsp; Yellow = QAAgent &nbsp;|&nbsp; Red = RiskAnalyst &nbsp;|&nbsp; Purple = Stakeholder
+    </p>
+  </div>
+
+  <!-- ── SHARED MEMORY ── -->
+  <div class="section" id="memory">
+    <div class="section-header">
+      <div class="section-icon" style="background:#ccfbf1">🧠</div>
+      <div>
+        <div class="section h2" style="font-size:1.25rem;font-weight:700;color:var(--navy)">Shared Context &amp; Memory</div>
+        <div class="section-sub">Where the world model lives — readable and writable by all agents</div>
+      </div>
+    </div>
+    <div class="memory-grid">
+      <div class="mem-card">
+        <div class="mem-key">agent_summaries["project_manager:{project_id}"]</div>
+        <div class="mem-desc">Full PM plan: tasks, technology stack, phases, effort estimates. Read by RiskAnalyst (risk assessment), Stakeholder (approval), PM replan (mitigation context).</div>
+      </div>
+      <div class="mem-card">
+        <div class="mem-key">agent_summaries["engineer:{task_id}"]</div>
+        <div class="mem-desc">Engineer's implementation output per task. Read by QAAgent during <code>qa_critique</code> — this is the direct dependency that makes QA impossible without Engineer.</div>
+      </div>
+      <div class="mem-card">
+        <div class="mem-key">agent_summaries["risk_analyst:{project_id}"]</div>
+        <div class="mem-desc">Risk register with severities and mitigations. Read by PM during replan to understand <em>which specific risks</em> to address. Without it, replanning is blind.</div>
+      </div>
+      <div class="mem-card">
+        <div class="mem-key">agent_summaries["stakeholder:{project_id}"]</div>
+        <div class="mem-desc">Satisfaction score and concerns. PM reads this during progress review — if score &lt; 65, PM sends an acknowledgement message back to Stakeholder.</div>
+      </div>
+      <div class="mem-card">
+        <div class="mem-key">messages[]  (typed inter-agent)</div>
+        <div class="mem-desc">Structured messages with sender, receiver, content, type (request / task_assignment / escalation / feedback / notification), timestamp, and project context.</div>
+      </div>
+      <div class="mem-card">
+        <div class="mem-key">decisions_log[]  +  feedback_loops{}</div>
+        <div class="mem-desc">Every LLM-driven decision is logged with reasoning text. Every QA↔Engineer revision cycle and PM↔Stakeholder escalation is recorded with timestamps and iteration count.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SAMPLE INPUT / OUTPUT ── -->
+  <div class="section" id="sample">
+    <div class="section-header">
+      <div class="section-icon" style="background:#ede9fe">📋</div>
+      <div>
+        <div class="section h2" style="font-size:1.25rem;font-weight:700;color:var(--navy)">Sample Input &amp; Expected Output</div>
+        <div class="section-sub">Output type: <strong>text</strong> (structured JSON + HTML report + JSONL trace log)</div>
+      </div>
+    </div>
+    <div class="io-grid">
+      <div class="io-box io-input">
+        <div class="io-header">Input — input_examples/input_1.json</div>
+        <div class="io-body">
+          <pre>{
+  "project_id": "proj_ecommerce_001",
+  "project_name": "E-Commerce Platform
+    Modernisation",
+  "description": "Migrate legacy e-commerce
+    monolith to microservices. Replace
+    checkout, inventory, and user-auth
+    modules. Must maintain 99.9% uptime.
+    Integration with 3 payment gateways.
+    Strict PCI-DSS compliance."
+}</pre>
+        </div>
+      </div>
+      <div class="io-box io-output">
+        <div class="io-header">Output produced</div>
+        <div class="io-body">
+          <ul class="output-items">
+            <li><span class="oi-icon">📋</span><div><strong>Task plan</strong> — 8 tasks across 3 phases, Spring Boot 3 + Java 17 + PostgreSQL 15 + Redis, 132h total effort</div></li>
+            <li><span class="oi-icon">⚠️</span><div><strong>Risk register</strong> — 2 HIGH risks detected: "Downtime During Cutover", "PCI-DSS Compliance Delays" → replan triggered before engineering</div></li>
+            <li><span class="oi-icon">🔄</span><div><strong>QA revision loop</strong> — 3 engineering iterations, each critiqued and revised</div></li>
+            <li><span class="oi-icon">📊</span><div><strong>Stakeholder score</strong> — satisfaction score logged with concerns and recommendations</div></li>
+            <li><span class="oi-icon">🌐</span><div><strong>HTML report</strong> — <code>reports/report_Ecommerc.html</code></div></li>
+            <li><span class="oi-icon">📝</span><div><strong>Trace log</strong> — <code>logs/agent_trace.jsonl</code> with confidence scores per decision</div></li>
+            <li><span class="oi-icon">💾</span><div><strong>Source files</strong> — written to <code>output_examples/proj_ecommerce_001/spa/</code></div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:18px;background:#0f172a;border-radius:10px;padding:18px 20px">
+      <div style="font-size:.75rem;color:#64748b;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Actual agent message exchange — from logs/</div>
+      <pre style="background:transparent;padding:0;border-radius:0">PM → RiskAnalyst:  "Project plan ready: 8 tasks, ~132h effort.
+                    Stack: Spring Boot 3 + Java 17, PostgreSQL 15 + Redis."
+
+RiskAnalyst → Stakeholder: "HIGH-SEVERITY RISKS identified:
+                             Downtime During Cutover, PCI-DSS Compliance Delays."
+
+Graph → replan_project  (branch taken: high_risks_detected = True)
+
+PM → Engineer:  "Plan updated after escalation: 2 adjustments, 1 new task added."
+
+QA → Engineer:  "Issues found: missing input validation on payment endpoint [severity: high]"
+Engineer → QA:  "Revised: added javax.validation constraints + error handler"
+QA:             "approved = true"  (revision 1 of 2 available)</pre>
+    </div>
+  </div>
+
+  <!-- ── PRESSURE TEST ── -->
+  <div class="section" id="pressure">
+    <div class="section-header">
+      <div class="section-icon" style="background:#fee2e2">🔥</div>
+      <div>
+        <div class="section h2" style="font-size:1.25rem;font-weight:700;color:var(--navy)">5 Pressure-Test Questions</div>
+        <div class="section-sub">Design validation with specific answers from the codebase</div>
+      </div>
+    </div>
+    <div class="pt-grid">
+
+      <div class="pt-card">
+        <div class="pt-q">
+          <div class="pt-num">1</div>
+          <div class="pt-q-text">Where does one agent depend on another's output?</div>
+        </div>
+        <div class="pt-a">
+          These are <strong>hard dependencies</strong>, not soft hand-offs:
+          <ul>
+            <li><strong>QA depends on Engineer</strong>: <code>qa_critique</code> reads <code>SharedMemory.get_summary(AgentRole.ENGINEER, task_id)</code>. If Engineer writes nothing, QA has no input and cannot function.</li>
+            <li><strong>Engineer revision depends on QA</strong>: <code>engineer_revise</code> reads <code>state["qa_issues"]</code> — the exact structured list QA returned. Without QA output, there is nothing to fix.</li>
+            <li><strong>PM replan depends on RiskAnalyst</strong>: <code>_run_replanning()</code> reads <code>SharedMemory.get_summary(AgentRole.RISK_ANALYST, project_id)</code> to understand <em>which specific risks</em> to address. Blind replanning would produce generic, untargeted adjustments.</li>
+            <li><strong>Stakeholder approval depends on both PM and RiskAnalyst</strong>: <code>stakeholder_approve</code> runs only after both plan and risk register are populated in SharedMemory.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-card">
+        <div class="pt-q">
+          <div class="pt-num">2</div>
+          <div class="pt-q-text">Where does feedback or validation happen between agents?</div>
+        </div>
+        <div class="pt-a">
+          Three distinct feedback loops are implemented in the graph topology:
+          <ul>
+            <li><strong>QA ↔ Engineer revision loop</strong>: <code>qa_critique</code> → <code>engineer_revise</code> → <code>qa_critique</code>. Repeats up to <code>MAX_QA_RETRIES = 2</code> times. QA issues are passed as structured JSON, not as free text. The retry counter is tracked in graph state.</li>
+            <li><strong>RiskAnalyst → PM mid-execution replan</strong>: After every engineering task, <code>monitor_risks</code> re-evaluates. If <code>critical_risks_detected=True</code>, the graph routes to <code>mid_replan</code> where PM adjusts remaining tasks, then re-enters the task loop.</li>
+            <li><strong>Stakeholder → PM concern escalation</strong>: If satisfaction score &lt; 65 in <code>stakeholder_progress</code>, PM sends an acknowledgement message back to Stakeholder. This is logged in <code>feedback_loops{}</code> keyed by the agent pair and project ID.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-card">
+        <div class="pt-q">
+          <div class="pt-num">3</div>
+          <div class="pt-q-text">Where does shared context or memory live?</div>
+        </div>
+        <div class="pt-a">
+          Context lives in two complementary structures:
+          <ul>
+            <li><strong><code>SharedMemory</code></strong> (in <code>app/memory.py</code>) is a thread-safe in-process store persisting for the full duration of a run. It holds <code>agent_summaries</code> (cross-agent readable outputs), <code>messages</code> (typed inter-agent communications), <code>decisions_log</code> (every LLM decision with reasoning), and <code>feedback_loops</code> (revision iteration records).</li>
+            <li><strong><code>ProjectState</code></strong> is the LangGraph state dict passed through every graph edge. It carries snapshots of tasks, risks, QA issues, retry counters, and task queues. Both structures are synchronised at each node via <code>_sync_interactions()</code> — SharedMemory is the source of truth, ProjectState is the transport layer.</li>
+          </ul>
+          Any agent can call <code>memory.get_summary(role, key)</code> to read another agent's stored output — this is the primary cross-agent context mechanism.
+        </div>
+      </div>
+
+      <div class="pt-card">
+        <div class="pt-q">
+          <div class="pt-num">4</div>
+          <div class="pt-q-text">Where do retries, escalation, or branching show up?</div>
+        </div>
+        <div class="pt-a">
+          <table style="width:100%;font-size:.85rem;border-collapse:collapse">
+            <thead>
+              <tr style="background:var(--bg)">
+                <th style="padding:8px;text-align:left;border-bottom:1px solid var(--border)">Mechanism</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid var(--border)">Graph location</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid var(--border)">Trigger condition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:8px;border-bottom:1px solid var(--border)">Engineer revision retry</td><td style="padding:8px;border-bottom:1px solid var(--border)"><code>qa_critique → engineer_revise</code></td><td style="padding:8px;border-bottom:1px solid var(--border)"><code>approved=false AND retry &lt; 2</code></td></tr>
+              <tr><td style="padding:8px;border-bottom:1px solid var(--border)">Max-retry escalation to RiskAnalyst</td><td style="padding:8px;border-bottom:1px solid var(--border)"><code>qa_critique</code> node</td><td style="padding:8px;border-bottom:1px solid var(--border)"><code>retry_count &gt;= MAX_QA_RETRIES</code></td></tr>
+              <tr><td style="padding:8px;border-bottom:1px solid var(--border)">Pre-execution risk branch</td><td style="padding:8px;border-bottom:1px solid var(--border)"><code>assess_risks → replan_project</code></td><td style="padding:8px;border-bottom:1px solid var(--border)"><code>high_risks_detected=True</code></td></tr>
+              <tr><td style="padding:8px;border-bottom:1px solid var(--border)">Mid-execution critical risk branch</td><td style="padding:8px;border-bottom:1px solid var(--border)"><code>monitor_risks → mid_replan</code></td><td style="padding:8px;border-bottom:1px solid var(--border)"><code>critical_risks_detected=True</code></td></tr>
+              <tr><td style="padding:8px">Stakeholder satisfaction escalation</td><td style="padding:8px"><code>stakeholder_progress</code></td><td style="padding:8px">Satisfaction score &lt; 65</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="pt-card">
+        <div class="pt-q">
+          <div class="pt-num">5</div>
+          <div class="pt-q-text">If you removed the second agent, would the system still produce the same output?</div>
+        </div>
+        <div class="pt-a">
+          <div class="highlight-no">No — removal of any agent changes the output</div>
+          <ul>
+            <li><strong>Remove QAAgent</strong>: No revision loop fires. <code>check_quality_gates</code> has no test reports to evaluate. The output has zero quality validation — a fundamentally weaker, unverified result.</li>
+            <li><strong>Remove RiskAnalyst</strong>: <code>assess_risks → replan_project</code> never fires. In the E-Commerce example, PCI-DSS compliance risks would not be detected before engineering starts. Mid-execution <code>monitor_risks</code> never runs — critical risk emergence is invisible.</li>
+            <li><strong>Remove ProjectManager</strong>: No task decomposition. The Engineer has no task queue. The workflow cannot start.</li>
+            <li><strong>Remove Stakeholder</strong>: Plan approval never occurs. <code>engineer_task_queue</code> is never built. No business feedback is produced.</li>
+            <li><strong>Remove Engineer</strong>: No implementation artifacts. QA has nothing to critique. The output is pure planning text — no deliverables.</li>
+          </ul>
+          The agents are <strong>structurally coupled through the graph topology</strong>. Each occupies a non-optional node. This is genuine multi-agent collaboration, not a single agent with extra steps.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── AGENT PRIMITIVES ── -->
+  <div class="section" id="primitives">
+    <div class="section-header">
+      <div class="section-icon" style="background:#fce7f3">⚙️</div>
+      <div>
+        <div class="section h2" style="font-size:1.25rem;font-weight:700;color:var(--navy)">Agent Primitives Assessment</div>
+        <div class="section-sub">What foundational capabilities do our agents actually need?</div>
+      </div>
+    </div>
+    <div class="prim-grid">
+      <div class="prim-card">
+        <div class="prim-icon">⏱️</div>
+        <div class="prim-title">Long-Running + Cost-Effective Execution</div>
+        <div class="prim-answer ans-no">Not required currently</div>
+        <div class="prim-desc">
+          Each run completes within one async request (minutes). The <code>MAX_ITERATIONS = 3</code> cap bounds the engineering loop. The architecture is ready to scale: LangGraph supports persistent checkpointing natively, and <code>ainvoke</code> is fully async. Removing the iteration cap and adding a LangGraph checkpointer would enable long-horizon project runs cost-effectively.
+        </div>
+      </div>
+      <div class="prim-card">
+        <div class="prim-icon">📚</div>
+        <div class="prim-title">Self-Evolving Cross-Run Memory</div>
+        <div class="prim-answer ans-no">Not required currently</div>
+        <div class="prim-desc">
+          <code>SharedMemory</code> is per-run and intentionally cleared between projects — every evaluation is deterministic. <code>agent_summaries</code> allows rich cross-agent reading <em>within</em> a run. Cross-run learning is the next evolution: persisting summaries to a DB would let agents seed their prompts with patterns from historical project outcomes.
+        </div>
+      </div>
+      <div class="prim-card">
+        <div class="prim-icon">🌍</div>
+        <div class="prim-title">Persistent World Model Between Tasks</div>
+        <div class="prim-answer ans-yes">Yes — implemented</div>
+        <div class="prim-desc">
+          <code>SharedMemory</code> <em>is</em> the world model. It holds the full project state, all inter-agent messages, the risk register, and the complete decision history. Every agent reads the current world state before acting and writes back after. <code>ProjectState</code> propagates this model through graph edges so each node receives the cumulative context of all prior nodes.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── JUDGE CHECKLIST ── -->
+  <div class="section" id="checklist">
+    <div class="section-header">
+      <div class="section-icon" style="background:#dcfce7">✅</div>
+      <div>
+        <div class="section h2" style="font-size:1.25rem;font-weight:700;color:var(--navy)">Judge Submission Checklist</div>
+        <div class="section-sub">All required criteria — verified against the codebase</div>
+      </div>
+    </div>
+    <ul class="checklist">
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Problem statement locked</div><div class="ck-detail">5 specific use cases defined — UC-1 through UC-5, each with a concrete, testable outcome.</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Agent roster defined — minimum 2, with clear distinct roles</div><div class="ck-detail">5 agents: ProjectManager, Engineer, QAAgent, RiskAnalyst, Stakeholder. Zero role overlap. Each has a unique LLM system prompt, unique SharedMemory key, and unique graph node(s).</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Interaction flow diagram</div><div class="ck-detail">Full LangGraph flow above with conditional edges, retry loops, and escalation branches — all matching the actual <code>app/graph.py</code> implementation.</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Sample input and expected output type</div><div class="ck-detail">Input: E-Commerce Modernisation JSON. Output type: text (structured JSON + HTML report + JSONL trace). Real output excerpt shown from <code>output_examples/output_1.json</code>.</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Draft metadata.json with use case IDs and agent definitions</div><div class="ck-detail">File exists at <code>metadata.json</code> in project root. 5 agent definitions, tools_used, data_sources, and output_type all present.</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Agent dependency chain identified</div><div class="ck-detail">QA←Engineer, Engineer revision←QA issues, PM replan←RiskAnalyst summary, Stakeholder approval←PM+RiskAnalyst. All are hard dependencies with named SharedMemory keys.</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Feedback and validation loops present</div><div class="ck-detail">QA↔Engineer retry loop (max 2), RiskAnalyst→PM mid-replan, Stakeholder→PM satisfaction escalation. All implemented as conditional edges in the LangGraph graph.</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Shared context / memory implemented</div><div class="ck-detail"><code>SharedMemory</code> (thread-safe, per-run) + <code>ProjectState</code> (LangGraph graph state). Dual-layer world model with cross-agent read/write via <code>agent_summaries</code>.</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Retries, escalation, and branching implemented</div><div class="ck-detail">5 distinct mechanisms: QA revision retry loop, max-retry escalation to RiskAnalyst, pre-execution risk branch, mid-execution risk branch, stakeholder satisfaction escalation.</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Second-agent removal test — fails (genuine collaboration)</div><div class="ck-detail">Removing any single agent fundamentally breaks the output. Agents are structurally coupled through graph topology — this is not a single agent with extra steps.</div></div>
+      </li>
+      <li class="pass">
+        <span class="ck-icon">✅</span>
+        <div><div class="ck-label">Agent primitives assessed</div><div class="ck-detail">Long-running: not required (scoped runs). Self-evolving memory: not required (per-run, deterministic). World model persisting between tasks: YES — implemented via SharedMemory + ProjectState.</div></div>
+      </li>
+    </ul>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  <strong>Multi-Agent Project Management System</strong> &nbsp;·&nbsp; AI Agenthon 2026 &nbsp;·&nbsp;
+  Built with LangGraph · FastAPI · OpenAI SDK · Compass Integration
+</footer>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'default', flowchart: { curve: 'basis', padding: 20 } });
+</script>
+</body>
+</html>

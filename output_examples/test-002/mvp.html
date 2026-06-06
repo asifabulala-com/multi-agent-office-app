@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Test Project Dashboard</title>
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: Inter, system-ui, sans-serif;
+      height: 100vh;
+      display: flex;
+    }
+    .sidebar {
+      width: 180px;
+      background: #1e293b;
+      padding: 32px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 10;
+      border-right: 1px solid #334155;
+    }
+    .sidebar h2 {
+      font-size: 1.2rem;
+      margin: 0 0 18px 0;
+      font-weight: 700;
+      color: #2563eb;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+    .sidebar li {
+      padding: 12px 0 12px 32px;
+      color: #e2e8f0;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sidebar li:hover {
+      background: #334155;
+    }
+    .main {
+      margin-left: 180px;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 32px 32px 16px 32px;
+      border-bottom: 1px solid #334155;
+      background: #1e293b;
+    }
+    .header-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .status-badge {
+      background: #2563eb;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      padding: 4px 16px;
+      border-radius: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+    .kpi-row {
+      display: flex;
+      gap: 24px;
+      padding: 32px;
+      padding-bottom: 0;
+    }
+    .kpi-card {
+      background: #1e293b;
+      border-radius: 12px;
+      flex: 1;
+      min-width: 0;
+      padding: 20px 20px 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 8px 0 rgba(16,21,40,0.08);
+      border: 1px solid #334155;
+    }
+    .kpi-icon {
+      font-size: 2rem;
+      background: #2563eb22;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .kpi-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .kpi-label {
+      font-size: 1rem;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+    .section {
+      margin: 32px;
+      margin-top: 24px;
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 24px 24px 16px 24px;
+      box-shadow: 0 2px 8px 0 rgba(16,21,40,0.06);
+      border: 1px solid #334155;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .add-btn {
+      background: #2563eb;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .add-btn:hover {
+      background: #1d4ed8;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1rem;
+    }
+    th, td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    th {
+      color: #a3bffa;
+      font-weight: 600;
+      background: #1e293b;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .status-chip {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .status-todo { background: #334155; }
+    .status-inprogress { background: #2563eb; }
+    .status-done { background: #059669; }
+    .status-blocked { background: #dc2626; }
+    @media (max-width: 900px) {
+      .kpi-row { flex-direction: column; gap: 16px; padding: 16px; }
+      .section { margin: 16px; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <h2>Test Project</h2>
+    <ul>
+      <li>Dashboard</li>
+      <li>Tasks</li>
+      <li>Team</li>
+      <li>Settings</li>
+    </ul>
+  </nav>
+  <main class="main">
+    <div class="header">
+      <span class="header-title">Test Project</span>
+      <span class="status-badge">Active</span>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <span class="kpi-icon">📝</span>
+        <div class="kpi-content">
+          <span class="kpi-value" id="kpi-tasks">5</span>
+          <span class="kpi-label">Open Tasks</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-icon">⚙️</span>
+        <div class="kpi-content">
+          <span class="kpi-value">4</span>
+          <span class="kpi-label">Tech Stack Items</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-icon">🚀</span>
+        <div class="kpi-content">
+          <span class="kpi-value">2</span>
+          <span class="kpi-label">Deployments</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-icon">✅</span>
+        <div class="kpi-content">
+          <span class="kpi-value" id="kpi-completed">1</span>
+          <span class="kpi-label">Completed Tasks</span>
+        </div>
+      </div>
+    </div>
+    <section class="section">
+      <div class="section-header">
+        <span class="section-title">Project Tasks</span>
+        <button class="add-btn" onclick="addTask()">+ Add</button>
+      </div>
+      <div style="overflow-x:auto;">
+      <table id="tasks-table">
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Assignee</th>
+            <th>Status</th>
+            <th>Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Set up FastAPI backend</td>
+            <td>Alice</td>
+            <td><span class="status-chip status-done">Done</span></td>
+            <td>2024-06-10</td>
+          </tr>
+          <tr>
+            <td>Design SQLite schema</td>
+            <td>Bob</td>
+            <td><span class="status-chip status-inprogress">In Progress</span></td>
+            <td>2024-06-12</td>
+          </tr>
+          <tr>
+            <td>Develop React frontend</td>
+            <td>Carol</td>
+            <td><span class="status-chip status-todo">To Do</span></td>
+            <td>2024-06-15</td>
+          </tr>
+          <tr>
+            <td>Implement Docker deployment</td>
+            <td>Dave</td>
+            <td><span class="status-chip status-todo">To Do</span></td>
+            <td>2024-06-18</td>
+          </tr>
+          <tr>
+            <td>QA & E2E testing</td>
+            <td>Erin</td>
+            <td><span class="status-chip status-todo">To Do</span></td>
+            <td>2024-06-20</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+  </main>
+  <script>
+    function addTask() {
+      var task = window.prompt('Task name:');
+      if (!task) return;
+      var assignee = window.prompt('Assignee:');
+      if (!assignee) assignee = '-';
+      var status = window.prompt('Status (To Do, In Progress, Done, Blocked):');
+      var statusClass = 'status-todo', statusText = 'To Do';
+      if (status) {
+        var s = status.trim().toLowerCase();
+        if (s === 'done') { statusClass = 'status-done'; statusText = 'Done'; }
+        else if (s === 'in progress') { statusClass = 'status-inprogress'; statusText = 'In Progress'; }
+        else if (s === 'blocked') { statusClass = 'status-blocked'; statusText = 'Blocked'; }
+      }
+      var due = window.prompt('Due date (YYYY-MM-DD):');
+      if (!due) due = '-';
+      var row = document.createElement('tr');
+      row.innerHTML = '<td>' + escapeHtml(task) + '</td>' +
+        '<td>' + escapeHtml(assignee) + '</td>' +
+        '<td><span class="status-chip ' + statusClass + '">' + statusText + '</span></td>' +
+        '<td>' + escapeHtml(due) + '</td>';
+      document.querySelector('#tasks-table tbody').appendChild(row);
+      // Update KPIs
+      var kpiTasks = document.getElementById('kpi-tasks');
+      var kpiCompleted = document.getElementById('kpi-completed');
+      var rows = document.querySelectorAll('#tasks-table tbody tr');
+      var open = 0, completed = 0;
+      rows.forEach(function(tr) {
+        var status = tr.querySelector('.status-chip').textContent.trim();
+        if (status === 'Done') completed++;
+        else open++;
+      });
+      kpiTasks.textContent = open;
+      kpiCompleted.textContent = completed;
+    }
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, function(m) {
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'})[m];
+      });
+    }
+  </script>
+</body>
+</html>
