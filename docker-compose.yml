@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  multi-agent-pm:
+    build: .
+    image: multi-agent-pm:latest
+    container_name: multi-agent-pm
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env                      # loaded from the host, never baked into the image
+    volumes:
+      - ./logs:/app/logs          # persists agent_trace.jsonl between container restarts
+      - ./output_examples:/app/output_examples
+      - ./reports:/app/reports
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

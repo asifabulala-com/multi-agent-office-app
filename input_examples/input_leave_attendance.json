@@ -1,0 +1,5 @@
+{
+  "project_id": "HC_LeaveAttendance_001",
+  "project_name": "Leave & Attendance Management System",
+  "description": "Build a Leave and Attendance Management System for a telecom company's Human Capital department. The system must allow employees to apply for annual, sick, and emergency leave with manager approval workflows, track daily attendance via clock-in/clock-out with location tagging, calculate accrued leave balances in real time, enforce company leave policies (carry-over limits, blackout dates, minimum notice periods), and generate monthly attendance and leave utilisation reports for HR. Use FastAPI and Python 3.11 for the backend, React 18 and TypeScript for the frontend, and PostgreSQL for the database. Include three roles: employee, line manager, and HR administrator. Integrate with the existing employee directory via REST API for org-chart-aware approval chains."
+}

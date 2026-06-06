@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Submission Demo — Multi-Agent PM System · Use Case 1</title>
+<style>
+:root{
+  --bg:#060b18;--dark:#0b1120;--surface:#111827;--card:#1e293b;
+  --border:#1e3050;--text:#f0f4ff;--muted:#7c93b8;
+  --accent:#2563eb;--green:#22c55e;--yellow:#facc15;
+  --red:#f87171;--purple:#a78bfa;--orange:#fb923c;--cyan:#22d3ee;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,sans-serif;}
+
+/* ── HUD bar ── */
+.hud{position:fixed;top:0;left:0;right:0;height:44px;z-index:100;
+  background:rgba(6,11,24,.92);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(8px);display:flex;align-items:center;gap:14px;padding:0 18px;}
+.hud-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em;white-space:nowrap;}
+.hud-badge{font-size:10px;font-weight:800;padding:2px 10px;border-radius:999px;
+  background:rgba(37,99,235,.3);border:1px solid #2563eb;color:#93c5fd;white-space:nowrap;}
+.hud-section{font-size:11px;padding:3px 10px;border-radius:999px;font-weight:700;
+  background:var(--accent);color:#fff;transition:background .3s;}
+.hud-timer{font-size:18px;font-weight:700;font-family:'Courier New',monospace;
+  color:var(--yellow);min-width:52px;}
+.hud-timer.running{color:var(--green);}
+.hud-prog{flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+.hud-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));
+  border-radius:2px;transition:width .6s;}
+.hud-count{font-size:11px;color:var(--muted);white-space:nowrap;}
+.hud-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;
+  border:none;transition:opacity .15s;}
+.hud-btn:disabled{opacity:.3;cursor:default;}
+.btn-play{background:var(--green);color:#052e16;}
+.btn-pause{background:var(--yellow);color:#1c1917;}
+.btn-stop{background:var(--red);color:#fff;}
+.btn-nav{background:var(--card);color:var(--text);border:1px solid var(--border);}
+
+/* ── Main stage ── */
+.stage{position:fixed;top:44px;bottom:44px;left:0;right:0;display:flex;}
+.visual-panel{flex:0 0 68%;position:relative;background:var(--dark);
+  border-right:2px solid var(--border);overflow:hidden;}
+.visual-panel>iframe{width:100%;height:100%;border:none;display:block;background:#fff;}
+.visual-label{position:absolute;top:10px;left:10px;z-index:10;
+  font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;
+  background:rgba(6,11,24,.85);color:var(--purple);border:1px solid var(--purple);
+  letter-spacing:.06em;backdrop-filter:blur(4px);}
+.visual-text{width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:32px;gap:16px;
+  background:linear-gradient(135deg,#06111f,#0b1a30);}
+
+/* ── Narration panel ── */
+.narr-panel{flex:1;display:flex;flex-direction:column;background:var(--dark);overflow:hidden;}
+.slide-section-tag{font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.12em;padding:10px 24px 0;color:var(--muted);}
+.slide-title{font-size:19px;font-weight:800;padding:8px 24px 0;line-height:1.2;color:var(--text);}
+.slide-body{flex:1;overflow-y:auto;padding:14px 24px;font-size:13px;line-height:1.8;color:#c8d8f0;}
+.slide-body p{margin-bottom:12px;}
+.slide-body .highlight{color:var(--yellow);font-weight:700;}
+.slide-body .agent{display:inline-block;padding:1px 7px;border-radius:4px;
+  font-size:12px;font-weight:700;margin:0 2px;}
+.agent-pm   {background:rgba(37,99,235,.25);color:#93c5fd;}
+.agent-risk {background:rgba(251,146,60,.2); color:#fed7aa;}
+.agent-qa   {background:rgba(167,139,250,.2);color:#ddd6fe;}
+.agent-eng  {background:rgba(34,197,94,.2);  color:#bbf7d0;}
+.agent-stake{background:rgba(244,114,182,.2);color:#fbcfe8;}
+.narr-footer{padding:10px 24px 14px;border-top:1px solid var(--border);flex-shrink:0;}
+.wave-row{display:flex;align-items:flex-end;gap:3px;height:20px;margin-bottom:6px;}
+.wb{width:3px;border-radius:2px;background:var(--accent);height:3px;}
+.speaking .wb{animation:wav .65s ease-in-out infinite alternate;}
+.wb:nth-child(1){animation-delay:0s;} .wb:nth-child(2){animation-delay:.1s;}
+.wb:nth-child(3){animation-delay:.2s;} .wb:nth-child(4){animation-delay:.3s;}
+.wb:nth-child(5){animation-delay:.15s;} .wb:nth-child(6){animation-delay:.05s;}
+@keyframes wav{from{height:3px;}to{height:18px;}}
+.voice-status{font-size:11px;color:var(--muted);}
+.voice-row{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.voice-row select{background:var(--card);color:var(--text);border:1px solid var(--border);
+  border-radius:5px;padding:3px 7px;font-size:11px;flex:1;}
+.speed-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
+.speed-row input{width:70px;accent-color:var(--accent);}
+
+/* ── Bottom dot nav ── */
+.dots{position:fixed;bottom:0;left:0;right:0;height:44px;z-index:100;
+  background:rgba(6,11,24,.92);border-top:1px solid var(--border);
+  backdrop-filter:blur(8px);display:flex;align-items:center;
+  justify-content:center;gap:6px;padding:0 80px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;
+  transition:all .2s;flex-shrink:0;}
+.dot:hover{background:var(--muted);}
+.dot.active{background:var(--accent);transform:scale(1.4);}
+.dot.done{background:var(--purple);opacity:.6;}
+
+/* ── Title visual ── */
+.title-visual{background:linear-gradient(135deg,#060b18 0%,#0d1f3c 50%,#060b18 100%);
+  width:100%;height:100%;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:40px;position:relative;overflow:hidden;}
+.title-visual::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 40%,rgba(37,99,235,.2),transparent 65%);}
+.uc-badge{background:rgba(37,99,235,.3);border:2px solid #2563eb;border-radius:999px;
+  padding:5px 20px;font-size:12px;font-weight:800;color:#93c5fd;letter-spacing:.08em;
+  margin-bottom:14px;position:relative;}
+.title-logo{font-size:50px;margin-bottom:12px;position:relative;}
+.title-sys{font-size:26px;font-weight:800;color:var(--text);text-align:center;
+  line-height:1.2;position:relative;}
+.title-sub{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;
+  letter-spacing:.04em;position:relative;}
+.agent-pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+  margin-top:20px;position:relative;}
+.agent-pill{font-size:11px;font-weight:700;padding:5px 14px;border-radius:999px;border:1px solid;}
+
+/* ── Problem visual ── */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:680px;}
+.prob-card{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.35);
+  border-radius:12px;padding:22px 20px;}
+.prob-icon{font-size:36px;margin-bottom:10px;}
+.prob-title{font-size:17px;font-weight:800;color:var(--red);margin-bottom:8px;}
+.prob-text{font-size:14px;color:#c8d8f0;line-height:1.6;}
+.sol-card{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);
+  border-radius:12px;padding:22px 20px;grid-column:span 2;}
+
+/* ── Architecture full diagram ── */
+.arch-full{display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:14px 20px;height:100%;background:linear-gradient(135deg,#06111f,#0b1a30);
+  overflow-y:auto;}
+.af-row{display:flex;align-items:center;gap:8px;justify-content:center;width:100%;}
+.af-box{border-radius:8px;border:2px solid;padding:10px 14px;text-align:center;
+  font-size:13px;font-weight:700;line-height:1.35;}
+.af-arrow-h{font-size:18px;color:var(--muted);flex-shrink:0;}
+.af-arrow-v{font-size:20px;color:var(--muted);text-align:center;}
+.af-api{background:rgba(37,99,235,.15);border-color:#2563eb;color:#93c5fd;}
+.af-graph{background:rgba(37,99,235,.1);border-color:#3b82f6;color:#bfdbfe;}
+.af-memory{width:100%;border:2px dashed #7c3aed;border-radius:10px;padding:12px 20px;
+  background:rgba(124,58,237,.08);color:#c4b5fd;font-size:13px;font-weight:700;text-align:center;}
+.af-mem-keys{font-size:11px;font-weight:400;color:#a78bfa;margin-top:4px;letter-spacing:.02em;}
+.af-agents{display:flex;gap:8px;width:100%;justify-content:center;}
+.af-agent{border-radius:8px;border:2px solid;padding:12px 8px;text-align:center;
+  font-size:13px;font-weight:700;flex:1;min-width:72px;line-height:1.4;}
+.af-pm{background:rgba(37,99,235,.2);border-color:#2563eb;color:#93c5fd;}
+.af-risk{background:rgba(251,146,60,.15);border-color:#fb923c;color:#fed7aa;}
+.af-stake{background:rgba(244,114,182,.15);border-color:#f472b6;color:#fbcfe8;}
+.af-eng{background:rgba(34,197,94,.15);border-color:#22c55e;color:#bbf7d0;}
+.af-qa{background:rgba(167,139,250,.2);border-color:#a78bfa;color:#ddd6fe;}
+.af-edges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;}
+.af-edge{font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;border:1px solid;white-space:nowrap;}
+.af-edge-red{background:rgba(248,113,113,.15);border-color:#f87171;color:#f87171;}
+.af-edge-purple{background:rgba(167,139,250,.15);border-color:#a78bfa;color:#a78bfa;}
+.af-edge-pink{background:rgba(244,114,182,.15);border-color:#f472b6;color:#f472b6;}
+.af-edge-orange{background:rgba(251,146,60,.15);border-color:#fb923c;color:#fed7aa;}
+.af-compass{background:rgba(34,211,238,.1);border-color:#22d3ee;color:#67e8f9;}
+.af-logs{background:rgba(250,204,21,.1);border-color:#facc15;color:#fde68a;}
+.af-divider{width:100%;height:1px;background:var(--border);opacity:.4;}
+
+/* ── Compass config visual ── */
+.compass-visual{width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:28px;gap:18px;
+  background:linear-gradient(135deg,#06111f,#0b1a30);}
+.env-block{width:100%;max-width:500px;background:rgba(0,0,0,.45);
+  border:1px solid #1e3050;border-radius:10px;padding:16px 20px;font-family:'Courier New',monospace;}
+.env-title{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:10px;}
+.env-line{font-size:12px;margin-bottom:7px;line-height:1.5;}
+.env-key{color:#93c5fd;}
+.env-eq{color:#7c93b8;}
+.env-val{color:#86efac;}
+.env-comment{color:#4b5563;font-size:10px;}
+.compass-models{display:flex;gap:12px;width:100%;max-width:500px;}
+.cm-card{flex:1;border-radius:10px;padding:14px 16px;text-align:center;}
+.cm-card-r{background:rgba(34,211,238,.08);border:2px solid #22d3ee;}
+.cm-card-s{background:rgba(34,197,94,.08);border:2px solid #22c55e;}
+.cm-model-name{font-size:16px;font-weight:800;color:var(--text);}
+.cm-use{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6;}
+.compass-note{font-size:10px;color:var(--muted);text-align:center;max-width:460px;
+  padding:10px 14px;background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.2);
+  border-radius:8px;}
+
+/* ── JSONL Trace visual ── */
+.trace-visual{width:100%;height:100%;display:flex;flex-direction:column;
+  gap:7px;padding:16px 20px;overflow-y:auto;
+  background:linear-gradient(135deg,#06111f,#0b1a30);}
+.trace-header{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:2px;}
+.trace-entry{background:rgba(0,0,0,.35);border-radius:8px;padding:9px 12px;
+  border-left:4px solid;font-family:'Courier New',monospace;font-size:10px;}
+.te-escalated{border-color:#fb923c;}
+.te-branch{border-color:#f87171;}
+.te-replan{border-color:#2563eb;}
+.te-reject{border-color:#a78bfa;}
+.te-revise{border-color:#22c55e;}
+.te-approve{border-color:#22d3ee;}
+.trace-agent{font-size:11px;font-weight:700;display:inline-block;padding:2px 9px;
+  border-radius:4px;margin-bottom:3px;}
+.ta-risk{background:rgba(251,146,60,.25);color:#fed7aa;}
+.ta-orch{background:rgba(37,99,235,.25);color:#93c5fd;}
+.ta-pm{background:rgba(37,99,235,.25);color:#93c5fd;}
+.ta-qa{background:rgba(167,139,250,.25);color:#ddd6fe;}
+.ta-eng{background:rgba(34,197,94,.25);color:#bbf7d0;}
+.ta-stake{background:rgba(244,114,182,.25);color:#fbcfe8;}
+.trace-action{font-weight:700;color:var(--text);margin-left:6px;font-size:11px;}
+.trace-out{color:#9ca3af;margin-top:4px;line-height:1.6;font-size:11px;}
+.trace-meta{margin-top:4px;font-size:11px;color:#6b7280;}
+.ts-escalated{color:#fb923c;font-weight:700;}
+.ts-reject{color:#a78bfa;font-weight:700;}
+.ts-success{color:#22c55e;font-weight:700;}
+.ts-branch{color:#f87171;font-weight:700;}
+
+/* ── Live demo split panel ── */
+.live-split{display:flex;width:100%;height:100%;}
+
+.lc-ui{flex:0 0 56%;position:relative;border-right:2px solid var(--border);overflow:hidden;
+  display:flex;flex-direction:column;}
+.lc-ui-bar{padding:5px 10px;background:rgba(0,0,0,.5);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.lc-ui-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.lc-ui-dot.offline{background:var(--red);}
+.lc-ui-url{font-size:10px;font-weight:700;color:var(--muted);font-family:'Courier New',monospace;}
+.lc-ui-tag{font-size:11px;padding:3px 10px;border-radius:999px;border:1px solid;font-weight:700;}
+.lc-ui-tag.live{background:rgba(34,197,94,.15);border-color:#22c55e;color:#86efac;}
+.lc-ui-tag.offline{background:rgba(248,113,113,.15);border-color:#f87171;color:#fca5a5;}
+.lc-ui iframe{flex:1;border:none;background:#1e293b;min-height:0;}
+.lc-offline{position:absolute;inset:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;z-index:5;}
+.lc-offline-icon{font-size:32px;}
+.lc-offline-title{font-size:14px;font-weight:800;color:var(--text);text-align:center;}
+.lc-offline-cmd{font-family:'Courier New',monospace;font-size:12px;font-weight:700;
+  padding:8px 16px;background:rgba(0,0,0,.6);border:1px solid var(--green);
+  border-radius:6px;color:var(--green);}
+.lc-offline-hint{font-size:10px;color:var(--muted);text-align:center;max-width:230px;line-height:1.6;}
+
+.lc-trace{flex:1;display:flex;flex-direction:column;background:var(--dark);overflow:hidden;min-width:0;}
+.lc-trace-hdr{padding:10px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px;}
+.lc-trace-title{font-size:15px;font-weight:800;color:var(--text);letter-spacing:.04em;
+  white-space:nowrap;}
+.lc-run-btn{padding:7px 16px;border-radius:6px;background:var(--green);color:#052e16;
+  font-size:13px;font-weight:800;border:none;cursor:pointer;white-space:nowrap;
+  transition:opacity .15s;}
+.lc-run-btn:disabled{opacity:.4;cursor:default;}
+.lc-scroll{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:6px;min-height:0;}
+.lc-empty{padding:16px;color:#374151;font-size:13px;text-align:center;
+  font-family:'Courier New',monospace;line-height:1.6;}
+.lc-entry{border-radius:6px;padding:9px 12px;border-left:3px solid;
+  font-family:'Courier New',monospace;font-size:12px;
+  animation:lcFadeIn .35s ease;flex-shrink:0;}
+@keyframes lcFadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+.lce-pm    {border-color:#2563eb;background:rgba(37,99,235,.07);}
+.lce-risk  {border-color:#fb923c;background:rgba(251,146,60,.07);}
+.lce-stake {border-color:#f472b6;background:rgba(244,114,182,.07);}
+.lce-eng   {border-color:#22c55e;background:rgba(34,197,94,.07);}
+.lce-qa    {border-color:#a78bfa;background:rgba(167,139,250,.07);}
+.lce-orch  {border-color:#3b82f6;background:rgba(59,130,246,.05);}
+.lce-hdr{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.lce-content{color:#c8d8f0;line-height:1.5;word-break:break-word;}
+.lce-status{margin-top:3px;font-size:11px;font-weight:700;}
+.lc-status-bar{padding:6px 14px;border-top:1px solid var(--border);
+  font-size:12px;color:var(--muted);flex-shrink:0;display:flex;align-items:center;gap:6px;
+  white-space:nowrap;overflow:hidden;}
+.lc-pulse{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+.lc-pulse.live{background:var(--green);animation:lc-pulse 1s infinite;}
+@keyframes lc-pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+/* ── Evidence visual ── */
+.ev-grid{display:grid;grid-template-columns:1fr;gap:14px;width:100%;max-width:580px;}
+.ev-item{display:flex;align-items:flex-start;gap:16px;padding:16px 18px;
+  border-radius:10px;background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.2);}
+.ev-num{width:36px;height:36px;border-radius:50%;background:var(--accent);
+  color:#fff;font-size:17px;font-weight:800;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;}
+.ev-text{font-size:15px;line-height:1.65;color:#c8d8f0;}
+.ev-text strong{color:var(--yellow);}
+
+/* ── Outputs showcase (report + MVP + JSON) ── */
+.os-wrap{display:flex;width:100%;height:100%;background:linear-gradient(135deg,#06111f,#0b1a30);}
+.os-left{flex:0 0 54%;display:flex;flex-direction:column;border-right:2px solid var(--border);overflow:hidden;}
+.os-right{flex:1;display:flex;flex-direction:column;gap:0;overflow:hidden;}
+.os-bar{padding:8px 14px;background:rgba(0,0,0,.45);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.os-badge{font-size:11px;font-weight:800;padding:3px 11px;border-radius:999px;letter-spacing:.04em;}
+.os-badge-mvp   {background:rgba(34,197,94,.25);border:1px solid #22c55e;color:#86efac;}
+.os-badge-report{background:rgba(167,139,250,.25);border:1px solid #a78bfa;color:#ddd6fe;}
+.os-badge-json  {background:rgba(250,204,21,.2);border:1px solid #facc15;color:#fde68a;}
+.os-path{font-size:11px;font-family:'Courier New',monospace;color:var(--muted);}
+.os-iframe{flex:1;border:none;background:#1e293b;min-height:0;}
+.os-img{flex:1;width:100%;object-fit:cover;object-position:top;min-height:0;}
+.os-offline-mvp{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:16px;}
+.os-card{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.os-card+.os-card{border-top:2px solid var(--border);}
+.os-card-body{flex:1;overflow-y:auto;padding:12px 16px;}
+.os-section-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.os-section-row:last-child{border:none;}
+.os-section-icon{font-size:18px;flex-shrink:0;}
+.os-section-text{font-size:13px;color:#c8d8f0;line-height:1.5;}
+.os-section-text strong{color:var(--yellow);}
+.os-json-line{font-family:'Courier New',monospace;font-size:11px;line-height:1.8;color:#9ca3af;padding:0 2px;}
+.os-json-key{color:#93c5fd;}
+.os-json-val{color:#86efac;}
+.os-json-val-dim{color:#6b7280;}
+.os-json-badge{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:700;
+  background:rgba(34,197,94,.2);color:#86efac;margin-left:4px;}
+
+/* ── Closing visual ── */
+.closing-visual{background:linear-gradient(135deg,#06111f,#0b1a30);
+  width:100%;height:100%;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:40px;text-align:center;gap:14px;}
+.closing-tag{font-size:11px;color:var(--green);font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.closing-title{font-size:28px;font-weight:800;line-height:1.15;}
+.closing-metrics{display:flex;gap:20px;margin-top:8px;flex-wrap:wrap;justify-content:center;}
+.cm{text-align:center;}
+.cm-num{font-size:26px;font-weight:800;color:var(--accent);}
+.cm-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.closing-chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+.closing-chip{font-size:10px;padding:3px 10px;border-radius:999px;
+  background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.3);color:#93c5fd;}
+</style>
+</head>
+<body>
+
+<!-- ── HUD ── -->
+<div class="hud">
+  <div class="hud-title">Multi-Agent Office &amp; Team Simulation</div>
+  <div class="hud-badge">USE CASE ID: 1</div>
+  <div class="hud-section" id="hudSection">Intro</div>
+  <div class="hud-timer" id="hudTimer">0:00</div>
+  <div class="hud-prog"><div class="hud-fill" id="hudFill" style="width:0%"></div></div>
+  <div class="hud-count" id="hudCount">1 / 13</div>
+  <button class="hud-btn btn-play"  id="btnPlay"  onclick="play()">▶ Play</button>
+  <button class="hud-btn btn-pause" id="btnPause" onclick="pause()"  disabled>⏸</button>
+  <button class="hud-btn btn-stop"  id="btnStop"  onclick="stopAll()" disabled>⏹</button>
+  <button class="hud-btn btn-nav"   onclick="go(cur-1)">◀</button>
+  <button class="hud-btn btn-nav"   onclick="go(cur+1)">▶</button>
+</div>
+
+<!-- ── Stage ── -->
+<div class="stage">
+  <div class="visual-panel" id="visualPanel">
+    <div class="visual-label" id="visualLabel"></div>
+  </div>
+  <div class="narr-panel">
+    <div class="slide-section-tag" id="slideTag"></div>
+    <div class="slide-title" id="slideTitle"></div>
+    <div class="slide-body" id="slideBody"></div>
+    <div class="narr-footer">
+      <div class="wave-row" id="waveEl">
+        <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+        <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+      </div>
+      <div class="voice-status" id="voiceStatus">Ready — click ▶ Play</div>
+      <div class="voice-row"><select id="voiceSel"></select></div>
+      <div class="speed-row" style="margin-top:6px;">
+        Speed <input type="range" id="spdSlider" min=".6" max="1.3" step=".05" value=".88"
+          oninput="rate=+this.value;document.getElementById('spdVal').textContent=rate.toFixed(2)+'×'">
+        <span id="spdVal">0.88×</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Dot nav ── -->
+<div class="dots" id="dotsEl"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+//  SLIDE DATA  —  12 slides
+// ═══════════════════════════════════════════════════════════════════════
+const SLIDES = [
+
+// 0 ── Title
+{ section:"Introduction", title:"Use Case 1 — Multi-Agent Office & Team Simulation",
+  visual:{ type:"title" },
+  narration:"Use Case ID 1: Multi-Agent Office and Team Simulation System. Five AI agents — Project Manager, Risk Analyst, Stakeholder, Engineer, and QA Agent — collaborate on a complete software delivery lifecycle." },
+
+// 1 ── Problem
+{ section:"The Problem", title:"Why Software Projects Fail Without Connected Agents",
+  visual:{ type:"problem" },
+  narration:"Software projects fail quietly. Planners make decisions engineers never see. QA finds bugs the Risk Analyst should have caught weeks earlier. The Stakeholder learns about delays when it's too late to act. Each role works in isolation — no shared context, no live escalation, no connected loop. This system fixes that by putting all five roles into one observable, collaborative workflow." },
+
+// 2 ── Architecture
+{ section:"Architecture", title:"Non-Linear LangGraph Workflow — 5 Agents, Shared Memory",
+  visual:{ type:"arch" },
+  narration:"Here is the architecture. The system is a LangGraph StateGraph — a non-linear state machine, not a pipeline. Two critical conditional edges define the collaboration. If the Risk Analyst detects high-severity risks, the graph automatically routes to PM replan before any engineering begins. If QA rejects an implementation, the graph loops the Engineer back for revision — up to two retries per task. All five agents share a single ProjectState in working memory. Every action is traced to agent-trace JSONL in real time." },
+
+// 3 ── Live Platform (live iframe + real-time trace)
+{ section:"Live Demo", title:"Live Interface at localhost:8000 — Run Simulation",
+  visual:{ type:"live-platform" },
+  narration:"This is the platform running live at port 8000. On the left you can see the actual web interface with the twenty-project telecom dataset. I'm clicking Run Simulation now. Watch the trace panel on the right — each agent's decisions appear as they happen. Project Manager decomposes the task. Risk Analyst assesses and escalates. The conditional edge fires. Engineer implements. QA critiques. Everything in real time, logged to agent_trace.jsonl." },
+
+// 4 ── MVP Output (10 seconds)
+{ section:"Output", title:"Generated MVP — Engineer Agent Output",
+  visual:{ type:"mvp-output" },
+  narration:"This is the MVP — auto-generated by the Engineer agent as a self-contained HTML file with basic functionality, built directly from the QA-approved task plan. A JSON output file is also auto-saved to output_examples on every run." },
+
+// 5 ── Report Walkthrough (45 seconds)
+{ section:"Output", title:"Agent Report — Five Sections Explained",
+  visual:{ type:"report-walkthrough" },
+  narration:"The Output report captures five sections. First, Collaboration Metrics shows the total messages, decisions made, feedback loops, and execution iterations for this run. Second, the Project Plan lists all task cards with the full tech stack, phases, and acceptance criteria. Third, the Risk Register details every risk flagged by the Risk Analyst with severity ratings and stakeholder concerns. Fourth, the Agent Message Log records all inter-agent communications — typed, timestamped, and fully traceable. Fifth, QA Feedback Loops documents each critique round alongside the Engineer's specific revision response." },
+
+// 6 ── Trace Evidence
+{ section:"Collaboration", title:"Agent Trace: Risk Escalation → Conditional Edge → PM Replan",
+  visual:{ type:"trace-risk" },
+  narration:"Here is the actual agent trace from logs/agent-trace.jsonl. The Risk Analyst marks escalation needed true — status escalated. The orchestrator fires the branch-high-risk-path node. The Project Manager replans, adding two new tasks. Then QA rejects an implementation — status needs-revision. The Engineer revises and QA approves. Every line is timestamped, structured, and machine-readable. This is real collaboration evidence, not a description of it." },
+
+ 
+ 
+// 7 ── Real Public Data (Bonus)
+{ section:"Bonus", title:"Four Real Public Data Sources — Integrated into Agent Reasoning",
+  visual:{ type:"real-data" },
+  narration:"Every run consults four real public data sources — not synthetic data. The Risk Analyst queries the NIST National Vulnerability Database for known CVEs in the project tech stack, and enriches resource risk with O*NET 28.3 workforce data from the U.S. Department of Labor. The Project Manager adds a team cost estimate backed by Bureau of Labor Statistics occupation wages. The Engineer validates library health against the npm Registry and PyPI APIs before selecting dependencies. All four sources are public, free, and explicitly cited in the agent output." },
+
+// 8 ── Evidence
+{ section:"Evidence", title:"Collaboration Evidence & Robustness",
+  visual:{ type:"evidence" },
+  narration:"To be explicit about the collaboration evidence. One: two high-severity risks fired the conditional edge — PM replanned automatically, not by a hardcoded rule. Two: Stakeholder rejected the plan with specific LLM reasoning. Three: six QA critique rounds drove three engineer revisions — each causally connected. Four: thirty-three timestamped, reasoned agent messages all logged and traceable. The system also handles Compass API failures with a deterministic fallback, runs CPU-only, and completes within the evaluation window." },
+
+// 9 ── Closing
+{ section:"Closing", title:"Use Case 1 — Multi-Agent Office & Team Simulation",
+  visual:{ type:"closing" },
+  narration:"Multi-Agent PM System. Use Case ID 1. Five agents. One shared state. Genuine feedback loops — not a pipeline. G42 Compass GPT-5.1 powering every reasoning decision. Twenty telecom projects ready to simulate out of the box. Every decision recorded, every handoff logged, every revision traceable to the agent that triggered it. Thank you for watching." },
+];
+
+// ═══════════════════════════════════════════════════════════════════════
+//  DEMO STATE
+// ═══════════════════════════════════════════════════════════════════════
+let cur = 0, rate = 0.88, selVoice = null;
+let playing = false, paused = false;
+let tick = null, elapsed = 0;
+const TOTAL = 330;  // 10 slides: live-demo → MVP → Report → trace → real-data → evidence → closing
+const synth = window.speechSynthesis;
+
+// ═══════════════════════════════════════════════════════════════════════
+//  LIVE DEMO STATE
+// ═══════════════════════════════════════════════════════════════════════
+let _liveTimer    = null;
+let _liveSeenCount = 0;
+let _liveRunning  = false;
+let _reportTimers = [];
+function clearReportTimers() { _reportTimers.forEach(t => clearTimeout(t)); _reportTimers = []; }
+
+const AGENT_MAP = {
+  project_manager:{ cls:'lce-pm',   tc:'ta-pm',    label:'project_manager' },
+  pm:             { cls:'lce-pm',   tc:'ta-pm',    label:'project_manager' },
+  risk_analyst:   { cls:'lce-risk', tc:'ta-risk',  label:'risk_analyst'    },
+  risk:           { cls:'lce-risk', tc:'ta-risk',  label:'risk_analyst'    },
+  stakeholder:    { cls:'lce-stake',tc:'ta-stake', label:'stakeholder'     },
+  engineer:       { cls:'lce-eng',  tc:'ta-eng',   label:'engineer'        },
+  qa:             { cls:'lce-qa',   tc:'ta-qa',    label:'qa'              },
+  qa_agent:       { cls:'lce-qa',   tc:'ta-qa',    label:'qa'              },
+  orchestrator:   { cls:'lce-orch', tc:'ta-orch',  label:'orchestrator'    },
+};
+const STATUS_COL = {
+  success:'#22c55e',completed:'#22c55e',approved:'#22c55e',
+  escalated:'#fb923c',needs_revision:'#a78bfa',retrying:'#facc15',failed:'#f87171',
+  escalated_:'#fb923c',conditional_edge_fired:'#f87171',
+};
+
+// Pre-scripted fallback animation for when server is offline
+const DEMO_SCRIPT = [
+  { agent_name:'orchestrator',     action:'start_workflow',         output_summary:'Initialising 5-agent workflow for Visitor Management System',            status:'success',                delay:400  },
+  { agent_name:'project_manager',  action:'decompose_project',      output_summary:'Requesting GPT-5.1 task breakdown for Visitor Management System…',      status:'success',                delay:1000 },
+  { agent_name:'project_manager',  action:'delegate_tasks',         output_summary:'Plan: 8 tasks across 3 phases. Stack: React 18 + FastAPI + PostgreSQL. 96h total effort.',  status:'success', delay:1800 },
+  { agent_name:'risk_analyst',     action:'assess_risks',           output_summary:'Calling GPT-5.1 for risk classification…',                              status:'success',                delay:2500 },
+  { agent_name:'risk_analyst',     action:'risk_assessment_complete',output_summary:'Identified 3 risks (2 high-severity). Escalation needed: True.',       status:'escalated',              delay:3400 },
+  { agent_name:'orchestrator',     action:'branch_high_risk_path',  output_summary:'2 high-severity risks detected. Routing to PM replan before engineering begins.',  status:'conditional_edge_fired', delay:3900 },
+  { agent_name:'project_manager',  action:'replan_based_on_feedback',output_summary:'Replanned: 2 adjustments, 2 new risk-mitigation tasks added to plan.', status:'success',                delay:5000 },
+  { agent_name:'stakeholder',      action:'approve_plan',           output_summary:'APPROVED — satisfaction 74/100. Concerns: integration complexity, compliance gap.', status:'approved',     delay:6300 },
+  { agent_name:'engineer',         action:'produce_implementation', output_summary:'Implemented visitor check-in module with digital badge printing and host notification.',  status:'success', delay:7600 },
+  { agent_name:'qa',               action:'critique_implementation',output_summary:'Found 1 issue: audit log retention policy not implemented. GDPR consent fields missing.',  status:'needs_revision', delay:8700 },
+  { agent_name:'engineer',         action:'revise_implementation',  output_summary:'Revised: added configurable retention policy, GDPR consent, and data anonymisation on export.', status:'success', delay:9900 },
+  { agent_name:'qa',               action:'retest_after_revision',  output_summary:'All QA criteria met. Implementation approved.',                        status:'success',                delay:11000 },
+  { agent_name:'risk_analyst',     action:'monitor_risks',          output_summary:'Progress 67%. 1 risk resolved. Escalate: False.',                      status:'success',                delay:11800 },
+  { agent_name:'stakeholder',      action:'progress_review',        output_summary:'Progress satisfactory — satisfaction 71/100. No escalation needed.',   status:'success',                delay:12600 },
+  { agent_name:'engineer',         action:'generate_mvp',           output_summary:'Generated self-contained MVP HTML with full CRUD, visitor dashboard, and compliance log viewer.',  status:'success', delay:13600 },
+  { agent_name:'stakeholder',      action:'final_review',           output_summary:'COMPLETED — final satisfaction 76/100. Visitor Management System delivered with compliance features.',  status:'completed', delay:14500 },
+];
+
+// ─── Helpers ────────────────────────────────────────────────────────────
+
+async function lcCheckServer() {
+  // Use no-cors so this works from both file:// and http:// origins.
+  // A successful no-cors fetch (opaque response) means the server is up;
+  // a TypeError/AbortError means it is unreachable.
+  return new Promise(resolve => {
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => { ctrl.abort(); resolve(false); }, 2500);
+    fetch('http://localhost:8000/', { mode: 'no-cors', signal: ctrl.signal })
+      .then(() => { clearTimeout(timer); resolve(true);  })
+      .catch(() => { clearTimeout(timer); resolve(false); });
+  });
+}
+
+function lcSetStatus(msg, live=false) {
+  const el = document.getElementById('liveStatus');
+  const dot = document.getElementById('liveDot');
+  if (el)  el.textContent = msg;
+  if (dot) dot.className  = 'lc-pulse' + (live ? ' live' : '');
+}
+
+function lcSetUiTag(online) {
+  const tag = document.getElementById('lcUiTag');
+  const dot = document.getElementById('lcUiDot');
+  if (!tag) return;
+  if (online) {
+    tag.textContent = 'LIVE'; tag.className = 'lc-ui-tag live';
+    if (dot) dot.className = 'lc-ui-dot';
+  } else {
+    tag.textContent = 'OFFLINE'; tag.className = 'lc-ui-tag offline';
+    if (dot) dot.className = 'lc-ui-dot offline';
+  }
+}
+
+function lcAppend(data) {
+  const container = document.getElementById('liveTrace');
+  if (!container) return;
+  const empty = container.querySelector('.lc-empty');
+  if (empty) empty.remove();
+
+  const raw   = (data.agent_name || data.sender || 'system').toLowerCase().replace(/[\s-]/g,'_');
+  const style = AGENT_MAP[raw] || AGENT_MAP.orchestrator;
+  const content = (data.output_summary || data.content || data.message || '').trim();
+  const action  = data.action || '';
+  const status  = data.status || data.metadata?.status || '';
+  const scol    = STATUS_COL[status] || '#6b7280';
+
+  const div = document.createElement('div');
+  div.className = `lc-entry ${style.cls}`;
+  div.innerHTML =
+    `<div class="lce-hdr">` +
+      `<span class="trace-agent ${style.tc}">${style.label}</span>` +
+      (action ? `<span style="color:#6b7280;font-size:11px;">${action}</span>` : '') +
+    `</div>` +
+    `<div class="lce-content">${content.substring(0,160)}${content.length>160?'…':''}</div>` +
+    (status ? `<div class="lce-status" style="color:${scol};">${status}</div>` : '');
+
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function lcStartPolling(projectId) {
+  if (_liveTimer) clearInterval(_liveTimer);
+  _liveSeenCount = 0;
+  _liveTimer = setInterval(async () => {
+    try {
+      const r = await fetch(`http://localhost:8000/interactions/${projectId}`,
+        { signal: AbortSignal.timeout(3000) });
+      if (!r.ok) return;
+      const d = await r.json();
+      const msgs = d.interactions || d.messages || [];
+      if (msgs.length > _liveSeenCount) {
+        msgs.slice(_liveSeenCount).forEach(lcAppend);
+        _liveSeenCount = msgs.length;
+      }
+      const st = (d.status || '').toUpperCase();
+      if (st === 'COMPLETED' || st === 'FAILED') {
+        clearInterval(_liveTimer); _liveTimer = null; _liveRunning = false;
+        lcSetStatus(`✅ Simulation complete — ${msgs.length} interactions`, false);
+        const btn = document.getElementById('lcRunBtn');
+        if (btn) { btn.disabled = false; btn.textContent = '▶ Run Again'; }
+      }
+    } catch {}
+  }, 1200);
+}
+
+function lcRunDemoAnimation() {
+  DEMO_SCRIPT.forEach(entry => {
+    setTimeout(() => {
+      lcAppend(entry);
+      if (entry.status === 'completed') {
+        lcSetStatus(`✅ Demo complete — ${DEMO_SCRIPT.length} interactions`, false);
+        const btn = document.getElementById('lcRunBtn');
+        if (btn) { btn.disabled = false; btn.textContent = '▶ Run Again'; }
+      }
+    }, entry.delay);
+  });
+}
+
+async function lcTriggerRun() {
+  const btn = document.getElementById('lcRunBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Starting…'; }
+  lcSetStatus('Sending POST /run to localhost:8000…', false);
+
+  const payload = {
+    project_id: 'demo_' + Date.now(),
+    project_name: 'Visitor Management System',
+    description: 'Build a web-based visitor management system for corporate offices: digital check-in kiosks, visitor badge printing, host notifications, compliance-ready audit logging with GDPR retention controls.'
+  };
+
+  try {
+    const r = await fetch('http://localhost:8000/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(6000)
+    });
+    if (r.ok) {
+      const d = await r.json();
+      const pid = d.project_id || payload.project_id;
+      _liveRunning = true;
+      lcSetStatus('Simulation running…', true);
+      if (btn) { btn.textContent = '⏹ Running…'; }
+      lcStartPolling(pid);
+      return;
+    }
+  } catch {}
+
+  // Server online but run failed — try run-sync
+  try {
+    const r2 = await fetch('http://localhost:8000/run-sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, project_id: 'demo2_' + Date.now() }),
+      signal: AbortSignal.timeout(8000)
+    });
+    if (r2.ok) {
+      const d2 = await r2.json();
+      const msgs = d2.interactions || d2.messages || [];
+      msgs.forEach((m, i) => setTimeout(() => lcAppend(m), i * 180));
+      setTimeout(() => {
+        lcSetStatus(`✅ Run complete — ${msgs.length} interactions`, false);
+        if (btn) { btn.disabled = false; btn.textContent = '▶ Run Again'; }
+      }, msgs.length * 180 + 400);
+      return;
+    }
+  } catch {}
+
+  // Fall back to demo animation
+  lcSetStatus('Running demo sequence…', true);
+  if (btn) { btn.textContent = '▶ Demo'; }
+  lcRunDemoAnimation();
+}
+
+// Called when the ▶ Run Simulation button is clicked
+async function initLiveDemo() {
+  const btn = document.getElementById('lcRunBtn');
+  if (btn) btn.disabled = true;
+  const container = document.getElementById('liveTrace');
+  if (container) container.innerHTML = '<div class="lc-empty">Connecting…</div>';
+  if (_liveTimer) { clearInterval(_liveTimer); _liveTimer = null; }
+
+  const online = await lcCheckServer();
+  if (online) {
+    document.getElementById('lcOffline').style.display = 'none';
+    lcSetUiTag(true);
+    const ifr = document.getElementById('lcIframe');
+    if (ifr && !ifr.src.includes('localhost:8000')) {
+      ifr.src = 'http://localhost:8000/';
+    }
+    await lcTriggerRun();
+  } else {
+    document.getElementById('lcOffline').style.display = 'flex';
+    lcSetUiTag(false);
+    lcSetStatus('Server offline — showing demo animation', false);
+    if (container) container.innerHTML = '<div class="lc-empty">Running demo sequence (offline mode)…</div>';
+    if (btn) { btn.disabled = true; btn.textContent = '▶ Demo'; }
+    lcRunDemoAnimation();
+  }
+}
+
+// Called when the live-platform slide is first rendered
+async function lcInitSlide() {
+  const offEl = document.getElementById('lcOffline');
+  const ifr   = document.getElementById('lcIframe');
+
+  // Load the iframe immediately — don't wait for the server check.
+  // If the server is up it will display; if not the offline overlay stays on top.
+  if (ifr) ifr.src = 'http://localhost:8000/';
+
+  // Determine the best URL hint: when served from localhost:8000 the iframe
+  // is same-origin and will definitely work; from file:// it depends on CORS.
+  const servedFromServer = location.protocol === 'http:' && location.hostname === 'localhost';
+
+  if (servedFromServer) {
+    // Same-origin — guaranteed to work
+    if (offEl) offEl.style.display = 'none';
+    lcSetUiTag(true);
+    lcSetStatus('✅ Server online — http://localhost:8000', false);
+    return;
+  }
+
+  // Opened as a file:// — do an async probe
+  lcSetStatus('Connecting to http://localhost:8000…', false);
+  const online = await lcCheckServer();
+  lcSetUiTag(online);
+
+  if (online) {
+    if (offEl) offEl.style.display = 'none';
+    lcSetStatus('✅ Server online — http://localhost:8000', false);
+  } else {
+    // Keep iframe attempt visible behind overlay; show screenshot backdrop
+    if (offEl) offEl.style.display = 'flex';
+    lcSetStatus('⚠️ Server offline — open http://localhost:8000/demo instead', false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  REPORT WALKTHROUGH — auto-scroll through 5 sections over ~45 s
+// ═══════════════════════════════════════════════════════════════════════
+function startReportWalkthrough() {
+  clearReportTimers();
+  const secs = window._walkSecs || [];
+  // Each of 5 sections gets ~9 seconds of narration
+  const DELAYS = [0, 9000, 18000, 27000, 36000];
+
+  function activateSection(idx) {
+    secs.forEach((s, i) => {
+      const el = document.getElementById('rs-' + s.key);
+      if (!el) return;
+      if (i === idx) {
+        el.style.opacity = '1';
+        el.style.background = 'rgba(37,99,235,.22)';
+        el.style.borderColor = '#2563eb';
+        el.style.transform = 'translateX(5px)';
+      } else if (i < idx) {
+        el.style.opacity = '.55';
+        el.style.background = 'rgba(34,197,94,.06)';
+        el.style.borderColor = 'rgba(34,197,94,.3)';
+        el.style.transform = 'none';
+      } else {
+        el.style.opacity = '.3';
+        el.style.background = 'rgba(0,0,0,.2)';
+        el.style.borderColor = 'var(--border)';
+        el.style.transform = 'none';
+      }
+    });
+    // Scroll the iframe to the matching h2
+    try {
+      const ifr = document.getElementById('reportWalkIframe');
+      const doc = ifr.contentDocument || ifr.contentWindow.document;
+      const heading = secs[idx] && secs[idx].heading;
+      if (!heading) return;
+      doc.querySelectorAll('h2').forEach(h2 => {
+        if (h2.textContent.trim().startsWith(heading.split('/')[0].trim())) {
+          h2.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    } catch(e) { /* cross-origin or not loaded yet — silent fail */ }
+  }
+
+  // Fire section 0 immediately; rest on timer
+  activateSection(0);
+  DELAYS.slice(1).forEach((ms, i) => {
+    const t = setTimeout(() => activateSection(i + 1), ms);
+    _reportTimers.push(t);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  SECTION COLOURS
+// ═══════════════════════════════════════════════════════════════════════
+const SECTION_COLORS = {
+  "Introduction":"#2563eb","The Problem":"#f97316","Architecture":"#a78bfa",
+  "Compass":"#22d3ee","Live Demo":"#22c55e","Collaboration":"#f59e0b",
+  "Output":"#22d3ee","Evidence":"#f87171","Bonus":"#22c55e","Closing":"#60a5fa"
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+//  RENDER SLIDE
+// ═══════════════════════════════════════════════════════════════════════
+function renderSlide(idx) {
+  const s = SLIDES[idx];
+  if (!s) return;
+  const col = SECTION_COLORS[s.section] || '#2563eb';
+  const secEl = document.getElementById('hudSection');
+  secEl.textContent = s.section;
+  secEl.style.background = col;
+  document.getElementById('hudCount').textContent = `${idx+1} / ${SLIDES.length}`;
+
+  document.querySelectorAll('.dot').forEach((d,i) => {
+    d.classList.toggle('active', i === idx);
+    d.classList.toggle('done',   i < idx);
+  });
+  document.getElementById('slideTag').textContent   = s.section.toUpperCase();
+  document.getElementById('slideTitle').textContent = s.title;
+  document.getElementById('slideBody').innerHTML    = formatNarration(s.narration);
+  buildVisual(s.visual);
+}
+
+function formatNarration(text) {
+  const agents = {
+    'Project Manager':'agent-pm','Risk Analyst':'agent-risk',
+    'QA Agent':'agent-qa','QA':'agent-qa','Engineer':'agent-eng','Stakeholder':'agent-stake',
+  };
+  let html = text;
+  Object.entries(agents).forEach(([name,cls]) => {
+    html = html.replaceAll(name, `<span class="agent ${cls}">${name}</span>`);
+  });
+  html = html.replace(/\b(CRITICAL|HIGH|COMPLETED|REJECTED|ESCALATION|ESCALATED|APPROVED)\b/g,
+    '<span class="highlight">$1</span>');
+  const sentences = html.split('. ').filter(Boolean);
+  const chunks = [];
+  for (let i=0; i<sentences.length; i+=2)
+    chunks.push(sentences.slice(i,i+2).join('. ') + (i+2<sentences.length?'.':''));
+  return chunks.map(c=>`<p>${c}</p>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  BUILD VISUAL
+// ═══════════════════════════════════════════════════════════════════════
+function buildVisual(v) {
+  const panel = document.getElementById('visualPanel');
+  const lbl   = document.getElementById('visualLabel');
+  panel.querySelectorAll(':not(.visual-label)').forEach(e => e.remove());
+  lbl.style.display = 'none';
+
+  // ── iframe ──
+  if (v.type === 'iframe') {
+    lbl.textContent = v.label || ''; lbl.style.display = 'block';
+    const ifr = document.createElement('iframe');
+    ifr.src = v.src; ifr.title = v.label || '';
+    ifr.style.cssText = 'width:100%;height:100%;border:none;background:#fff;';
+    panel.appendChild(ifr);
+    return;
+  }
+
+  // ── title ──
+  if (v.type === 'title') {
+    panel.innerHTML += `<div class="title-visual">
+      <div class="uc-badge">USE CASE ID: 1</div>
+      <div class="title-logo">🤖</div>
+      <div class="title-sys">Multi-Agent Office &amp; Team Simulation</div>
+      <div class="title-sub">AI Agenthon 2026 &nbsp;·&nbsp; G42 Compass AI &nbsp;·&nbsp; GPT-5.1 Reasoning &nbsp;·&nbsp; LangGraph StateGraph</div>
+      <div class="agent-pills">
+        <div class="agent-pill" style="background:rgba(37,99,235,.2);border-color:#2563eb;color:#93c5fd;">🗂 Project Manager</div>
+        <div class="agent-pill" style="background:rgba(251,146,60,.15);border-color:#fb923c;color:#fed7aa;">⚠️ Risk Analyst</div>
+        <div class="agent-pill" style="background:rgba(244,114,182,.15);border-color:#f472b6;color:#fbcfe8;">👤 Stakeholder</div>
+        <div class="agent-pill" style="background:rgba(34,197,94,.15);border-color:#22c55e;color:#bbf7d0;">🔧 Engineer</div>
+        <div class="agent-pill" style="background:rgba(167,139,250,.2);border-color:#a78bfa;color:#ddd6fe;">🔍 QA Agent</div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // ── problem ──
+  if (v.type === 'problem') {
+    panel.innerHTML += `<div class="visual-text">
+      <div class="problem-grid">
+        <div class="prob-card"><div class="prob-icon">🙈</div><div class="prob-title">Invisible decisions</div><div class="prob-text">Planners decide. Engineers never see why. Scope drifts silently across phases.</div></div>
+        <div class="prob-card"><div class="prob-icon">🐛</div><div class="prob-title">Late QA failures</div><div class="prob-text">Bugs found in testing that risk analysis should have flagged weeks earlier.</div></div>
+        <div class="prob-card"><div class="prob-icon">⏰</div><div class="prob-title">Delayed escalation</div><div class="prob-text">Stakeholder learns about delays when it's too late to replan or recover.</div></div>
+        <div class="prob-card"><div class="prob-icon">🔇</div><div class="prob-title">No shared context</div><div class="prob-text">Each role works in isolation. No one has the full picture in real time.</div></div>
+        <div class="sol-card"><div class="prob-icon">✅</div><div class="prob-title" style="color:var(--green);">The solution: one connected, observable loop</div><div class="prob-text">Five AI agents sharing the same ProjectState, checking each other's work, escalating in real time — built for telecom enabling functions: HR, Finance, Billing, Corporate IT.</div></div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // ── arch ──
+  if (v.type === 'arch') {
+    panel.innerHTML += `<div class="arch-full">
+      <div class="af-row">
+        <div class="af-box af-api">👤 User / Evaluator<br><span style="font-size:11px;opacity:.8;">POST /run</span></div>
+        <div class="af-arrow-h">→</div>
+        <div class="af-box af-api">⚡ FastAPI Server<br><span style="font-size:11px;opacity:.8;">run.py · port 8000</span></div>
+        <div class="af-arrow-h">→</div>
+        <div class="af-box af-graph">🔄 LangGraph StateGraph<br><span style="font-size:11px;opacity:.7;">PMWorkflowGraph · 16 nodes</span></div>
+      </div>
+      <div class="af-arrow-v">⇕</div>
+      <div class="af-memory">
+        💾 Shared Working Memory — ProjectState TypedDict
+        <div class="af-mem-keys">tasks &nbsp;·&nbsp; risks &nbsp;·&nbsp; decisions &nbsp;·&nbsp; messages &nbsp;·&nbsp; qa_feedback_loops &nbsp;·&nbsp; agent_summaries</div>
+      </div>
+      <div class="af-arrow-v">⇕ read / write</div>
+      <div class="af-agents">
+        <div class="af-agent af-pm">🗂<br>Project<br>Manager</div>
+        <div class="af-agent af-risk">⚠️<br>Risk<br>Analyst</div>
+        <div class="af-agent af-stake">👤<br>Stake-<br>holder</div>
+        <div class="af-agent af-eng">🔧<br>Engineer</div>
+        <div class="af-agent af-qa">🔍<br>QA<br>Agent</div>
+      </div>
+      <div class="af-edges">
+        <div class="af-edge af-edge-red">⚡ high_risks_detected → PM replan</div>
+        <div class="af-edge af-edge-purple">🔄 qa_rejected → Engineer revise (max 2×)</div>
+        <div class="af-edge af-edge-orange">⚠️ critical_risk_mid → PM mid-replan</div>
+        <div class="af-edge af-edge-pink">👤 concern_threshold → PM escalation</div>
+      </div>
+      <div class="af-divider"></div>
+      <div class="af-row" style="justify-content:space-between;width:100%;">
+        <div class="af-box af-compass">🤖 Compass AI<br><span style="font-size:11px;">GPT-5.1 (reasoning) &nbsp;·&nbsp; GPT-4.1</span></div>
+        <div style="font-size:12px;color:var(--muted);text-align:center;flex:1;padding:0 8px;">← all 5 agents call LLM →</div>
+        <div class="af-box af-logs">📋 logs/<br><span style="font-size:11px;">agent_trace.jsonl</span></div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // ── compass config ──
+  if (v.type === 'compass-config') {
+    panel.innerHTML += `<div class="compass-visual">
+      <div class="env-block">
+        <div class="env-title">.env — Compass configuration</div>
+        <div class="env-line"><span class="env-key">OPENAI_API_KEY</span><span class="env-eq">=</span><span class="env-val">your-compass-key-here</span></div>
+        <div class="env-line"><span class="env-key">OPENAI_BASE_URL</span><span class="env-eq">=</span><span class="env-val">https://compass.core42.ai/v1</span></div>
+        <div class="env-line"><span class="env-key">COMPASS_REASONING_MODEL</span><span class="env-eq">=</span><span class="env-val">gpt-5.1</span>  <span class="env-comment"># PM · Risk Analyst</span></div>
+        <div class="env-line"><span class="env-key">COMPASS_MODEL</span><span class="env-eq">=</span><span class="env-val">gpt-4.1</span>  <span class="env-comment"># Engineer · QA · Stakeholder</span></div>
+        <div class="env-line"><span class="env-key">SAMPLE_MODE</span><span class="env-eq">=</span><span class="env-val">false</span>  <span class="env-comment"># true = SHA-256 deterministic fallback</span></div>
+      </div>
+      <div class="compass-models">
+        <div class="cm-card cm-card-r">
+          <div class="cm-model-name">GPT-5.1</div>
+          <div class="cm-use">Risk classification<br>Task decomposition<br>PM replanning logic</div>
+        </div>
+        <div class="cm-card cm-card-s">
+          <div class="cm-model-name">GPT-4.1</div>
+          <div class="cm-use">Task implementation<br>QA critique &amp; review<br>Stakeholder approval</div>
+        </div>
+      </div>
+      <div class="compass-note">All LLM calls go through CompassClient (app/compass_integration.py) — OpenAI SDK pointing at the Core42 endpoint. Temperature fixed at 0.3 for reliable structured JSON output.</div>
+    </div>`;
+    return;
+  }
+
+  // ── LIVE PLATFORM  (iframe + real-time trace) ──
+  if (v.type === 'live-platform') {
+    panel.innerHTML += `
+    <div class="live-split">
+
+      <!-- Left 56%: Live UI iframe -->
+      <div class="lc-ui">
+        <div class="lc-ui-bar">
+          <div class="lc-ui-dot" id="lcUiDot"></div>
+          <div class="lc-ui-url">http://localhost:8000</div>
+          <div class="lc-ui-tag offline" id="lcUiTag">CHECKING…</div>
+        </div>
+        <iframe id="lcIframe" src="about:blank" title="Multi-Agent PM — Live Interface"></iframe>
+        <div class="lc-offline" id="lcOffline">
+          <!-- Screenshot backdrop so judges see what the UI looks like -->
+          <img src="img/frontend.png" alt="Platform UI"
+               style="position:absolute;inset:0;width:100%;height:100%;
+                      object-fit:cover;object-position:top;opacity:.18;pointer-events:none;">
+          <!-- Overlay card on top of screenshot -->
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;
+                      align-items:center;gap:10px;background:rgba(6,11,24,.82);
+                      border:1px solid var(--border);border-radius:12px;padding:20px 24px;">
+            <div class="lc-offline-icon">🔌</div>
+            <div class="lc-offline-title">Open from the server for live view</div>
+            <div class="lc-offline-cmd">http://localhost:8000/demo</div>
+            <div class="lc-offline-hint">Or start the server and click ▶ Run Simulation — the demo animation will run offline</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 44%: Real-time agent trace -->
+      <div class="lc-trace">
+        <div class="lc-trace-hdr">
+          <div class="lc-trace-title">⚡ Live Agent Collaboration</div>
+          <button class="lc-run-btn" id="lcRunBtn" onclick="initLiveDemo()">▶ Run Simulation</button>
+        </div>
+        <div class="lc-scroll" id="liveTrace">
+          <div class="lc-empty">
+            Click ▶ Run Simulation to trigger a live run<br>
+            <span style="color:#374151;">— or use the web interface on the left —</span>
+          </div>
+        </div>
+        <div class="lc-status-bar">
+          <div class="lc-pulse" id="liveDot"></div>
+          <span id="liveStatus">Checking server…</span>
+        </div>
+      </div>
+
+    </div>`;
+    // Async server check after DOM settles
+    setTimeout(lcInitSlide, 200);
+    return;
+  }
+
+  // ── mvp-output ── full-panel MVP screenshot
+  if (v.type === 'mvp-output') {
+    panel.innerHTML += `
+    <div style="display:flex;flex-direction:column;width:100%;height:100%;background:#0b1120;">
+      <div class="os-bar">
+        <span class="os-badge os-badge-mvp">MVP</span>
+        <span class="os-path">output_examples/{project_id}/mvp.html &nbsp;·&nbsp; GET /mvp/{project_id}</span>
+      </div>
+      <img src="../reports/mvp.png" alt="Generated MVP"
+        style="flex:1;width:100%;object-fit:cover;object-position:top;min-height:0;" />
+      <div style="padding:8px 14px;background:rgba(0,0,0,.6);border-top:1px solid var(--border);
+        flex-shrink:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:10px;font-weight:800;padding:3px 10px;border-radius:999px;
+          background:rgba(34,197,94,.2);border:1px solid #22c55e;color:#86efac;">Engineer Agent Output</span>
+        <span style="font-size:9px;color:var(--muted);">
+          Self-contained HTML &nbsp;·&nbsp; Basic functionality &nbsp;·&nbsp; Zero dependencies &nbsp;·&nbsp; Auto-generated from QA-approved plan
+        </span>
+        <span style="margin-left:auto;font-size:9px;font-family:'Courier New',monospace;
+          padding:3px 10px;border-radius:999px;background:rgba(250,204,21,.15);
+          border:1px solid rgba(250,204,21,.4);color:#fde68a;">
+          JSON → output_examples/output_{run_id}.json
+        </span>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // ── report-walkthrough ── section list left + report iframe right with auto-scroll
+  if (v.type === 'report-walkthrough') {
+    const WALK_SECS = [
+      { key:'collab',   label:'Collaboration Metrics', icon:'📊', heading:'Collaboration Metrics' },
+        { key: 'plan', label: 'Project Plan', icon: '📋', heading: 'Project Plan' },
+        { key: 'plan', label: 'Public Data Enrichment', icon: '📋', heading: 'Public Data Enrichment' },
+        { key: 'risk', label: 'Risk Register', icon: '⚠️', heading: 'Risk Register' },
+      { key:'messages', label:'Agent Message Log',      icon:'💬', heading:'Agent Message Log'      },
+      { key:'qa',       label:'QA Feedback Loops',      icon:'🔍', heading:'QA / Engineer'           },
+    ];
+
+    panel.innerHTML += `
+    <div style="display:flex;width:100%;height:100%;background:linear-gradient(135deg,#06111f,#0b1a30);">
+
+      <!-- Left 30%: section list -->
+      <div style="flex:0 0 30%;display:flex;flex-direction:column;border-right:2px solid var(--border);
+        padding:16px 12px;gap:8px;overflow:hidden;justify-content:center;">
+        <div style="font-size:9px;font-weight:800;color:var(--muted);letter-spacing:.1em;
+          text-transform:uppercase;margin-bottom:6px;">REPORT SECTIONS</div>
+        ${WALK_SECS.map(s => `
+          <div id="rs-${s.key}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;
+            border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.2);
+            opacity:.3;transition:all .5s ease;">
+            <div style="font-size:20px;flex-shrink:0;">${s.icon}</div>
+            <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.3;">${s.label}</div>
+          </div>`).join('')}
+      </div>
+
+      <!-- Right 70%: report iframe -->
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+        <div class="os-bar">
+          <span class="os-badge os-badge-report">REPORT</span>
+          <span class="os-path">reports/report_CIT_001.html</span>
+        </div>
+        <iframe id="reportWalkIframe" src="../reports/report_CIT_001.html"
+          style="flex:1;border:none;background:#fff;min-height:0;" title="Agent Report"></iframe>
+      </div>
+
+    </div>`;
+
+    // Expose section keys so startReportWalkthrough() can find them
+    window._walkSecs = WALK_SECS;
+    return;
+  }
+
+  // ── trace-risk ──
+  if (v.type === 'trace-risk') {
+    panel.innerHTML += `<div class="trace-visual">
+      <div class="trace-header">logs/agent_trace.jsonl — actual run evidence</div>
+      <div class="trace-entry te-escalated">
+        <span class="trace-agent ta-risk">risk_analyst</span><span class="trace-action">risk_assessment_complete</span>
+        <div class="trace-out">"Identified 3 risks (2 high-severity). Escalation needed: True."</div>
+        <div class="trace-meta">confidence: 0.82 &nbsp;·&nbsp; retry_count: 0 &nbsp;·&nbsp; status: <span class="ts-escalated">escalated</span> &nbsp;→ target: project_manager</div>
+      </div>
+      <div class="trace-entry te-branch">
+        <span class="trace-agent ta-orch">orchestrator</span><span class="trace-action">branch_high_risk_path</span>
+        <div class="trace-out">"2 high-severity risk(s): Resource Availability, Timeline Pressure. Routing to PM replan before execution."</div>
+        <div class="trace-meta">confidence: 0.92 &nbsp;·&nbsp; status: <span class="ts-branch">conditional edge fired</span></div>
+      </div>
+      <div class="trace-entry te-replan">
+        <span class="trace-agent ta-pm">project_manager</span><span class="trace-action">replan_based_on_feedback</span>
+        <div class="trace-out">"Replanned: 2 adjustments, 2 new tasks added to address identified risks."</div>
+        <div class="trace-meta">confidence: 0.78 &nbsp;·&nbsp; retry_count: 1 &nbsp;·&nbsp; status: <span class="ts-success">success</span></div>
+      </div>
+      <div class="trace-entry te-reject">
+        <span class="trace-agent ta-qa">qa</span><span class="trace-action">critique_implementation</span>
+        <div class="trace-out">"Found 1 issue: implementation summary incomplete, truncated mid-sentence. Cannot verify requirements addressed."</div>
+        <div class="trace-meta">confidence: 0.91 &nbsp;·&nbsp; retry_count: 0 &nbsp;·&nbsp; status: <span class="ts-reject">needs_revision</span> &nbsp;→ target: engineer</div>
+      </div>
+      <div class="trace-entry te-revise">
+        <span class="trace-agent ta-eng">engineer</span><span class="trace-action">revise_implementation</span>
+        <div class="trace-out">"Expanded implementation to fully describe the process. All requirements addressed."</div>
+        <div class="trace-meta">confidence: 0.87 &nbsp;·&nbsp; retry_count: 1 &nbsp;·&nbsp; status: <span class="ts-success">success</span> &nbsp;→ target: qa</div>
+      </div>
+      <div class="trace-entry te-approve">
+        <span class="trace-agent ta-stake">stakeholder</span><span class="trace-action">approve_plan</span>
+        <div class="trace-out">"APPROVED – satisfaction 78/100. Concerns noted: resource availability, integration complexity."</div>
+        <div class="trace-meta">confidence: 0.88 &nbsp;·&nbsp; status: <span class="ts-success">success</span></div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // ── live-mvp — loads the most recently generated MVP from the server ──
+  if (v.type === 'live-mvp') {
+    lbl.style.display = 'none';
+
+    panel.innerHTML += `
+    <div style="display:flex;flex-direction:column;width:100%;height:100%;background:#0b1120;">
+      <!-- MVP top bar -->
+      <div style="padding:5px 12px;background:rgba(0,0,0,.5);border-bottom:1px solid var(--border);
+        display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <span style="font-size:9px;font-weight:800;padding:2px 9px;border-radius:999px;
+          background:rgba(34,197,94,.25);border:1px solid #22c55e;color:#86efac;letter-spacing:.06em;">MVP</span>
+        <span style="font-size:9px;font-family:'Courier New',monospace;color:var(--muted);">GET /mvp/{project_id} — single self-contained HTML file</span>
+        <span id="mvpLiveTag" style="margin-left:auto;font-size:9px;color:#6b7280;font-family:'Courier New',monospace;"></span>
+      </div>
+      <!-- iframe -->
+      <iframe id="liveMvpIframe" src="about:blank"
+        style="flex:1;border:none;background:#1e293b;min-height:0;" title="Generated MVP"></iframe>
+      <!-- Feature callout strip -->
+      <div style="padding:6px 12px;background:rgba(0,0,0,.45);border-top:1px solid var(--border);
+        display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;">
+        <span style="font-size:9px;padding:2px 8px;border-radius:999px;background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.4);color:#93c5fd;">📊 4 KPI cards</span>
+        <span style="font-size:9px;padding:2px 8px;border-radius:999px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);color:#86efac;">🗂 Sidebar nav</span>
+        <span style="font-size:9px;padding:2px 8px;border-radius:999px;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);color:#fde68a;">📋 Data table + status chips</span>
+        <span style="font-size:9px;padding:2px 8px;border-radius:999px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.35);color:#ddd6fe;">🚫 No CDN · No dependencies</span>
+        <span style="font-size:9px;padding:2px 8px;border-radius:999px;background:rgba(251,146,60,.12);border:1px solid rgba(251,146,60,.35);color:#fed7aa;">⚡ Generated by Engineer agent</span>
+      </div>
+    </div>`;
+
+    // Probe candidates — CIT_001 (IT Asset Mgmt) first
+    const iframe = document.getElementById('liveMvpIframe');
+    const tag    = document.getElementById('mvpLiveTag');
+    const candidates = ['CIT_001','test_interface_run','IT_ServiceDesk_001','RA_Dashboard_001','HC_LeaveAttendance_001'];
+    (async () => {
+      for (const pid of candidates) {
+        try {
+          const ctrl = new AbortController();
+          const t = setTimeout(() => ctrl.abort(), 1800);
+          await fetch(`http://localhost:8000/mvp/${pid}`, { mode:'no-cors', signal:ctrl.signal });
+          clearTimeout(t);
+          if (iframe) { iframe.src = `http://localhost:8000/mvp/${pid}`; }
+          if (tag)    { tag.textContent = `project: ${pid}`; }
+          return;
+        } catch { /* try next */ }
+      }
+      if (iframe) { iframe.src = 'img/mvp.png'; }
+      if (tag)    { tag.textContent = 'offline — screenshot'; }
+    })();
+    return;
+  }
+
+  // ── outputs-showcase — MVP left, Report sections + JSON right ──
+  if (v.type === 'outputs-showcase') {
+    panel.innerHTML += `
+    <div class="os-wrap">
+
+      <!-- Left 54%: MVP with feature annotations -->
+      <div class="os-left">
+        <div class="os-bar">
+          <span class="os-badge os-badge-mvp">① MVP</span>
+          <span class="os-path">output_examples/{project_id}/mvp.html &nbsp;·&nbsp; GET /mvp/{id}</span>
+        </div>
+        <div style="flex:1;position:relative;overflow:hidden;min-height:0;">
+          <iframe id="osMvpIframe" src="../reports/mvp.png"
+            style="width:100%;height:100%;border:none;background:#1e293b;" title="IT Asset Management MVP"></iframe>
+          <!-- Floating annotation callouts -->
+          <div style="position:absolute;top:8px;left:8px;right:8px;display:flex;gap:6px;flex-wrap:wrap;pointer-events:none;z-index:5;">
+            <span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;
+              background:rgba(6,11,24,.88);border:1px solid #2563eb;color:#93c5fd;backdrop-filter:blur(4px);">
+              📊 4 KPI cards — assets, spend, compliance, incidents
+            </span>
+            <span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;
+              background:rgba(6,11,24,.88);border:1px solid #22c55e;color:#86efac;backdrop-filter:blur(4px);">
+              📋 Asset table — capex · opex · lifecycle · licence chips
+            </span>
+          </div>
+          <div style="position:absolute;bottom:8px;left:8px;right:8px;display:flex;gap:6px;flex-wrap:wrap;pointer-events:none;z-index:5;justify-content:flex-end;">
+            <span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;
+              background:rgba(6,11,24,.88);border:1px solid #a78bfa;color:#ddd6fe;backdrop-filter:blur(4px);">
+              🗂 Sidebar nav — Finance · Hardware · Software · Integrations
+            </span>
+          </div>
+        </div>
+        <!-- Bottom strip -->
+        <div style="padding:7px 12px;background:rgba(0,0,0,.5);border-top:1px solid var(--border);
+          font-size:11px;color:var(--muted);flex-shrink:0;">
+          Single self-contained HTML &nbsp;·&nbsp; All CSS + JS inline &nbsp;·&nbsp; No CDN &nbsp;·&nbsp; Generated by Engineer agent from QA-approved plan
+        </div>
+      </div>
+
+      <!-- Right: Report (②) + JSON (③) stacked -->
+      <div class="os-right">
+
+        <!-- Agent Report card — sections from report_CIT_001.html -->
+        <div class="os-card">
+          <div class="os-bar">
+            <span class="os-badge os-badge-report">② REPORT</span>
+            <span class="os-path">reports/report_{run_id}.html &nbsp;·&nbsp; GET /report/{run_id}</span>
+          </div>
+          <div class="os-card-body">
+            <div class="os-section-row">
+              <div class="os-section-icon">📊</div>
+              <div class="os-section-text"><strong>Collaboration Metrics</strong> — 46 messages · 32 decisions · 4 feedback loops · 3 risks · 2 iterations · satisfaction 52/100</div>
+            </div>
+            <div class="os-section-row">
+              <div class="os-section-icon">📋</div>
+              <div class="os-section-text"><strong>Project Plan</strong> — PM's summary, tech stack (ServiceNow + React), phases, and full task cards with acceptance criteria and deliverables</div>
+            </div>
+            <div class="os-section-row">
+              <div class="os-section-icon">🔵</div>
+              <div class="os-section-text"><strong>Decision Timeline</strong> — every LLM-reasoned decision, colour-coded by agent: PM blue · Risk orange · Stakeholder red/green · QA purple</div>
+            </div>
+            <div class="os-section-row">
+              <div class="os-section-icon">💬</div>
+              <div class="os-section-text"><strong>Agent Messages</strong> — all 46 inter-agent communications: sender, receiver, type (escalation / feedback / request), and full content</div>
+            </div>
+            <div class="os-section-row">
+              <div class="os-section-icon">🔍</div>
+              <div class="os-section-text"><strong>QA Feedback Loops</strong> — each critique round paired with the Engineer's specific revision response; 4 loops tracked</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output JSON card — real metrics from CIT_001 run -->
+        <div class="os-card">
+          <div class="os-bar">
+            <span class="os-badge os-badge-json">③ JSON</span>
+            <span class="os-path">output_examples/output_CIT_001.json &nbsp;·&nbsp; auto-saved on every run</span>
+          </div>
+          <div class="os-card-body">
+            <div class="os-json-line"><span class="os-json-key">"trace_id"</span>: <span class="os-json-val">"trace-CIT_001"</span></div>
+            <div class="os-json-line"><span class="os-json-key">"status"</span>: <span class="os-json-val">"completed"</span> <span class="os-json-badge">✓</span></div>
+            <div class="os-json-line"><span class="os-json-key">"agents_used"</span>: <span class="os-json-val-dim">["ProjectManager","RiskAnalyst","Stakeholder","Engineer","QAAgent"]</span></div>
+            <div class="os-json-line"><span class="os-json-key">"iterations"</span>: <span class="os-json-val">2</span></div>
+            <div class="os-json-line"><span class="os-json-key">"interactions"</span>: <span class="os-json-val-dim">{ "messages": [ ...46 agent messages... ], "decisions": [ ...32... ] }</span></div>
+            <div class="os-json-line"><span class="os-json-key">"collaboration"</span>: <span class="os-json-val-dim">{ "feedback_loop_completed": true, "revision_count": 4 }</span></div>
+            <div class="os-json-line"><span class="os-json-key">"result"</span>: <span class="os-json-val-dim">{ "summary": "ServiceNow ITAM + React dashboard...", "confidence": 0.87 }</span></div>
+            <div class="os-json-line"><span class="os-json-key">"mvp_path"</span>: <span class="os-json-val">"output_examples/CIT_001/mvp.html"</span></div>
+            <div class="os-json-line"><span class="os-json-key">"report_path"</span>: <span class="os-json-val">"reports/report_CIT_001.html"</span></div>
+            <div class="os-json-line"><span class="os-json-key">"log_path"</span>: <span class="os-json-val">"logs/agent_trace.jsonl"</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>`;
+
+    // Try to load the latest MVP into the iframe
+    setTimeout(async () => {
+      const ifr = document.getElementById('osMvpIframe');
+      if (!ifr) return;
+      const candidates = ['test_interface_run','IT_ServiceDesk_001','RA_Dashboard_001','HC_LeaveAttendance_001'];
+      for (const pid of candidates) {
+        try {
+          const ctrl = new AbortController();
+          const t = setTimeout(() => ctrl.abort(), 1800);
+          await fetch(`http://localhost:8000/mvp/${pid}`, { mode:'no-cors', signal:ctrl.signal });
+          clearTimeout(t);
+          ifr.src = `http://localhost:8000/mvp/${pid}`;
+          return;
+        } catch { /* try next */ }
+      }
+      // Keep ../reports/mvp.png fallback already set
+    }, 300);
+    return;
+  }
+
+  // ── real-data — 4 public data sources across all 4 agents ──
+  if (v.type === 'real-data') {
+    panel.innerHTML += `
+    <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;
+      justify-content:center;padding:28px 36px;gap:16px;
+      background:linear-gradient(135deg,#06111f,#0b1a30);">
+
+      <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+        color:var(--green);margin-bottom:2px;">Bonus Category — Real Public Data (+2 pts)</div>
+      <div style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;">
+        Four Real Data Sources · Four Agents · Every Run
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:800px;">
+
+        <!-- O*NET -->
+        <div style="background:rgba(37,99,235,.1);border:2px solid #2563eb;border-radius:12px;padding:18px 20px;">
+          <div style="font-size:13px;font-weight:800;color:#93c5fd;margin-bottom:4px;">
+            📊 O*NET 28.3 Database
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">
+            U.S. Dept of Labor · CC BY 4.0 · bundled in repo
+          </div>
+          <div style="font-size:13px;color:#c8d8f0;line-height:1.6;">
+            <strong style="color:#93c5fd;">Risk Analyst</strong> — talent pool size, demand level,
+            and availability risk per technology. Produces <code>risk_onet_001</code> in the risk register.
+          </div>
+        </div>
+
+        <!-- NIST NVD -->
+        <div style="background:rgba(248,113,113,.08);border:2px solid #f87171;border-radius:12px;padding:18px 20px;">
+          <div style="font-size:13px;font-weight:800;color:#fca5a5;margin-bottom:4px;">
+            🔒 NIST National Vulnerability Database
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">
+            NVD REST API 2.0 · Public Domain · no auth required
+          </div>
+          <div style="font-size:13px;color:#c8d8f0;line-height:1.6;">
+            <strong style="color:#fca5a5;">Risk Analyst + QA Agent</strong> — live CVE lookup for
+            HIGH/CRITICAL vulnerabilities in the project tech stack. Adds <code>risk_nist_cve_001</code>
+            and injects security context into QA critique.
+          </div>
+        </div>
+
+        <!-- BLS -->
+        <div style="background:rgba(250,204,21,.07);border:2px solid #facc15;border-radius:12px;padding:18px 20px;">
+          <div style="font-size:13px;font-weight:800;color:#fde68a;margin-bottom:4px;">
+            💰 BLS Occupational Employment &amp; Wage Statistics
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">
+            OES May 2023 · Public Domain · bundled in repo
+          </div>
+          <div style="font-size:13px;color:#c8d8f0;line-height:1.6;">
+            <strong style="color:#fde68a;">Project Manager</strong> — real median wages by SOC
+            occupation code produce an annual team cost estimate in every project plan.
+          </div>
+        </div>
+
+        <!-- npm + PyPI -->
+        <div style="background:rgba(34,197,94,.08);border:2px solid #22c55e;border-radius:12px;padding:18px 20px;">
+          <div style="font-size:13px;font-weight:800;color:#86efac;margin-bottom:4px;">
+            📦 npm Registry + PyPI JSON API
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">
+            registry.npmjs.org · pypi.org/pypi · no auth required
+          </div>
+          <div style="font-size:13px;color:#c8d8f0;line-height:1.6;">
+            <strong style="color:#86efac;">Engineer</strong> — checks last release date and version
+            of selected libraries. Flags packages stale for 18+ months before implementation begins.
+          </div>
+        </div>
+
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
+        <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;
+          background:rgba(34,197,94,.15);border:1px solid #22c55e;color:#86efac;">
+          All bundled or API — zero setup required
+        </span>
+        <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;
+          background:rgba(37,99,235,.15);border:1px solid #2563eb;color:#93c5fd;">
+          4 government + public sources
+        </span>
+        <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;
+          background:rgba(167,139,250,.15);border:1px solid #a78bfa;color:#ddd6fe;">
+          Cited in agent output on every run
+        </span>
+      </div>
+
+    </div>`;
+    return;
+  }
+
+  // ── evidence ──
+  if (v.type === 'evidence') {
+    panel.innerHTML += `<div class="visual-text">
+      <div class="ev-grid">
+        <div class="ev-item"><div class="ev-num">1</div><div class="ev-text"><strong>Conditional routing</strong> — 2 high-severity risks fired the LangGraph edge → PM replan ran automatically. Proven in agent_trace.jsonl: <em>status: escalated</em> + <em>branch_high_risk_path</em>.</div></div>
+        <div class="ev-item"><div class="ev-num">2</div><div class="ev-text"><strong>Stakeholder REJECTED</strong> the plan with detailed LLM reasoning — missing kiosk integration, truncated risk register, no milestones. A genuine business judgement, not a pass-through.</div></div>
+        <div class="ev-item"><div class="ev-num">3</div><div class="ev-text"><strong>QA ↔ Engineer loops</strong> — 6 critique rounds drove 3 revisions, each causally connected to the exact issue raised. When retries exceeded, orchestrator flags task for Risk Analyst.</div></div>
+        <div class="ev-item"><div class="ev-num">4</div><div class="ev-text"><strong>Robustness</strong> — Compass API failures handled with deterministic SHA-256 fallback (SAMPLE_MODE). CPU-only. Runs within 15-minute window. No manual setup steps.</div></div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // ── closing ──
+  if (v.type === 'closing') {
+    panel.innerHTML += `<div class="closing-visual">
+      <div class="closing-tag">✅ Use Case ID: 1 — AI Agenthon 2026</div>
+      <div class="closing-title">Multi-Agent Office &amp; Team Simulation</div>
+      <div style="font-size:12px;color:var(--muted);">G42 Compass AI &nbsp;·&nbsp; GPT-5.1 Reasoning &nbsp;·&nbsp; LangGraph StateGraph</div>
+      <div class="closing-metrics">
+        <div class="cm"><div class="cm-num">5</div><div class="cm-lbl">Agents</div></div>
+        <div class="cm"><div class="cm-num">16</div><div class="cm-lbl">Graph Nodes</div></div>
+        <div class="cm"><div class="cm-num">20</div><div class="cm-lbl">Dataset Projects</div></div>
+        <div class="cm"><div class="cm-num">33+</div><div class="cm-lbl">Messages/Run</div></div>
+        <div class="cm"><div class="cm-num">4</div><div class="cm-lbl">Conditional Edges</div></div>
+      </div>
+      <div class="closing-chips">
+        <div class="closing-chip">Non-linear workflow</div>
+        <div class="closing-chip">Conditional routing</div>
+        <div class="closing-chip">Shared memory</div>
+        <div class="closing-chip">Structured JSONL traces</div>
+        <div class="closing-chip">Deterministic fallback</div>
+        <div class="closing-chip">CPU-only · Docker</div>
+      </div>
+    </div>`;
+    return;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  DOTS
+// ═══════════════════════════════════════════════════════════════════════
+function buildDots() {
+  const container = document.getElementById('dotsEl');
+  SLIDES.forEach((s,i) => {
+    const d = document.createElement('div');
+    d.className = 'dot'; d.title = `${i+1}. ${s.title}`;
+    d.onclick = () => go(i);
+    container.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════
+function go(idx) {
+  synth.cancel(); paused = false;
+  // Stop live polling when leaving the live-platform slide
+  if (_liveTimer) { clearInterval(_liveTimer); _liveTimer = null; _liveRunning = false; }
+  clearReportTimers();
+  cur = Math.max(0, Math.min(SLIDES.length-1, idx));
+  renderSlide(cur);
+  document.getElementById('voiceStatus').textContent = `Slide ${cur+1} — click ▶ to speak`;
+  document.getElementById('waveEl').classList.remove('speaking');
+  if (playing) { speakCurrent(); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  SPEECH
+// ═══════════════════════════════════════════════════════════════════════
+function speakCurrent() {
+  const s = SLIDES[cur];
+  if (!s) { finish(); return; }
+  const u = new SpeechSynthesisUtterance(s.narration);
+  u.rate = rate; u.pitch = 1.02; u.volume = 1;
+  if (selVoice) u.voice = selVoice;
+  u.onstart = () => {
+    document.getElementById('waveEl').classList.add('speaking');
+    document.getElementById('voiceStatus').textContent = 'Speaking…';
+    // Auto-trigger live demo when narration for the live-platform slide (3) starts
+    if (cur === 3) {
+      setTimeout(() => {
+        if (!_liveRunning) initLiveDemo();
+      }, 2000);
+    }
+    // Auto-trigger report section scroll when report-walkthrough slide (5) starts
+    if (cur === 5) {
+      startReportWalkthrough();
+    }
+  };
+  u.onend = () => {
+    if (paused || !playing) return;
+    document.getElementById('waveEl').classList.remove('speaking');
+    cur++;
+    if (cur < SLIDES.length) { renderSlide(cur); setTimeout(speakCurrent, 600); }
+    else finish();
+  };
+  u.onerror = () => { cur++; if (cur < SLIDES.length) { renderSlide(cur); speakCurrent(); } };
+  synth.speak(u);
+}
+
+function finish() {
+  playing = false; paused = false; stopTick();
+  document.getElementById('waveEl').classList.remove('speaking');
+  document.getElementById('voiceStatus').textContent = '✅ Demo complete!';
+  document.getElementById('btnPlay').disabled = false;
+  document.getElementById('btnPause').disabled = true;
+  document.getElementById('btnStop').disabled = true;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  CONTROLS
+// ═══════════════════════════════════════════════════════════════════════
+function play() {
+  if (paused) {
+    paused = false; synth.resume(); playing = true;
+    document.getElementById('waveEl').classList.add('speaking');
+    document.getElementById('voiceStatus').textContent = 'Resumed';
+    document.getElementById('btnPause').disabled = false;
+    document.getElementById('btnPlay').disabled = true;
+    return;
+  }
+  synth.cancel(); playing = true; paused = false;
+  startTick();
+  document.getElementById('btnPause').disabled = false;
+  document.getElementById('btnStop').disabled = false;
+  document.getElementById('btnPlay').disabled = true;
+  speakCurrent();
+}
+
+function pause() {
+  paused = true; playing = false; synth.pause();
+  document.getElementById('waveEl').classList.remove('speaking');
+  document.getElementById('voiceStatus').textContent = 'Paused';
+  document.getElementById('btnPlay').disabled = false;
+  document.getElementById('btnPause').disabled = true;
+}
+
+function stopAll() {
+  synth.cancel(); playing = false; paused = false; stopTick();
+  if (_liveTimer) { clearInterval(_liveTimer); _liveTimer = null; _liveRunning = false; }
+  elapsed = 0; cur = 0;
+  document.getElementById('hudTimer').textContent = '0:00';
+  document.getElementById('hudTimer').classList.remove('running');
+  document.getElementById('hudFill').style.width = '0%';
+  document.getElementById('waveEl').classList.remove('speaking');
+  document.getElementById('voiceStatus').textContent = 'Stopped — click ▶ to restart';
+  document.getElementById('btnPlay').disabled = false;
+  document.getElementById('btnPause').disabled = true;
+  document.getElementById('btnStop').disabled = true;
+  renderSlide(0);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════════════════════════
+function startTick() {
+  if (tick) return;
+  tick = setInterval(() => {
+    elapsed++;
+    const m = Math.floor(elapsed/60), s = elapsed%60;
+    const el = document.getElementById('hudTimer');
+    el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    el.classList.add('running');
+    document.getElementById('hudFill').style.width = Math.min(elapsed/TOTAL*100,100)+'%';
+  }, 1000);
+}
+function stopTick() { clearInterval(tick); tick = null; }
+
+// ═══════════════════════════════════════════════════════════════════════
+//  KEYBOARD
+// ═══════════════════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(cur+1); }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); go(cur-1); }
+  if (e.key === 'p' || e.key === 'P') { playing ? pause() : play(); }
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  VOICE SETUP
+// ═══════════════════════════════════════════════════════════════════════
+function loadVoices() {
+  const sel = document.getElementById('voiceSel');
+  const vs  = synth.getVoices();
+  sel.innerHTML = '';
+  const pref = ['Google US English','Microsoft David','Microsoft Mark','Alex','Samantha'];
+  const sorted = [
+    ...pref.flatMap(n => vs.filter(v => v.name.includes(n))),
+    ...vs.filter(v => v.lang.startsWith('en-') && !pref.some(p => v.name.includes(p))),
+  ];
+  sorted.forEach(v => {
+    const o = document.createElement('option');
+    o.value = v.name; o.textContent = `${v.name} (${v.lang})`;
+    sel.appendChild(o);
+  });
+  selVoice = vs.find(v => v.name === sel.options[0]?.value);
+  sel.onchange = () => selVoice = vs.find(v => v.name === sel.value);
+}
+synth.addEventListener('voiceschanged', loadVoices);
+loadVoices();
+
+// ═══════════════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════════════
+buildDots();
+renderSlide(0);
+</script>
+</body>
+</html>

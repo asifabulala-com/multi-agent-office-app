@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Multi-Agent PM System — Architecture</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, system-ui, -apple-system, sans-serif; background: #f1f5f9; padding: 24px; }
+  .page { max-width: 980px; margin: 0 auto; background: #fff; border-radius: 14px;
+          box-shadow: 0 8px 40px rgba(0,0,0,.12); padding: 36px 40px 28px; }
+  .hdr { margin-bottom: 20px; }
+  .hdr h1 { font-size: 20px; font-weight: 700; color: #0f172a; }
+  .hdr p  { font-size: 13px; color: #64748b; margin-top: 4px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #374151; }
+  .leg-dot  { width: 14px; height: 14px; border-radius: 3px; border: 2px solid; flex-shrink: 0; }
+  .actions { margin-top: 18px; display: flex; gap: 12px; }
+  .btn { padding: 9px 22px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-pdf { background: #2563eb; color: #fff; }
+  .btn-pdf:hover { background: #1d4ed8; }
+  .btn-tip { background: #f1f5f9; color: #475569; font-weight: 400; cursor: default; font-size: 12px; padding: 9px 14px; }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page { box-shadow: none; border-radius: 0; padding: 10px; }
+    .actions { display: none; }
+  }
+  @page { size: A3 portrait; margin: 1.2cm; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hdr">
+    <h1>Multi-Agent PM System — Architecture Diagram</h1>
+    <p>LangGraph StateGraph · 5 Specialised Agents · FastAPI · G42 Compass AI · AI Agenthon 2026</p>
+  </div>
+
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#dbeafe;border-color:#2563eb;"></div>Project Manager</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#dcfce7;border-color:#16a34a;"></div>Engineer</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#f3e8ff;border-color:#9333ea;"></div>QA Agent</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#ffedd5;border-color:#ea580c;"></div>Risk Analyst</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#fce7f3;border-color:#db2777;"></div>Stakeholder</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#e0f2fe;border-color:#0284c7;"></div>System / Output</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#fef9c3;border-color:#d97706;border-radius:0;transform:rotate(45deg);width:12px;height:12px;"></div>Decision point</div>
+    <div class="leg-item"><div style="width:24px;height:2px;background:#7c3aed;border-top:2px dashed #7c3aed;"></div>&nbsp;Feedback loop</div>
+  </div>
+
+  <!-- ── SVG DIAGRAM ───────────────────────────────────────────────── -->
+  <svg viewBox="0 0 900 1210" width="900" xmlns="http://www.w3.org/2000/svg"
+       style="font-family:Inter,system-ui,sans-serif;display:block;">
+    <defs>
+      <marker id="arr" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0,9 3.5,0 7" fill="#374151"/>
+      </marker>
+      <marker id="arr-r" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0,9 3.5,0 7" fill="#dc2626"/>
+      </marker>
+      <marker id="arr-v" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0,9 3.5,0 7" fill="#7c3aed"/>
+      </marker>
+      <marker id="arr-b" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0,9 3.5,0 7" fill="#0284c7"/>
+      </marker>
+    </defs>
+
+    <!-- ── BACKGROUND COLUMNS ── -->
+    <!-- Left: main flow -->
+    <rect x="55" y="55" width="430" height="1115" rx="10"
+          fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <!-- Right: side branches -->
+    <rect x="515" y="55" width="360" height="1115" rx="10"
+          fill="#fafafa" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="5,3"/>
+
+    <!-- Column labels -->
+    <text x="270" y="75" text-anchor="middle" font-size="11" fill="#94a3b8" font-weight="600" letter-spacing="1">MAIN WORKFLOW</text>
+    <text x="695" y="75" text-anchor="middle" font-size="11" fill="#94a3b8" font-weight="600" letter-spacing="1">CONDITIONAL BRANCHES</text>
+
+    <!-- ── LOOP DASHED BOX ── -->
+    <rect x="62" y="365" width="416" height="370" rx="8"
+          fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="7,4"/>
+    <text x="68" y="381" font-size="10" fill="#7c3aed" font-weight="600">EXECUTION LOOP  (repeats per task, max 3 tasks)</text>
+
+    <!-- ════════════════════════════════════
+         NODES — main flow (centerX = 270)
+         node box: x=70, width=400, height=40
+         ════════════════════════════════════ -->
+
+    <!-- ── START ── -->
+    <circle cx="270" cy="112" r="22" fill="#0f172a" stroke="#0f172a"/>
+    <text x="270" y="117" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">START</text>
+
+    <!-- Arrow START → plan_project -->
+    <line x1="270" y1="134" x2="270" y2="162" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── plan_project [PM] ── -->
+    <rect x="70" y="164" width="400" height="44" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="270" y="181" text-anchor="middle" font-size="12" fill="#1e3a8a" font-weight="700">plan_project</text>
+    <text x="270" y="196" text-anchor="middle" font-size="10" fill="#3b82f6">PM · LLM · task decomposition, tech stack, phases, effort</text>
+
+    <!-- Arrow plan → assess -->
+    <line x1="270" y1="208" x2="270" y2="236" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── assess_risks [Risk] ── -->
+    <rect x="70" y="238" width="400" height="44" rx="7" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+    <text x="270" y="255" text-anchor="middle" font-size="12" fill="#7c2d12" font-weight="700">assess_risks</text>
+    <text x="270" y="270" text-anchor="middle" font-size="10" fill="#c2410c">Risk Analyst · LLM · identifies top 3 risks · sets high_risks_detected</text>
+
+    <!-- Arrow assess → decision -->
+    <line x1="270" y1="282" x2="270" y2="307" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── DECISION: high risks? ── (diamond, cx=270, cy=328) -->
+    <polygon points="270,305 355,328 270,351 185,328" fill="#fef9c3" stroke="#d97706" stroke-width="2"/>
+    <text x="270" y="325" text-anchor="middle" font-size="11" fill="#78350f" font-weight="700">high risks?</text>
+    <text x="270" y="339" text-anchor="middle" font-size="9" fill="#92400e">high_risks_detected</text>
+
+    <!-- YES → right (to replan_project) -->
+    <line x1="355" y1="328" x2="524" y2="328" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arr-r)"/>
+    <text x="432" y="322" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="700">YES</text>
+
+    <!-- NO → down -->
+    <line x1="270" y1="351" x2="270" y2="376" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arr)"/>
+    <text x="283" y="370" font-size="10" fill="#16a34a" font-weight="700">NO</text>
+
+    <!-- ── replan_project [PM] — SIDE BRANCH ── -->
+    <rect x="524" y="307" width="290" height="44" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="669" y="324" text-anchor="middle" font-size="12" fill="#1e3a8a" font-weight="700">replan_project</text>
+    <text x="669" y="339" text-anchor="middle" font-size="10" fill="#3b82f6">PM · LLM · adjusts tasks &amp; timeline for high risks</text>
+
+    <!-- replan → merge back down to stakeholder_approve -->
+    <path d="M 669,351 L 669,392 L 470,392 L 470,416" fill="none" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4,2"/>
+
+    <!-- ── stakeholder_approve [Stakeholder] ── -->
+    <rect x="70" y="378" width="400" height="44" rx="7" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+    <text x="270" y="395" text-anchor="middle" font-size="12" fill="#831843" font-weight="700">stakeholder_approve</text>
+    <text x="270" y="410" text-anchor="middle" font-size="10" fill="#be185d">Stakeholder · LLM · plan review · builds engineer_task_queue</text>
+
+    <!-- Arrow stakeholder_approve → set_next_task -->
+    <line x1="270" y1="422" x2="270" y2="446" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── set_next_task [Router] — LOOP ENTRY ── -->
+    <rect x="70" y="448" width="400" height="44" rx="7" fill="#f1f5f9" stroke="#475569" stroke-width="2"/>
+    <text x="270" y="465" text-anchor="middle" font-size="12" fill="#0f172a" font-weight="700">set_next_task  ⟲</text>
+    <text x="270" y="480" text-anchor="middle" font-size="10" fill="#475569">Router · pops next task from queue · resets qa_retry_count</text>
+
+    <!-- Arrow set_next_task → implement_task -->
+    <line x1="270" y1="492" x2="270" y2="516" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+    <text x="310" y="508" font-size="10" fill="#374151">task exists</text>
+
+    <!-- ── implement_task [Engineer] ── -->
+    <rect x="70" y="518" width="400" height="44" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="270" y="535" text-anchor="middle" font-size="12" fill="#14532d" font-weight="700">implement_task</text>
+    <text x="270" y="550" text-anchor="middle" font-size="10" fill="#15803d">Engineer · LLM · writes source files to output_examples/{id}/spa/</text>
+
+    <!-- Arrow implement → qa_critique -->
+    <line x1="270" y1="562" x2="270" y2="586" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── qa_critique [QA] ── -->
+    <rect x="70" y="588" width="400" height="44" rx="7" fill="#f3e8ff" stroke="#9333ea" stroke-width="2"/>
+    <text x="270" y="605" text-anchor="middle" font-size="12" fill="#4c1d95" font-weight="700">qa_critique</text>
+    <text x="270" y="620" text-anchor="middle" font-size="10" fill="#7e22ce">QA · LLM · critiques implementation · sets qa_approved, qa_issues</text>
+
+    <!-- Arrow qa_critique → decision approved? -->
+    <line x1="270" y1="632" x2="270" y2="657" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── DECISION: approved? ── (cy=678) -->
+    <polygon points="270,655 355,678 270,701 185,678" fill="#fef9c3" stroke="#d97706" stroke-width="2"/>
+    <text x="270" y="675" text-anchor="middle" font-size="11" fill="#78350f" font-weight="700">approved?</text>
+    <text x="270" y="689" text-anchor="middle" font-size="9" fill="#92400e">qa_approved · retry &lt; MAX_QA_RETRIES (1)</text>
+
+    <!-- NO → right (to engineer_revise) -->
+    <line x1="355" y1="678" x2="524" y2="678" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arr-r)"/>
+    <text x="432" y="672" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="700">NO</text>
+
+    <!-- YES → down -->
+    <line x1="270" y1="701" x2="270" y2="726" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arr)"/>
+    <text x="283" y="720" font-size="10" fill="#16a34a" font-weight="700">YES</text>
+
+    <!-- ── engineer_revise [Engineer] — SIDE BRANCH ── -->
+    <rect x="524" y="657" width="290" height="44" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="669" y="674" text-anchor="middle" font-size="12" fill="#14532d" font-weight="700">engineer_revise</text>
+    <text x="669" y="689" text-anchor="middle" font-size="10" fill="#15803d">Engineer · LLM · fixes QA issues · increments qa_retry_count</text>
+
+    <!-- engineer_revise → back to qa_critique (curved feedback loop) -->
+    <path d="M 814,657 L 814,610 L 470,610" fill="none" stroke="#7c3aed" stroke-width="1.8"
+          stroke-dasharray="5,3" marker-end="url(#arr-v)"/>
+    <text x="780" y="635" font-size="10" fill="#7c3aed" font-weight="700">re-review</text>
+
+    <!-- ── monitor_risks [Risk] ── -->
+    <rect x="70" y="728" width="400" height="44" rx="7" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+    <text x="270" y="745" text-anchor="middle" font-size="12" fill="#7c2d12" font-weight="700">monitor_risks</text>
+    <text x="270" y="760" text-anchor="middle" font-size="10" fill="#c2410c">Risk Analyst · deterministic · checks progress% · sets critical_risks_detected</text>
+
+    <!-- Arrow monitor → decision critical? -->
+    <line x1="270" y1="772" x2="270" y2="797" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── DECISION: critical risks? ── (cy=818) -->
+    <polygon points="270,795 355,818 270,841 185,818" fill="#fef9c3" stroke="#d97706" stroke-width="2"/>
+    <text x="270" y="815" text-anchor="middle" font-size="11" fill="#78350f" font-weight="700">critical risks?</text>
+    <text x="270" y="829" text-anchor="middle" font-size="9" fill="#92400e">critical_risks_detected</text>
+
+    <!-- YES → right (to mid_replan) -->
+    <line x1="355" y1="818" x2="524" y2="818" stroke="#dc2626" stroke-width="1.8" marker-end="url(#arr-r)"/>
+    <text x="432" y="812" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="700">YES</text>
+
+    <!-- NO → down (loop back to set_next_task) -->
+    <line x1="270" y1="841" x2="270" y2="858" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── mid_replan [PM] — SIDE BRANCH ── -->
+    <rect x="524" y="797" width="290" height="44" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="669" y="814" text-anchor="middle" font-size="12" fill="#1e3a8a" font-weight="700">mid_replan</text>
+    <text x="669" y="829" text-anchor="middle" font-size="10" fill="#3b82f6">PM · LLM · mid-execution replan · clears critical_risks_detected</text>
+
+    <!-- mid_replan → back to set_next_task (loop) -->
+    <path d="M 669,841 L 669,870 L 60,870 L 60,470 L 70,470" fill="none"
+          stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-v)"/>
+    <text x="116" y="866" font-size="10" fill="#7c3aed">loop back</text>
+
+    <!-- ── loop back from set_next_task when tasks remain ── -->
+    <!-- Arrow from bottom of "critical? NO" back up to set_next_task (already covered by the straight line below) -->
+
+    <!-- ── LOOP EXIT: "queue empty" ── -->
+    <rect x="70" y="858" width="400" height="34" rx="7" fill="#f1f5f9" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,2"/>
+    <text x="270" y="880" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">queue empty → exit loop</text>
+
+    <!-- Arrow exit → stakeholder_progress -->
+    <line x1="270" y1="892" x2="270" y2="916" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── stakeholder_progress [Stakeholder] ── -->
+    <rect x="70" y="918" width="400" height="44" rx="7" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+    <text x="270" y="935" text-anchor="middle" font-size="12" fill="#831843" font-weight="700">stakeholder_progress</text>
+    <text x="270" y="950" text-anchor="middle" font-size="10" fill="#be185d">Stakeholder · LLM · mid-execution review · escalates if score &lt; 65</text>
+
+    <!-- Arrow → check_quality_gates -->
+    <line x1="270" y1="962" x2="270" y2="986" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── check_quality_gates [QA] ── -->
+    <rect x="70" y="988" width="400" height="44" rx="7" fill="#f3e8ff" stroke="#9333ea" stroke-width="2"/>
+    <text x="270" y="1005" text-anchor="middle" font-size="12" fill="#4c1d95" font-weight="700">check_quality_gates</text>
+    <text x="270" y="1020" text-anchor="middle" font-size="10" fill="#7e22ce">QA · deterministic · pass_rate ≥ 80% · no critical defects · conf ≥ 0.75</text>
+
+    <!-- Arrow → generate_risk_report -->
+    <line x1="270" y1="1032" x2="270" y2="1056" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── generate_risk_report [Risk] ── -->
+    <rect x="70" y="1058" width="400" height="44" rx="7" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+    <text x="270" y="1075" text-anchor="middle" font-size="12" fill="#7c2d12" font-weight="700">generate_risk_report</text>
+    <text x="270" y="1090" text-anchor="middle" font-size="10" fill="#c2410c">Risk Analyst · deterministic · final risk register · severity counts</text>
+
+    <!-- Arrow → stakeholder_final -->
+    <line x1="270" y1="1102" x2="270" y2="1126" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+    <!-- ── stakeholder_final [Stakeholder] ── -->
+    <rect x="70" y="1128" width="400" height="44" rx="7" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+    <text x="270" y="1145" text-anchor="middle" font-size="12" fill="#831843" font-weight="700">stakeholder_final</text>
+    <text x="270" y="1160" text-anchor="middle" font-size="10" fill="#be185d">Stakeholder · LLM · satisfaction score · strategic value · status</text>
+
+    <!-- ════════════════════════════════════
+         OUTPUTS + SIDE COLUMN (LOWER)
+         ════════════════════════════════════ -->
+
+    <!-- SharedMemory box in side column -->
+    <rect x="524" y="90" width="350" height="165" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="699" y="107" text-anchor="middle" font-size="12" fill="#14532d" font-weight="700">SharedMemory</text>
+    <text x="699" y="123" text-anchor="middle" font-size="10" fill="#166534">(app/memory.py — in-process, cleared on restart)</text>
+    <text x="534" y="143" font-size="10" fill="#374151">📌 agent_summaries["pm:{id}"]  ← plan, tech stack, phases</text>
+    <text x="534" y="159" font-size="10" fill="#374151">📌 agent_summaries["engineer:{task_id}"]  ← implementation</text>
+    <text x="534" y="175" font-size="10" fill="#374151">📌 agent_summaries["risk:{id}"]  ← risks, mitigations</text>
+    <text x="534" y="191" font-size="10" fill="#374151">📌 agent_summaries["stakeholder:{id}"]  ← score, concerns</text>
+    <text x="534" y="207" font-size="10" fill="#374151">📨 messages[]  ← all agent-to-agent messages</text>
+    <text x="534" y="223" font-size="10" fill="#374151">🔁 feedback_loops{}  ← QA ↔ Engineer revision cycles</text>
+    <text x="534" y="239" font-size="10" fill="#374151">🎯 decisions[]  ← all agent decisions with reasoning</text>
+
+    <!-- All agents read/write SharedMemory arrow -->
+    <line x1="470" y1="186" x2="524" y2="186" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr)"/>
+    <text x="497" y="181" text-anchor="middle" font-size="9" fill="#16a34a">R/W</text>
+
+    <!-- Outputs box in side column (lower) -->
+    <rect x="524" y="915" width="350" height="155" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="699" y="932" text-anchor="middle" font-size="12" fill="#0c4a6e" font-weight="700">Outputs</text>
+
+    <text x="534" y="952" font-size="11" fill="#0c4a6e" font-weight="600">📄 finalize_project</text>
+    <text x="534" y="967" font-size="10" fill="#374151">  → reports/report_{run_id}.html</text>
+    <text x="534" y="981" font-size="10" fill="#374151">  → collaboration summary + Mermaid sequence diagram</text>
+    <text x="534" y="998" font-size="11" fill="#0c4a6e" font-weight="600">🚀 finalize_project (Engineer.generate_mvp_html)</text>
+    <text x="534" y="1013" font-size="10" fill="#374151">  → output_examples/{id}/mvp.html  (self-contained SPA)</text>
+    <text x="534" y="1030" font-size="11" fill="#0c4a6e" font-weight="600">🧭 submit_compass</text>
+    <text x="534" y="1045" font-size="10" fill="#374151">  → POST https://api.core42.ai/v1/  (metrics + trace)</text>
+    <text x="534" y="1060" font-size="10" fill="#374151">  → compass_evaluation: {scores, summary, pattern}</text>
+
+    <!-- Arrow stakeholder_final → finalize (outputs) -->
+    <line x1="470" y1="1150" x2="524" y2="985" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr-b)"/>
+
+    <!-- ════════════════════════════════════
+         WEB UI + API box (top right of SVG)
+         ════════════════════════════════════ -->
+    <!-- Moved to top-left above the main column as an entry point label -->
+    <rect x="70" y="55" width="400" height="44" rx="7" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="270" y="72" text-anchor="middle" font-size="12" fill="#374151" font-weight="700">FastAPI Server + Web UI  (run.py · port 8000)</text>
+    <text x="270" y="87" text-anchor="middle" font-size="10" fill="#64748b">POST /run-sync  |  GET /dataset  |  GET /mvp/{id}  |  GET /report/{run_id}</text>
+
+    <!-- Arrow entry → START -->
+    <line x1="270" y1="99" x2="270" y2="90" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+
+  </svg>
+
+  <!-- ── AGENT SUMMARY TABLE ── -->
+  <table style="width:100%;border-collapse:collapse;margin-top:20px;font-size:12px;">
+    <thead>
+      <tr style="background:#f1f5f9;">
+        <th style="padding:8px 10px;text-align:left;border:1px solid #e2e8f0;color:#374151;">Agent</th>
+        <th style="padding:8px 10px;text-align:left;border:1px solid #e2e8f0;color:#374151;">LLM calls (per run)</th>
+        <th style="padding:8px 10px;text-align:left;border:1px solid #e2e8f0;color:#374151;">Key inputs</th>
+        <th style="padding:8px 10px;text-align:left;border:1px solid #e2e8f0;color:#374151;">Key outputs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;background:#dbeafe;font-weight:600;color:#1e3a8a;">Project Manager</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">1–3 (plan + optional replan × 2)</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">Project description, risk register, stakeholder concerns</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">Task list, tech stack, phases, effort estimate</td>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;background:#dcfce7;font-weight:600;color:#14532d;">Engineer</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">4–7 (implement × 3 + revise ≤ 3 + MVP × 1)</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">Task description, PM plan context, QA issues</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">Source files in spa/, mvp.html</td>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;background:#f3e8ff;font-weight:600;color:#4c1d95;">QA Agent</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">3–6 (critique × 3 + retest ≤ 3)</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">Engineer implementation summary, risk areas</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">Approved / issues list (max 2 issues)</td>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;background:#ffedd5;font-weight:600;color:#7c2d12;">Risk Analyst</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">1 (assess only; monitor is deterministic)</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">PM plan, project description</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">Risk register (3 risks, severity, mitigations)</td>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;background:#fce7f3;font-weight:600;color:#831843;">Stakeholder</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">3 (approve + progress + final)</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">Plan, progress summary, QA reports</td>
+        <td style="padding:7px 10px;border:1px solid #e2e8f0;">Approval, satisfaction score (0–100), concerns</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="actions">
+    <button class="btn btn-pdf" onclick="window.print()">📥 Save as PDF — File → Print → Save as PDF</button>
+    <span class="btn btn-tip">💡 For PNG: take a screenshot of this page, or use browser DevTools → Capture node screenshot on the &lt;svg&gt; element</span>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+[
+  {
+    "project_id": "SampleProject001",
+    "project_name": "Sample Web Application",
+    "description": "Build a modern web application with user authentication, a REST API, and a React frontend. Use FastAPI and PostgreSQL for the backend and React 18 with TypeScript for the frontend. Deploy using Docker on AWS ECS."
+  },
+  {
+    "project_id": "SampleProject002",
+    "project_name": "Sample Mobile Backend API",
+    "description": "Develop a scalable REST API backend for a mobile application. Support user registration, push notifications, file uploads to S3, and real-time updates via WebSockets. Use FastAPI, Redis for caching, and PostgreSQL."
+  },
+  {
+    "project_id": "SampleProject003",
+    "project_name": "Sample Data Analytics Platform",
+    "description": "Build a data analytics platform that ingests CSV and JSON data, applies transformations, and provides dashboards. Use Python, Apache Airflow for orchestration, PostgreSQL for storage, and a React dashboard frontend."
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "use_case_id": "1",
+  "agents": [
+    {
+      "name": "ProjectManager",
+      "role": "Decomposes project requirements into tasks using LLM reasoning, distributes work to specialist agents, replans when risk or stakeholder escalations occur"
+    },
+    {
+      "name": "Engineer",
+      "role": "Implements assigned tasks using LLM-driven technical reasoning; revises implementations based on QA critique in a retry loop (up to 2 revisions per task)"
+    },
+    {
+      "name": "QAAgent",
+      "role": "Critiques Engineer output with LLM-powered review; returns structured issues with severity; drives the Engineer revision loop by flagging needs_revision"
+    },
+    {
+      "name": "RiskAnalyst",
+      "role": "Identifies and classifies project risks via LLM assessment using gpt-5.1 reasoning model; escalates high-severity risks to ProjectManager, triggering workflow replanning"
+    },
+    {
+      "name": "Stakeholder",
+      "role": "Provides business perspective; approves the project plan, monitors progress, and escalates concerns to ProjectManager when satisfaction drops below threshold"
+    }
+  ],
+  "tools_used": [
+    "langgraph",
+    "langchain-core",
+    "fastapi",
+    "openai-sdk",
+    "compass-api",
+    "gpt-5.1",
+    "gpt-4.1",
+    "jsonl-trace-logger",
+    "sample-mode-sha256-fallback"
+  ],
+  "data_sources": [
+    "project_description_input",
+    "shared_agent_memory",
+    "data/sample_projects.json",
+    "dataset/telecom_projects.json"
+  ],
+  "output_type": "text",
+  "compass_models": {
+    "reasoning": "gpt-5.1",
+    "standard": "gpt-4.1"
+  },
+  "api_port": 8000,
+  "run_endpoint": "POST /run"
+}

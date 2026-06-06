@@ -1,0 +1,107 @@
+{
+  "source": "U.S. Bureau of Labor Statistics, Occupational Employment and Wage Statistics (OEWS)",
+  "survey": "May 2023",
+  "url": "https://www.bls.gov/oes/current/oes_nat.htm",
+  "license": "Public Domain — U.S. Government work, no copyright restriction",
+  "attribution": "U.S. Bureau of Labor Statistics, U.S. Department of Labor, Occupational Employment and Wage Statistics, May 2023.",
+  "notes": "Annual wages are in USD. Employment figures are national estimates.",
+  "occupations": [
+    {
+      "soc_code": "15-1252",
+      "title": "Software Developers",
+      "keywords": ["developer", "engineer", "programmer", "software", "python", "java", "react", "node", "typescript", "fastapi", "django", "spring"],
+      "annual_mean_wage": 132270,
+      "annual_median_wage": 124200,
+      "employment_national": 1847900,
+      "typical_experience": "Mid-level (3-5 years)"
+    },
+    {
+      "soc_code": "15-1299.08",
+      "title": "DevOps Engineers and Site Reliability Engineers",
+      "keywords": ["devops", "sre", "docker", "kubernetes", "terraform", "ci/cd", "infrastructure", "cloud", "aws", "azure"],
+      "annual_mean_wage": 138400,
+      "annual_median_wage": 131490,
+      "employment_national": 248600,
+      "typical_experience": "Senior (5+ years)"
+    },
+    {
+      "soc_code": "15-1211",
+      "title": "Computer Systems Analysts",
+      "keywords": ["analyst", "systems", "servicenow", "sap", "erp", "integration", "itam", "itsm"],
+      "annual_mean_wage": 103500,
+      "annual_median_wage": 99270,
+      "employment_national": 611000,
+      "typical_experience": "Mid-level (3-5 years)"
+    },
+    {
+      "soc_code": "15-1212",
+      "title": "Information Security Analysts",
+      "keywords": ["security", "cybersecurity", "infosec", "compliance", "gdpr", "audit", "penetration"],
+      "annual_mean_wage": 120360,
+      "annual_median_wage": 112000,
+      "employment_national": 168900,
+      "typical_experience": "Mid-level (3-5 years)"
+    },
+    {
+      "soc_code": "15-1241",
+      "title": "Computer Network Architects",
+      "keywords": ["network", "architect", "active directory", "ldap", "vpn", "firewall", "dns"],
+      "annual_mean_wage": 128310,
+      "annual_median_wage": 120520,
+      "employment_national": 165300,
+      "typical_experience": "Senior (5+ years)"
+    },
+    {
+      "soc_code": "15-1244",
+      "title": "Network and Computer Systems Administrators",
+      "keywords": ["admin", "sysadmin", "server", "linux", "windows server", "exchange"],
+      "annual_mean_wage": 95360,
+      "annual_median_wage": 90520,
+      "employment_national": 385300,
+      "typical_experience": "Mid-level (3-5 years)"
+    },
+    {
+      "soc_code": "15-2051",
+      "title": "Data Scientists",
+      "keywords": ["data scientist", "ml", "machine learning", "ai", "analytics", "pandas", "sklearn", "tensorflow"],
+      "annual_mean_wage": 108020,
+      "annual_median_wage": 103500,
+      "employment_national": 168100,
+      "typical_experience": "Mid-level (3-5 years)"
+    },
+    {
+      "soc_code": "11-3021",
+      "title": "Computer and Information Systems Managers",
+      "keywords": ["manager", "cto", "vp engineering", "head of", "director of technology", "it manager"],
+      "annual_mean_wage": 169510,
+      "annual_median_wage": 164070,
+      "employment_national": 483400,
+      "typical_experience": "Senior (8+ years)"
+    },
+    {
+      "soc_code": "15-1231",
+      "title": "Computer Network Support Specialists",
+      "keywords": ["support", "helpdesk", "service desk", "tier 2", "l2 support"],
+      "annual_mean_wage": 67700,
+      "annual_median_wage": 62760,
+      "employment_national": 188900,
+      "typical_experience": "Junior (0-3 years)"
+    },
+    {
+      "soc_code": "15-1253",
+      "title": "Software Quality Assurance Analysts and Testers",
+      "keywords": ["qa", "quality assurance", "tester", "test engineer", "sdet", "automation"],
+      "annual_mean_wage": 101060,
+      "annual_median_wage": 94010,
+      "employment_national": 230200,
+      "typical_experience": "Mid-level (3-5 years)"
+    }
+  ],
+  "role_mapping": {
+    "engineer":      "15-1252",
+    "qa":            "15-1253",
+    "risk_analyst":  "15-1212",
+    "project_manager": "11-3021",
+    "devops":        "15-1299.08"
+  }
+}

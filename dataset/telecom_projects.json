@@ -1,0 +1,602 @@
+[
+  {
+    "project_id": "HC_001",
+    "project_name": "Employee Self-Service Portal",
+    "department": "Human Capital",
+    "description": "Build a web-based self-service portal for telecom employees to manage personal data, view payslips, apply for leave, submit expense claims, and update emergency contacts. The portal must integrate with the existing SAP HCM system and Azure Active Directory for SSO. Implement role-based access for employees, line managers, and HR administrators. Ensure GDPR compliance for all personal data. Deploy on Azure App Service using React 18 frontend and FastAPI backend with PostgreSQL. Support Arabic and English languages."
+  },
+  {
+    "project_id": "HC_002",
+    "project_name": "Payroll Automation System",
+    "department": "Human Capital",
+    "description": "Automate end-to-end payroll processing for a telecom company with 5,000+ employees. Replace manual Excel-based payroll calculations with an integrated system that handles salary computation, overtime, deductions, allowances, end-of-service benefits, and WPS (Wage Protection System) file generation. Integrate with the Oracle HRMS and banking APIs for direct salary transfers. Include automated reconciliation, audit trail, and payroll variance reporting. Must comply with UAE Labour Law and MOHRE regulations."
+  },
+  {
+    "project_id": "HC_003",
+    "project_name": "Talent Acquisition Platform",
+    "department": "Human Capital",
+    "description": "Develop an end-to-end recruitment platform for the telecom company covering job requisition, approval workflows, candidate applications, AI-based CV screening, interview scheduling, offer management, and onboarding triggers. Integrate with LinkedIn Recruiter, job boards (Bayt, GulfTalent), and background verification providers. Include hiring manager dashboards with time-to-hire and cost-per-hire analytics. Build with React frontend, Node.js backend, and MongoDB. Apply GDPR and data retention policies for candidate data."
+  },
+  {
+    "project_id": "HC_004",
+    "project_name": "Performance Management System",
+    "department": "Human Capital",
+    "description": "Build a performance management system supporting annual reviews, continuous feedback, OKR tracking, 360-degree assessments, and calibration sessions for the telecom workforce. The system must support cascade goal-setting from corporate to individual level, manager and peer feedback workflows, and bell-curve calibration tools. Integrate with the existing payroll system to link performance ratings to increment recommendations. Provide analytics dashboards for HR and business leaders. Use React, FastAPI, and PostgreSQL on Azure."
+  },
+  {
+    "project_id": "HC_005",
+    "project_name": "Learning & Development LMS",
+    "department": "Human Capital",
+    "description": "Implement a Learning Management System (LMS) for the telecom company to host mandatory compliance training (data protection, anti-bribery, health & safety), technical certifications, leadership programs, and on-demand e-learning. Support SCORM and xAPI content formats. Include learner progress tracking, manager dashboards, competency gap analysis, and certification expiry reminders. Integrate with the HR system for automatic enrolment based on role and onboarding triggers. Deploy on-premises with a React frontend and Moodle-based backend."
+  },
+  {
+    "project_id": "HC_006",
+    "project_name": "Employee Onboarding Workflow System",
+    "department": "Human Capital",
+    "description": "Design and build a digital onboarding system that automates all pre-joining and day-one activities for new telecom employees. Workflows must cover offer acceptance, document collection, IT provisioning requests, access badge setup, induction schedule, policy acknowledgements via e-signature, and 30-60-90 day check-ins. Integrate with Active Directory for account creation, the IT asset management system, and the payroll system. Build on SharePoint Online with Power Automate for workflow orchestration and a React front-end wrapper."
+  },
+  {
+    "project_id": "HC_007",
+    "project_name": "HR Analytics & Workforce Intelligence Dashboard",
+    "department": "Human Capital",
+    "description": "Build a centralised HR analytics platform to provide real-time workforce insights including headcount, attrition, absenteeism, gender diversity, salary benchmarking, and succession risk. Aggregate data from SAP HCM, payroll, recruitment, and learning systems into a unified data warehouse. Build interactive Power BI dashboards for CHRO and HRBPs. Implement predictive attrition modelling using Python and scikit-learn. Ensure row-level security so business leaders only see their own team data."
+  },
+  {
+    "project_id": "HC_008",
+    "project_name": "Leave & Attendance Management System",
+    "department": "Human Capital",
+    "description": "Replace the legacy leave management spreadsheets with a modern system supporting all leave types (annual, sick, unpaid, maternity, emergency), shift scheduling, biometric integration, and overtime tracking. The system must enforce company policies, labour law entitlements, and approval chains. Include manager calendar views, conflict detection, and HR override capabilities. Integrate with the payroll system for automatic deduction and accrual calculations. Build using React, FastAPI, and PostgreSQL with biometric device API adapters."
+  },
+  {
+    "project_id": "HC_009",
+    "project_name": "Succession Planning & Talent Pipeline Tool",
+    "department": "Human Capital",
+    "description": "Develop a succession planning module to identify and track high-potential employees, map them to critical roles, and track their development readiness. The tool must support 9-box grid visualisation, successor readiness ratings, individual development plans, and risk-of-loss indicators. Integrate with the performance management and L&D systems. Provide scenario planning for key leadership vacancies. Restrict access to succession data to senior HR and C-suite only. Build with React frontend and FastAPI backend on Azure."
+  },
+  {
+    "project_id": "HC_010",
+    "project_name": "Workforce Planning & Headcount System",
+    "department": "Human Capital",
+    "description": "Build a strategic workforce planning tool for the telecom company's annual and quarterly headcount planning cycles. The system must support bottom-up headcount requests from department heads, budget validation against Finance approvals, grade and salary band mapping, FTE vs contractor split tracking, and scenario modelling. Integrate with the Finance budgeting system and HR master data. Provide consolidated dashboards for HR, Finance, and executive management. Use React, Python, and PostgreSQL on Azure."
+  },
+  {
+    "project_id": "FIN_001",
+    "project_name": "Financial Reporting Automation Platform",
+    "department": "Finance",
+    "description": "Automate the production of monthly, quarterly, and annual financial statements (P&L, Balance Sheet, Cash Flow) for the telecom company, replacing manual consolidation in Excel. The platform must consolidate data from SAP FI/CO, billing systems, and subsidiary ledgers. Support IFRS 15 and IFRS 16 accounting treatments specific to telecoms. Provide automated variance commentary generation using LLM. Include management reporting packs, board dashboards, and regulatory submissions. Build on SAP Analytics Cloud with Python ETL pipelines."
+  },
+  {
+    "project_id": "FIN_002",
+    "project_name": "Budget Planning & Forecasting System",
+    "department": "Finance",
+    "description": "Implement a cloud-based budgeting, planning, and forecasting (BP&F) system to replace the annual Excel-based budget process for a telecom company with 30+ cost centres. The system must support driver-based budgeting, rolling 12-month forecasts, top-down and bottom-up workflows, scenario analysis (base/bull/bear), and integration with SAP for actuals loading. Provide self-service dashboards for department heads and automated consolidation for Finance. Deploy on Anaplan with SAP integration via API and Power BI for reporting."
+  },
+  {
+    "project_id": "FIN_003",
+    "project_name": "Accounts Payable Automation",
+    "department": "Finance",
+    "description": "Automate the accounts payable process for the telecom company, handling 10,000+ invoices per month across 500+ vendors. Implement AI-powered invoice capture (OCR), three-way matching (PO, GR, invoice), exception handling workflows, approval routing, and automated payment scheduling. Integrate with SAP MM and FI modules, vendor banking details registry, and the company's payment gateway. Reduce manual processing time by 80% and achieve first-time-match rates above 85%. Build on SAP Intelligent RPA with a React exception management portal."
+  },
+  {
+    "project_id": "FIN_004",
+    "project_name": "Treasury Management System",
+    "department": "Finance",
+    "description": "Implement a Treasury Management System (TMS) for the telecom company to manage cash positioning, liquidity forecasting, bank account management, FX exposure, and debt portfolio tracking. The system must integrate with 8 banking portals via SWIFT/APIs for real-time balance reporting, support multi-currency cash pooling, and provide FX risk reporting. Include investment portfolio tracking, covenant monitoring for existing loans, and automated bank reconciliation. Deploy a cloud-based TMS (e.g., Kyriba or Salmon) integrated with SAP."
+  },
+  {
+    "project_id": "FIN_005",
+    "project_name": "Tax Compliance & Filing Portal",
+    "department": "Finance",
+    "description": "Build a unified tax compliance platform for the telecom company covering VAT, corporate income tax, withholding tax, and transfer pricing documentation. The system must automate VAT return preparation from billing and procurement data, generate audit-ready tax schedules, track tax deadlines and filing statuses, and produce regulatory filings in the required formats for the UAE Federal Tax Authority. Integrate with SAP FI for tax data extraction. Include document management for tax correspondence and audit support packs. Build with React frontend and Python backend."
+  },
+  {
+    "project_id": "FIN_006",
+    "project_name": "Financial Close Management System",
+    "department": "Finance",
+    "description": "Implement a financial close management tool to streamline the month-end and year-end close process for the telecom company. The system must support task management with assignees and deadlines, journal entry workflows, account reconciliation automation, intercompany elimination, and close calendar tracking. Integrate with SAP FI for trial balance data. Reduce the monthly close cycle from 10 days to 5 days. Provide real-time close status dashboards for the CFO. Deploy BlackLine or a custom React/Python solution integrated with SAP."
+  },
+  {
+    "project_id": "FIN_007",
+    "project_name": "Capital Expenditure Tracker",
+    "department": "Finance",
+    "description": "Build a capital expenditure (CapEx) management system for the telecom company to track network infrastructure, IT, and facility investments through their full lifecycle: budget approval, purchase order, goods receipt, capitalisation, and depreciation. The system must enforce CapEx approval workflows (CAPEX committee), provide budget vs. actual tracking by project and asset category, and integrate with SAP FI/AA and the procurement system. Include milestone tracking for major network rollout programmes. Build with React, FastAPI, and PostgreSQL."
+  },
+  {
+    "project_id": "FIN_008",
+    "project_name": "Employee Expense Management System",
+    "department": "Finance",
+    "description": "Replace the paper-based expense reimbursement process with a mobile-first expense management system for the telecom company. Employees must be able to submit expenses via mobile app with receipt capture (OCR), mileage calculation, and policy compliance checks. Line managers approve via mobile. Finance reviews and batches payments to payroll. The system must enforce per-diem rates, category limits, and approval thresholds. Integrate with SAP FI and the payroll system. Provide expense analytics dashboards by department and category."
+  },
+  {
+    "project_id": "FIN_009",
+    "project_name": "Audit Trail & Internal Controls Platform",
+    "department": "Finance",
+    "description": "Implement a centralised audit and internal controls management platform for the telecom company covering Sarbanes-Oxley equivalent controls, internal audit planning, risk and control matrix (RCM) management, control testing workflows, issue tracking, and management action plan monitoring. Integrate with SAP GRC where available. The system must provide real-time controls dashboard for the CFO and Audit Committee. Include automated SAP segregation-of-duties (SoD) conflict reporting. Build with React and Python on Azure."
+  },
+  {
+    "project_id": "FIN_010",
+    "project_name": "Financial Consolidation & Group Reporting Platform",
+    "department": "Finance",
+    "description": "Build a group financial consolidation system for the telecom holding company with 5 subsidiaries across different countries. The platform must handle multi-currency consolidation, intercompany eliminations, minority interest calculations, and produce consolidated IFRS financial statements. Support contribution analysis by subsidiary. Integrate with each subsidiary's ERP system for data ingestion. Include regulatory and board reporting templates. Deploy on SAP BPC or Oracle FCCS integrated with Power BI for visualisation."
+  },
+  {
+    "project_id": "CIT_001",
+    "project_name": "IT Asset Management System",
+    "department": "Corporate IT",
+    "description": "Implement a centralised IT Asset Management (ITAM) system for the telecom company to track all hardware (laptops, servers, network equipment, mobile devices) and software licences across 10,000+ assets. The system must support asset discovery via network scanning, lifecycle management from procurement to disposal, maintenance contract tracking, and software licence compliance. Integrate with the procurement system for purchase orders and with ServiceNow for incident-to-asset linkage. Build on ServiceNow ITAM module with a custom React dashboard for Finance reporting."
+  },
+  {
+    "project_id": "CIT_002",
+    "project_name": "Service Desk Modernisation",
+    "department": "Corporate IT",
+    "description": "Modernise the IT service desk for the telecom company by upgrading from a legacy ticketing system to a modern ITSM platform. Implement incident management, service request fulfilment, change management (CAB workflows), problem management, and knowledge base. Integrate with Active Directory, monitoring tools (Nagios/Zabbix), and the employee portal. Deploy an AI-powered chatbot for Tier-0 self-service resolution. Target first-call resolution rate above 70%. Implement SLA dashboards and automated escalations. Deploy ServiceNow ITSM with custom integrations."
+  },
+  {
+    "project_id": "CIT_003",
+    "project_name": "Network Monitoring & NOC Platform",
+    "department": "Corporate IT",
+    "description": "Build a unified network monitoring platform for the telecom company's corporate IT infrastructure covering LAN, WAN, data centres, cloud, and remote sites. Implement real-time performance monitoring, automated alerting, capacity trend analysis, and root cause analysis tooling. Integrate with existing Cisco, Juniper, and Fortinet network devices via SNMP, Syslog, and APIs. Replace fragmented monitoring tools with a single-pane-of-glass NOC dashboard. Deploy on Grafana + Prometheus + Elasticsearch stack with Python automation scripts."
+  },
+  {
+    "project_id": "CIT_004",
+    "project_name": "Identity & Access Management (IAM) Platform",
+    "department": "Corporate IT",
+    "description": "Implement an enterprise Identity and Access Management platform for the telecom company covering single sign-on (SSO), multi-factor authentication (MFA), privileged access management (PAM), role-based access control (RBAC), and identity governance. Integrate with Active Directory, all corporate applications (SAP, Oracle, Salesforce, custom apps), and the HR system for joiner-mover-leaver automation. Conduct access certification campaigns quarterly. Deploy Azure Active Directory Premium P2 with CyberArk for PAM and a custom React access request portal."
+  },
+  {
+    "project_id": "CIT_005",
+    "project_name": "Data Centre Migration to Hybrid Cloud",
+    "department": "Corporate IT",
+    "description": "Migrate the telecom company's on-premises data centre to a hybrid cloud architecture. Assess and categorise 200+ workloads (rehost, replatform, refactor, retire). Migrate ERP, email, collaboration tools, and development environments to Azure. Retain network core systems and billing on-premises for compliance. Implement cloud governance, cost management, and security policies. Set up a hybrid connectivity model using ExpressRoute. Target 40% infrastructure cost reduction. Use Azure Migrate, Terraform, and Ansible for automation."
+  },
+  {
+    "project_id": "CIT_006",
+    "project_name": "Cybersecurity Incident Response Platform",
+    "department": "Corporate IT",
+    "description": "Build a Security Operations Centre (SOC) platform for the telecom company incorporating SIEM, SOAR, threat intelligence, and incident response playbooks. Ingest logs from network devices, endpoints, cloud platforms, and applications into Microsoft Sentinel. Implement automated triage and response playbooks for common attack patterns (phishing, malware, insider threat). Establish a 24/7 monitoring capability with escalation procedures. Integrate with vulnerability management tools (Tenable/Qualys) and the IT service desk. Achieve ISO 27001 alignment."
+  },
+  {
+    "project_id": "CIT_007",
+    "project_name": "Mobile Device Management (MDM) Platform",
+    "department": "Corporate IT",
+    "description": "Implement a Mobile Device Management solution for the telecom company to centrally manage 3,000+ corporate smartphones, tablets, and laptops. The platform must support device enrolment, policy enforcement (encryption, screen lock, app allow-listing), remote wipe, app distribution, and compliance reporting. Integrate with Azure AD and the existing endpoint security tools. Support both company-owned and BYOD devices. Deploy Microsoft Intune with Defender for Endpoint and a custom compliance dashboard for the IT security team."
+  },
+  {
+    "project_id": "CIT_008",
+    "project_name": "Software Licence Management System",
+    "department": "Corporate IT",
+    "description": "Implement a software asset and licence management system for the telecom company to track entitlements vs. actual usage across 150+ software titles. The system must perform discovery and reconciliation, identify over-licenced and under-licenced positions, manage renewal calendars, and support vendor audit defence. Integrate with the IT asset management system and procurement for licence purchase orders. Provide a software spend dashboard and optimisation recommendations. Deploy Snow Software or Flexera integrated with the existing ITSM platform."
+  },
+  {
+    "project_id": "CIT_009",
+    "project_name": "IT Procurement & Vendor Onboarding Portal",
+    "department": "Corporate IT",
+    "description": "Build a self-service IT procurement portal for the telecom company enabling employees to request hardware, software, and services through a catalogued, policy-compliant workflow. Include approval chains based on item category and cost threshold, automatic PO generation in SAP, vendor onboarding with technical and security assessment questionnaires, and delivery tracking. Integrate with the IT asset management system for automatic asset registration upon receipt. Build with React, Python, and SAP MM integration."
+  },
+  {
+    "project_id": "CIT_010",
+    "project_name": "Business Continuity & Disaster Recovery Platform",
+    "department": "Corporate IT",
+    "description": "Implement a Business Continuity Management (BCM) and Disaster Recovery (DR) platform for the telecom company's critical IT systems. Conduct BIA for 50 critical systems. Implement Azure Site Recovery for DR of key workloads. Build a BCM portal for plan documentation, DR test scheduling, exercise management, and incident coordination. Automate DR runbooks using Azure Automation. Establish RPO of 1 hour and RTO of 4 hours for Tier-1 systems. Integrate with the IT service desk for incident management during DR events."
+  },
+  {
+    "project_id": "RA_001",
+    "project_name": "Revenue Leakage Detection System",
+    "department": "Revenue Assurance",
+    "description": "Build an automated revenue leakage detection platform for the telecom company to identify unbilled, misbilled, and under-billed events across voice, data, roaming, and value-added services. The system must correlate network usage records (CDRs/xDRs) against billing system records and customer contracts, flag discrepancies, and route them to the appropriate team for investigation. Include case management, root cause classification, financial impact quantification, and leakage trend dashboards. Build using Python, Apache Kafka, and Elasticsearch with a React management console."
+  },
+  {
+    "project_id": "RA_002",
+    "project_name": "Fraud Management Platform",
+    "department": "Revenue Assurance",
+    "description": "Implement a real-time telecom fraud management system to detect and block fraudulent activity including international revenue share fraud (IRSF), subscription fraud, SIM swap fraud, roaming fraud, and PBX hacking. The platform must analyse CDRs in near real-time, apply rule-based and ML-based fraud detection models, automatically block suspicious accounts, and generate fraud alerts for the RA team. Include case management and financial impact reporting. Integrate with the network's real-time charging system and customer CRM. Deploy on a Kafka + Spark streaming architecture."
+  },
+  {
+    "project_id": "RA_003",
+    "project_name": "Interconnect Billing Reconciliation Engine",
+    "department": "Revenue Assurance",
+    "description": "Build an automated reconciliation engine for the telecom company's interconnect settlements with 200+ national and international carriers. The system must ingest CDR files from the mediation layer and operator files in various formats (TAP3, NRTRDE, CSV), perform bilateral reconciliation, identify and classify discrepancies, generate dispute letters, and track resolution. Include financial exposure reporting by carrier and trend analysis. Build with Python, PostgreSQL, and a React dispute management portal. Integrate with the billing system for settlement posting."
+  },
+  {
+    "project_id": "RA_004",
+    "project_name": "Mediation Data Validation Engine",
+    "department": "Revenue Assurance",
+    "description": "Implement a data validation layer in the mediation platform to ensure completeness, accuracy, and timeliness of all usage records (CDRs, EDRs, IPDRs) flowing from network elements to the billing system. The engine must detect duplicate records, missing records, format errors, and rating anomalies. Implement completeness checks comparing network counters vs. mediated records. Provide dashboards showing mediation data quality KPIs and automated alerts for data gaps. Build using Python, Apache Flink, and Grafana integrated with the existing mediation platform."
+  },
+  {
+    "project_id": "RA_005",
+    "project_name": "Roaming Revenue Assurance Tool",
+    "department": "Revenue Assurance",
+    "description": "Build a specialised roaming revenue assurance platform to monitor and reconcile inbound and outbound roaming traffic. The system must validate TAP3/NRTRDE file exchanges with roaming partners, reconcile billed amounts against clearing house settlements (through GSMA/Syniverse), detect overcharging and undercharging, and track IOT rate validity. Include roaming revenue dashboards by partner, service type, and geography. Automate dispute notifications to roaming partners. Build with Python, PostgreSQL, and a React dashboard. Integrate with the GSMA clearing house API."
+  },
+  {
+    "project_id": "RA_006",
+    "project_name": "RA Reporting & KPI Dashboard",
+    "department": "Revenue Assurance",
+    "description": "Build a centralised Revenue Assurance performance dashboard for the telecom company consolidating KPIs across all RA domains: leakage rate, fraud loss, reconciliation accuracy, case closure rate, and recovered revenue. Automate data feeds from the billing system, fraud management platform, mediation engine, and reconciliation tools. Provide drill-down capability from executive summary to root-cause detail. Include month-over-month trend analysis and benchmark comparisons. Build on Power BI with Python data pipelines and a PostgreSQL data warehouse."
+  },
+  {
+    "project_id": "RA_007",
+    "project_name": "Subscriber Usage Audit System",
+    "department": "Revenue Assurance",
+    "description": "Develop a subscriber usage audit system to independently verify that customers are being charged correctly for their actual usage of voice, SMS, data, roaming, and VAS services. The system must reproduce rating logic independently from the billing system and compare computed charges against billed charges at the subscriber level. Flag over-billed and under-billed subscribers. Generate regulatory reports on billing accuracy. Integrate with the mediation layer for raw CDRs and the billing system for invoice data. Build with Python, Spark, and a React audit portal."
+  },
+  {
+    "project_id": "RA_008",
+    "project_name": "Policy Control & Charging Validation System",
+    "department": "Revenue Assurance",
+    "description": "Implement a validation system for the telecom company's policy control and real-time charging functions (PCRF/OCS) to ensure that data plan policies, throttling rules, and online charging are applied correctly for all subscribers. The system must validate that activated plans match subscriber database records, that usage thresholds trigger correct policy actions, and that online charging deductions match rated CDRs. Include alerting for policy mismatches and financial impact estimation. Build with Python and integrate with the PCRF/OCS via DIAMETER protocol adapters."
+  },
+  {
+    "project_id": "RA_009",
+    "project_name": "Order-to-Cash Assurance Platform",
+    "department": "Revenue Assurance",
+    "description": "Build an order-to-cash assurance system to verify that every customer order (new activation, upgrade, add-on, bundle change) results in correct provisioning, correct billing configuration, and correct first invoice. The platform must correlate order management system events with CRM, provisioning, and billing records. Identify stuck orders, provisioning failures, billing misconfigurations, and first-bill errors. Include SLA tracking for order fulfilment and financial impact reporting. Build with Python, Apache Kafka, and Elasticsearch. Integrate with the OMS, CRM, and billing system."
+  },
+  {
+    "project_id": "RA_010",
+    "project_name": "AI-Based Revenue Anomaly Detection",
+    "department": "Revenue Assurance",
+    "description": "Develop an AI-driven anomaly detection system to proactively identify unusual revenue patterns across the telecom company's full revenue stack. Apply time-series forecasting, clustering, and isolation forest models to detect sudden drops in revenue, unusual CDR volumes, pricing anomalies, and configuration errors before they become large leakage events. Train models on 3 years of historical billing and usage data. Build a real-time scoring pipeline on Kafka + Python. Provide an anomaly management dashboard with confidence scores and recommended investigations."
+  },
+  {
+    "project_id": "ADM_001",
+    "project_name": "Document Management System",
+    "department": "Administration",
+    "description": "Implement a centralised Document Management System (DMS) for the telecom company to manage corporate documents including policies, procedures, contracts, regulatory correspondence, and board papers. The system must support version control, metadata tagging, full-text search, access permissions by department and document classification, retention policies, and e-signature integration. Replace shared drives and email-based document distribution. Integrate with Microsoft 365 and the legal contract management system. Build on SharePoint Online with a custom React metadata portal and Power Automate workflows."
+  },
+  {
+    "project_id": "ADM_002",
+    "project_name": "Facilities Management Portal",
+    "department": "Administration",
+    "description": "Build a facilities management portal for the telecom company's headquarters and regional offices covering maintenance request management, preventive maintenance scheduling, space management, visitor management, parking allocation, and utilities tracking. Integrate with the building management system (BMS) for automated fault alerts. Include dashboards for facilities costs, maintenance SLA performance, and space utilisation. Support work orders, vendor assignments, and completion tracking. Build with React, FastAPI, and PostgreSQL. Integrate with IoT sensors for real-time space occupancy data."
+  },
+  {
+    "project_id": "ADM_003",
+    "project_name": "Corporate Travel Management System",
+    "department": "Administration",
+    "description": "Implement a corporate travel management system for the telecom company enabling employees to book flights, hotels, and ground transport within policy, submit and track visa applications, and manage travel expense reimbursement. The system must enforce travel policy (cabin class, hotel star rating, advance booking requirements), integrate with preferred travel management companies (TMCs), and provide travel spend analytics by department and individual. Include duty of care alerts for travel to high-risk destinations. Build with React frontend and Python backend integrated with the expense management system."
+  },
+  {
+    "project_id": "ADM_004",
+    "project_name": "Fleet Management System",
+    "department": "Administration",
+    "description": "Build a fleet management system for the telecom company's corporate vehicle fleet of 300+ vehicles used for field operations, executive transport, and logistics. The system must track vehicle location via GPS, manage maintenance schedules, fuel consumption, driver assignments, licence renewals, insurance expiries, and traffic violations. Include trip logging, driver behaviour scoring, and fleet cost reporting. Integrate with fuel card providers and insurance systems. Build with React, FastAPI, PostgreSQL, and GPS device API integrations."
+  },
+  {
+    "project_id": "ADM_005",
+    "project_name": "Corporate Procurement Portal",
+    "department": "Administration",
+    "description": "Build a self-service procurement portal for the telecom company covering non-technical and indirect procurement: office supplies, facility services, catering, printing, and miscellaneous operational items. The portal must support a product catalogue, budget checks, multi-level approval workflows, PO generation in SAP, and vendor invoice matching. Include spend dashboards by category and cost centre. Implement preferred supplier catalogues and budget threshold alerts. Build with React, Python, and SAP MM integration."
+  },
+  {
+    "project_id": "ADM_006",
+    "project_name": "Meeting Room & Workspace Booking System",
+    "department": "Administration",
+    "description": "Deploy a smart meeting room and hot-desk booking system for the telecom company's multi-floor headquarters. The system must allow employees to find and book available rooms and desks via web and mobile, view floor plans, check equipment availability, and receive calendar invites. Integrate with Microsoft Outlook/Teams calendars, display panels outside rooms, and occupancy sensors. Include utilisation analytics for facilities planning and no-show management. Deploy on Microsoft 365 with a custom React booking interface and Power Platform integrations."
+  },
+  {
+    "project_id": "ADM_007",
+    "project_name": "Visitor Management System",
+    "department": "Administration",
+    "description": "Implement a digital visitor management system for the telecom company's offices to replace paper sign-in books. The system must support pre-registration by hosts, visitor self-check-in via kiosk, ID scanning, visitor badge printing, NDA e-signature, host notification via SMS/email, and evacuation list management. Integrate with access control systems for time-limited building access and Active Directory for host lookup. Include visit logs, contractor tracking, and compliance reporting for physical security audits. Build with React, Python, and Raspberry Pi kiosk integration."
+  },
+  {
+    "project_id": "ADM_008",
+    "project_name": "Stationery & Office Supplies Management",
+    "department": "Administration",
+    "description": "Build an inventory management system for the telecom company's office stationery, printed materials, and consumables. The system must track stock levels across all offices, trigger reorder alerts, manage supplier orders, receive deliveries, and allow employees to request items via a self-service catalogue. Include cost allocation by department, consumption trend analysis, and budget vs. actual reporting. Eliminate stock-outs and overstocking. Integrate with the SAP MM procurement module. Build with React, FastAPI, and PostgreSQL."
+  },
+  {
+    "project_id": "LEG_001",
+    "project_name": "Contract Lifecycle Management System",
+    "department": "Legal",
+    "description": "Implement a Contract Lifecycle Management (CLM) system for the telecom company to manage the full contract lifecycle: request initiation, template selection, authoring, negotiation redlines, approval workflow, e-signature, repository storage, obligation tracking, renewal alerts, and post-signature amendments. The system must support contracts with vendors, customers, partners, employees, and regulators. Include a clause library for legal-approved standard language. Integrate with SAP for vendor and customer master data. Build on Ironclad or a custom React/Python platform."
+  },
+  {
+    "project_id": "LEG_002",
+    "project_name": "Regulatory Compliance Tracker",
+    "department": "Legal",
+    "description": "Build a regulatory compliance management system for the telecom company to track obligations arising from telecom regulator requirements, data protection laws, consumer protection rules, anti-money laundering regulations, and competition law. The system must map each regulatory requirement to responsible owners, track compliance status, manage evidence of compliance, generate regulatory deadline calendars, and report to the Compliance Committee. Integrate with the document management system for regulatory correspondence. Build with React, FastAPI, and PostgreSQL."
+  },
+  {
+    "project_id": "LEG_003",
+    "project_name": "Legal Matter & Case Management System",
+    "department": "Legal",
+    "description": "Implement a legal matter management system for the telecom company's in-house legal team to track all active legal matters: litigation, regulatory investigations, arbitrations, and legal advisory requests. The system must support matter intake, assignment to counsel (internal and external), document management, key date tracking, cost management (internal and external legal spend), and executive reporting on legal risk exposure. Integrate with the document management system and finance for legal budget vs. actuals. Build with React and Python on Azure."
+  },
+  {
+    "project_id": "LEG_004",
+    "project_name": "Data Privacy & GDPR Compliance Portal",
+    "department": "Legal",
+    "description": "Build a data privacy compliance platform for the telecom company to manage GDPR and local data protection law obligations. The system must support Records of Processing Activities (RoPA) maintenance, Data Protection Impact Assessments (DPIAs), subject access request (SAR) fulfilment workflows, data breach incident management and regulatory notification, consent management for marketing, and third-party data processor agreements. Integrate with the HR system, CRM, and billing system for data mapping. Build with React, Python, and PostgreSQL."
+  },
+  {
+    "project_id": "LEG_005",
+    "project_name": "Intellectual Property Management System",
+    "department": "Legal",
+    "description": "Develop an IP management system for the telecom company to track trademark registrations, patents, domain names, software licences, and brand assets across all operating markets. The system must manage renewal deadlines, agent correspondence, registration certificates, opposition proceedings, and licence agreement terms. Include an IP portfolio valuation dashboard. Integrate with the document management system and the finance system for IP-related cost tracking. Build with React, FastAPI, and PostgreSQL."
+  },
+  {
+    "project_id": "LEG_006",
+    "project_name": "Litigation Management System",
+    "department": "Legal",
+    "description": "Build a litigation management platform for the telecom company to track all active court cases, arbitrations, and regulatory proceedings. The system must manage case filing details, hearing dates, opposing counsel, legal strategies, document bundles, judgment tracking, and financial provision calculations. Integrate with the legal matter management system and Finance for provisioning. Include a litigation risk dashboard showing total financial exposure by jurisdiction and case type. Build with React, Python, and a secure document vault."
+  },
+  {
+    "project_id": "LEG_007",
+    "project_name": "Corporate Governance Portal",
+    "department": "Legal",
+    "description": "Implement a corporate governance portal for the telecom company to manage board and committee operations: meeting agendas, board paper distribution, minutes approval, resolution tracking, director disclosure forms, and statutory filing calendar. Integrate with the document management system for secure board paper distribution. Support electronic voting and digital signatures for resolutions. Include an entity management module for tracking subsidiary structures, directorships, and statutory compliance deadlines. Build on Diligent or a custom React/Python solution."
+  },
+  {
+    "project_id": "LEG_008",
+    "project_name": "Regulatory Reporting Automation",
+    "department": "Legal",
+    "description": "Automate the production and submission of regulatory reports required by the telecom regulator, including licence condition reports, quality of service reports, spectrum usage declarations, interconnection data, and consumer complaint statistics. Replace manual data gathering from multiple systems with automated data pipelines. Implement report generation in regulator-specified formats, approval workflows before submission, submission tracking, and regulator correspondence management. Build with Python ETL pipelines, a React submission portal, and integrations to billing, network, and CRM systems."
+  },
+  {
+    "project_id": "BIL_001",
+    "project_name": "Postpaid Billing Engine Upgrade",
+    "department": "Billing",
+    "description": "Upgrade the telecom company's postpaid billing engine to support new service types including 5G data plans, IoT subscriptions, fixed broadband bundles, and convergent consumer packages. The upgraded engine must handle complex rating logic (volume tiers, time-of-day pricing, shared bundles), IFRS 15 revenue recognition, real-time credit limit controls, and generate itemised bills in PDF and digital format. Migrate 2 million postpaid subscribers from the legacy billing system. Build on Oracle BRM or Amdocs Ensim with a custom migration toolset in Python."
+  },
+  {
+    "project_id": "BIL_002",
+    "project_name": "Prepaid Recharge & Balance Management Platform",
+    "department": "Billing",
+    "description": "Rebuild the prepaid recharge and balance management platform for the telecom company to support digital-first recharging via mobile app, USSD, IVR, e-wallet, and voucher redemption. The platform must handle real-time balance deduction, bonus crediting, validity extension, promotional bucket management, and low-balance notifications. Support 10 million prepaid subscribers with sub-second transaction processing. Integrate with online charging system (OCS), e-wallet providers, and the customer care portal. Build on a high-availability Kubernetes microservices architecture."
+  },
+  {
+    "project_id": "BIL_003",
+    "project_name": "E-Billing & Bill Presentment Portal",
+    "department": "Billing",
+    "description": "Build a digital bill presentment and e-billing portal for the telecom company enabling customers to view, download, and pay their bills online. The portal must display itemised bill details, usage breakdown, plan summary, and payment history. Support PDF download, email delivery, and push notifications for new bills. Include online payment via credit/debit card, bank transfer, and e-wallet. Integrate with the billing engine, payment gateway, and CRM. Build a responsive React SPA with a FastAPI backend, targeting 80% paperless bill adoption within 12 months."
+  },
+  {
+    "project_id": "BIL_004",
+    "project_name": "Roaming Bill Reconciliation System",
+    "department": "Billing",
+    "description": "Build a roaming billing reconciliation system to ensure that charges applied to customers for outbound roaming usage correctly reflect GSMA IOT rates, roaming partner agreements, and customer plan entitlements. The system must compare CDRs rated by the billing engine against expected charges based on partner rate tables, identify overcharges, generate customer credit notes for confirmed overcharges, and provide regulatory compliance reports on roaming billing accuracy. Integrate with the clearing house, billing engine, and CRM. Build with Python and PostgreSQL."
+  },
+  {
+    "project_id": "BIL_005",
+    "project_name": "Enterprise Customer Billing Dashboard",
+    "department": "Billing",
+    "description": "Build a self-service billing dashboard for enterprise and B2B customers of the telecom company, allowing corporate account administrators to view consolidated invoices across multiple lines and services, download itemised usage reports, manage cost centre allocation, dispute charges, and view payment history. Support multi-currency invoicing for multinational clients. Integrate with the billing engine, SAP AR, and the B2B CRM. Provide account managers with a parallel view for client support. Build with React frontend and FastAPI backend."
+  },
+  {
+    "project_id": "BIL_006",
+    "project_name": "Dunning & Collections Automation",
+    "department": "Billing",
+    "description": "Automate the dunning and collections process for the telecom company's postpaid and enterprise customers. The system must execute multi-stage dunning workflows (reminder SMS/email, final notice, service restriction, suspension, termination) based on configurable days-past-due and customer segment rules. Integrate with the billing engine for debt aging data, the provisioning system for service restriction commands, and the CRM for customer contact history. Include a collections agent workbench, payment arrangement management, and bad debt reporting. Build with Python, React, and Kafka."
+  },
+  {
+    "project_id": "BIL_007",
+    "project_name": "Invoice Dispute Management System",
+    "department": "Billing",
+    "description": "Build an invoice dispute management system for the telecom company to handle billing complaints from retail and enterprise customers. The system must support dispute intake via CRM, web portal, and call centre, automated validation against billing records, credit note issuance for confirmed errors, dispute escalation workflows, regulatory SLA tracking (resolution within mandated timeframes), and trend analysis to identify systematic billing errors. Integrate with the billing engine, CRM, and finance AR. Build with React, FastAPI, and PostgreSQL."
+  },
+  {
+    "project_id": "BIL_008",
+    "project_name": "Partner & Wholesale Settlement System",
+    "department": "Billing",
+    "description": "Implement a partner settlement system for the telecom company to automate billing and settlement with wholesale partners including MVNOs, content providers, ICT resellers, and roaming partners. The system must handle usage aggregation, rate card application, billing cycle management, invoice generation in partner-specific formats, dispute handling, and payment reconciliation. Integrate with the mediation layer for usage data and the finance accounts receivable system. Build with Python, PostgreSQL, and a React partner billing portal."
+  },
+  {
+    "project_id": "BIL_009",
+    "project_name": "Convergent Billing Platform",
+    "department": "Billing",
+    "description": "Implement a convergent billing platform to unify billing across all telecom product lines: mobile postpaid, mobile prepaid, fixed broadband, TV, IoT, and enterprise services into a single customer bill. The platform must support cross-service discounts, bundle billing, shared plan management, and household account consolidation. Enable a single bill for customers with multiple services. Migrate 500,000 existing customers to the convergent bill. Ensure backward compatibility with all payment and CRM systems. Build on Amdocs Convergent Billing or equivalent."
+  },
+  {
+    "project_id": "BIL_010",
+    "project_name": "Real-Time Usage & Charging Analytics",
+    "department": "Billing",
+    "description": "Build a real-time usage and charging analytics platform providing customers and internal teams with up-to-the-minute visibility into data consumption, voice minutes, SMS usage, and remaining bundle balances. Display usage trends, overage alerts, and spending forecasts. The platform must process CDRs from the mediation layer in real time using Kafka and Spark Streaming. Expose APIs for the mobile app, USSD, and customer care portal. Include a self-care analytics dashboard and manager view for enterprise accounts."
+  },
+  {
+    "project_id": "ERP_001",
+    "project_name": "SAP S/4HANA Migration",
+    "department": "ERP",
+    "description": "Migrate the telecom company's existing SAP ECC 6.0 system to SAP S/4HANA 2023. The migration must cover FI (Financial Accounting), CO (Controlling), MM (Materials Management), SD (Sales & Distribution), PM (Plant Maintenance), and HR modules. Conduct a full system conversion using SAP's SUM/DMO tool. Reimplement Z-code customisations using ABAP OO and BAdIs. Migrate 10 years of financial data. Implement SAP Fiori UX for all key user roles. Conduct parallel run for 3 months. Ensure integration with billing system and CRM remains intact."
+  },
+  {
+    "project_id": "ERP_002",
+    "project_name": "Inventory & Warehouse Management System",
+    "department": "ERP",
+    "description": "Implement an inventory and warehouse management system for the telecom company's network equipment stores and logistics warehouses. The system must manage receiving, putaway, picking, packing, and dispatch workflows. Support barcode and RFID scanning for real-time stock tracking. Integrate with the SAP MM procurement module and the network planning tool for demand-driven replenishment. Implement min/max stock levels, cycle counting, and automated reorder triggers. Provide warehouse manager dashboards for stock accuracy and throughput KPIs. Build on SAP EWM."
+  },
+  {
+    "project_id": "ERP_003",
+    "project_name": "Supply Chain Optimisation Platform",
+    "department": "ERP",
+    "description": "Build a supply chain optimisation platform for the telecom company to improve demand forecasting, procurement planning, and supplier performance for network equipment, SIM cards, handsets, and operational consumables. Implement AI-driven demand forecasting models, vendor lead time tracking, safety stock optimisation, and supply risk scoring. Integrate with SAP MM for purchase order data and the warehouse management system for inventory levels. Provide supply chain analytics dashboards for the procurement and operations teams. Build with Python, machine learning models, and Power BI."
+  },
+  {
+    "project_id": "ERP_004",
+    "project_name": "Vendor Management & Performance Portal",
+    "department": "ERP",
+    "description": "Build a centralised vendor management portal for the telecom company covering vendor registration, prequalification, performance scorecards, contract compliance tracking, and strategic partnership reviews. The portal must allow vendors to self-onboard with document submission (trade licence, insurance, financial statements), enable quarterly performance ratings by category managers, and flag underperforming vendors for remediation plans. Integrate with SAP for PO and payment data. Build with React, FastAPI, and PostgreSQL with SAP integration via RFC."
+  },
+  {
+    "project_id": "ERP_005",
+    "project_name": "Fixed Asset Register & Depreciation System",
+    "department": "ERP",
+    "description": "Implement a fixed asset register and depreciation management system for the telecom company covering network assets, IT equipment, buildings, vehicles, and right-of-use assets (IFRS 16 leases). The system must support multiple depreciation methods, componentisation of network assets per IAS 16, asset tagging with barcodes, physical verification workflows, and disposal management. Integrate with the procurement system for automatic asset creation from capitalised POs. Build on SAP FI-AA with customised depreciation areas for management and statutory reporting."
+  },
+  {
+    "project_id": "ERP_006",
+    "project_name": "Project Portfolio Management in ERP",
+    "department": "ERP",
+    "description": "Implement a Project Portfolio Management (PPM) module within the telecom company's ERP system to manage capital projects and internal IT projects. The module must support project creation, WBS structuring, budget assignment, resource booking, time recording, cost posting, milestone tracking, and project close-out. Integrate with Finance for budget control, HR for resource capacity, and the procurement system for project-related POs. Build on SAP PS (Project System) with a custom Fiori UX for project managers and a Power BI portfolio dashboard."
+  },
+  {
+    "project_id": "ERP_007",
+    "project_name": "ERP Reporting & Analytics Data Warehouse",
+    "department": "ERP",
+    "description": "Build an ERP reporting and analytics data warehouse for the telecom company to extract, transform, and load data from SAP into a centralised Azure Synapse data warehouse. Implement finance, procurement, HR, and supply chain data marts. Build Power BI semantic models and self-service dashboards for each business function. Replace 200+ legacy SAP report transactions with modern visualisations. Implement automated daily refresh pipelines using Azure Data Factory and dbt. Provide row-level security based on SAP organisational hierarchy."
+  },
+  {
+    "project_id": "ERP_008",
+    "project_name": "HR & Payroll ERP Integration",
+    "department": "ERP",
+    "description": "Integrate the telecom company's standalone HR and payroll system with the SAP ERP to ensure consistent employee master data, accurate payroll cost posting to Finance, and seamless expense reimbursement processing. Implement bidirectional APIs for employee data synchronisation, payroll journal posting automation to SAP FI, and cost centre allocation from HR org structure to financial controlling. Build middleware using Azure Integration Services (Logic Apps + API Management). Eliminate manual data re-entry between HR and Finance systems."
+  },
+  {
+    "project_id": "CRM_001",
+    "project_name": "Customer 360 View Platform",
+    "department": "CRM",
+    "description": "Build a unified Customer 360 platform for the telecom company aggregating data from CRM, billing, network, care, and loyalty systems to give customer-facing teams a single comprehensive view of each customer. The platform must display account summary, active services, billing history, payment status, service quality indicators, complaint history, and next best action recommendations. Feed data via real-time API integration with all source systems. Build on Salesforce Sales Cloud with a custom Lightning component for the 360 view, or a custom React/Python portal."
+  },
+  {
+    "project_id": "CRM_002",
+    "project_name": "Sales Force Automation System",
+    "department": "CRM",
+    "description": "Implement a Sales Force Automation (SFA) system for the telecom company's B2B and enterprise sales teams covering lead management, opportunity tracking, account management, quotation generation, approval workflows, and commission calculation. The system must support pipeline reporting, sales forecasting, and territory management. Integrate with the billing system for current customer spend data and the product catalogue for pricing. Include a mobile sales app for field sales agents. Deploy Salesforce Sales Cloud or Microsoft Dynamics 365 with custom integrations."
+  },
+  {
+    "project_id": "CRM_003",
+    "project_name": "Customer Complaint Management Portal",
+    "department": "CRM",
+    "description": "Build a multi-channel customer complaint management system for the telecom company handling complaints received via call centre, web, mobile app, social media, retail stores, and regulator. The system must support case creation, categorisation, priority assignment, SLA tracking (regulatory and internal), automated escalation, resolution workflows, and customer feedback surveys. Include complaint trend analytics by category, channel, and resolution time. Ensure regulatory compliance with telecom consumer complaint handling rules. Build with React, FastAPI, and PostgreSQL."
+  },
+  {
+    "project_id": "CRM_004",
+    "project_name": "Loyalty & Rewards Programme System",
+    "department": "CRM",
+    "description": "Build a loyalty and rewards management system for the telecom company's consumer customers. The system must support points accrual based on recharge, bill payment, and app usage, tier management (Silver, Gold, Platinum), rewards catalogue with physical and digital redemption, partner reward schemes (retail, fuel, airlines), and points expiry management. Integrate with the billing system, mobile app, and partner APIs. Include a loyalty analytics dashboard tracking programme ROI, active participants, and redemption rates. Build with React, Python, and Redis for real-time points processing."
+  },
+  {
+    "project_id": "CRM_005",
+    "project_name": "Customer Segmentation & Analytics Platform",
+    "department": "CRM",
+    "description": "Build a customer analytics and segmentation platform for the telecom company's marketing and commercial teams. The platform must aggregate customer data (demographics, ARPU, usage patterns, tenure, product holdings, and interaction history) and apply ML clustering to generate behavioural and value-based segments. Enable marketing teams to build segment-based audiences for campaigns. Provide churn risk scores, upsell propensity scores, and CLTV estimates. Build on Azure Machine Learning with Python pipelines, a feature store, and a React segment management UI."
+  },
+  {
+    "project_id": "CRM_006",
+    "project_name": "Field Sales Mobile Application",
+    "department": "CRM",
+    "description": "Build a mobile application for the telecom company's field sales agents and door-to-door sales force to manage leads, submit new connection applications, verify customer identity (ID scanning), check address coverage, select plans, and capture consent digitally. The app must work offline and sync when connectivity is restored. Include sales target tracking, commission dashboards, and daily briefing notifications. Integrate with the CRM, coverage database, and eKYC services. Build with React Native for iOS and Android with a FastAPI backend."
+  },
+  {
+    "project_id": "CRM_007",
+    "project_name": "Corporate Account Management Portal",
+    "department": "CRM",
+    "description": "Build a self-service corporate account management portal for enterprise and government customers of the telecom company. The portal must allow corporate administrators to manage employee lines, assign number groups, set spending limits, view consolidated usage reports, access invoices, raise service requests, and manage bulk plan changes. Include dedicated account manager contact and SLA performance reporting. Integrate with the CRM, billing, and provisioning systems. Build as a React SPA with a FastAPI backend, secured by corporate SSO integration."
+  },
+  {
+    "project_id": "CRM_008",
+    "project_name": "AI Chatbot & Virtual Assistant",
+    "department": "CRM",
+    "description": "Build and deploy an AI-powered chatbot and virtual assistant for the telecom company's customer-facing channels (website, mobile app, WhatsApp, and social media). The chatbot must handle common customer queries: balance checks, bill enquiries, plan upgrades, SIM replacement, complaint submission, and store locator. Integrate with the billing API, CRM, and provisioning system for real-time data retrieval. Implement Arabic and English NLU. Use handoff to live agent when confidence is below threshold. Build on Azure Bot Framework with OpenAI GPT for NLU and a Python orchestration layer."
+  },
+  {
+    "project_id": "CRM_009",
+    "project_name": "Customer Churn Prediction System",
+    "department": "CRM",
+    "description": "Build a machine learning-based churn prediction system for the telecom company's consumer and SME customer base. The system must ingest features from CRM, billing, network quality, and care interaction data to generate daily churn propensity scores for all active subscribers. Train gradient boosting and neural network models on 2 years of historical churn data. Feed high-risk churners to the retention campaign management system. Build model explainability dashboards for the commercial team. Deploy on Azure ML with a Python scoring pipeline and Power BI reporting."
+  },
+  {
+    "project_id": "CRM_010",
+    "project_name": "Campaign Management Platform",
+    "department": "CRM",
+    "description": "Implement a campaign management platform for the telecom company's marketing team to design, execute, and measure multi-channel marketing campaigns (SMS, email, push notification, IVR, and social). The platform must support audience segmentation from the customer analytics platform, A/B testing, campaign scheduling, personalisation, regulatory opt-out management, and ROI measurement. Integrate with the CRM, loyalty system, and billing for campaign response attribution. Deploy on Salesforce Marketing Cloud or Adobe Campaign with custom API integrations."
+  },
+  {
+    "project_id": "COM_001",
+    "project_name": "Internal Communications Portal",
+    "department": "Communications",
+    "description": "Build a modern internal communications portal for the telecom company replacing fragmented email newsletters and intranet pages. The portal must support targeted news publishing by department and location, CEO video messages, town hall event management, employee polls and surveys, a social feed for employee recognition, and a company calendar. Integrate with Microsoft Teams and Outlook for push notifications. Include analytics on content engagement and readership. Build on SharePoint Online with a custom React interface and Viva Connections integration for Teams."
+  },
+  {
+    "project_id": "COM_002",
+    "project_name": "Corporate Website Redesign & CMS",
+    "department": "Communications",
+    "description": "Redesign and rebuild the telecom company's corporate website covering investor relations, sustainability, careers, media centre, and corporate overview sections. The new site must be mobile-first, WCAG 2.1 AA accessible, SEO-optimised, and support Arabic and English. Implement a headless CMS (Contentful or Sanity) for non-technical content management. Integrate with the recruitment platform for live job listings, the investor relations document repository, and the press release distribution service. Build with Next.js, Tailwind CSS, and Vercel deployment."
+  },
+  {
+    "project_id": "COM_003",
+    "project_name": "PR & Media Monitoring Dashboard",
+    "department": "Communications",
+    "description": "Build a PR and media monitoring dashboard for the telecom company's corporate communications team to track brand mentions, news coverage, competitor activity, and analyst commentary across print, online, broadcast, and social media. The dashboard must provide sentiment analysis, share of voice metrics, journalist and influencer mapping, and coverage reports for the executive team. Integrate with media monitoring APIs (Meltwater, Cision) and social listening tools. Automate daily and weekly briefing report generation. Build with React frontend and Python data pipeline."
+  },
+  {
+    "project_id": "COM_004",
+    "project_name": "Employee Engagement Platform",
+    "department": "Communications",
+    "description": "Implement an employee engagement and culture platform for the telecom company enabling peer recognition, values-based awards, employee pulse surveys, engagement analytics, and two-way feedback channels between employees and leadership. The platform must integrate with the HR system for org structure, the internal communications portal, and Microsoft Teams. Include executive dashboards tracking engagement scores by department and location. Gamify recognition with leaderboards and milestone badges. Deploy on Viva Engage (Yammer) or a custom React/Python solution."
+  },
+  {
+    "project_id": "COM_005",
+    "project_name": "Digital Signage Management System",
+    "department": "Communications",
+    "description": "Implement a centralised digital signage management platform for the telecom company's offices, retail stores, and customer care centres. The system must allow the communications team to remotely manage screen content (promotions, KPIs, news, emergency notices) across 200+ displays. Support scheduling, zone-based content targeting, multi-format media (video, images, live data feeds), and emergency broadcast override. Integrate with the internal news portal for automatic content feeds. Build on a cloud-based CMS (Screenly, Rise Vision) with custom API connectors."
+  },
+  {
+    "project_id": "COM_006",
+    "project_name": "Crisis Communications Management System",
+    "department": "Communications",
+    "description": "Build a crisis communications management platform for the telecom company enabling rapid, coordinated response to network outages, data breaches, regulatory investigations, and reputational incidents. The system must support crisis playbook management, stakeholder notification workflows, spokespersons briefing management, media statement approvals, social media monitoring alerts, and post-crisis review documentation. Include a 24/7 escalation alert system integrated with Microsoft Teams and SMS. Build with React, FastAPI, and a secure document repository."
+  },
+  {
+    "project_id": "COM_007",
+    "project_name": "Social Media Monitoring & Analytics Platform",
+    "department": "Communications",
+    "description": "Build a social media monitoring and analytics platform for the telecom company covering Twitter/X, Instagram, Facebook, LinkedIn, TikTok, and regional platforms. The system must provide real-time brand mention tracking, sentiment analysis, complaint detection and routing to CRM, influencer identification, campaign performance measurement, and competitive benchmarking. Use NLP models fine-tuned for Arabic and English. Integrate with the CRM for complaint routing. Build a Python data ingestion pipeline with an Azure ML sentiment model and a React analytics dashboard."
+  },
+  {
+    "project_id": "COM_008",
+    "project_name": "Brand Asset Management System",
+    "department": "Communications",
+    "description": "Implement a Digital Asset Management (DAM) system for the telecom company to centralise and govern all brand assets including logos, brand guidelines, photography, videos, templates, and marketing collateral. The system must support version control, usage rights tracking, asset expiry management, and self-service download for approved users across internal teams and agencies. Include asset usage analytics and brand consistency scoring. Integrate with the creative agency workflow system. Build on Bynder or a custom React/Python DAM with Azure Blob Storage."
+  },
+  {
+    "project_id": "PRC_001",
+    "project_name": "e-Procurement Platform",
+    "department": "Procurement",
+    "description": "Implement an end-to-end e-procurement platform for the telecom company covering the full source-to-pay process: sourcing events (RFIs, RFPs, reverse auctions), contract awards, purchase requisitions, purchase orders, goods receipts, and invoice matching. The platform must enforce category-specific approval workflows, spending policies, and budget checks. Integrate with SAP FI/MM for financial data and the vendor management portal. Target 100% of indirect procurement through the system within 12 months. Deploy Ariba or Coupa integrated with SAP."
+  },
+  {
+    "project_id": "PRC_002",
+    "project_name": "Supplier Onboarding & Qualification System",
+    "department": "Procurement",
+    "description": "Build a supplier onboarding and qualification platform for the telecom company enabling new and existing vendors to register, submit qualification documents (company registration, financial statements, insurance, certifications, references), and complete technical and commercial assessments. The system must automate document verification, expiry tracking, and requalification triggers. Include a supplier portal for self-service updates. Integrate with the procurement platform and SAP vendor master. Build with React, FastAPI, and PostgreSQL."
+  },
+  {
+    "project_id": "PRC_003",
+    "project_name": "Contract & SLA Monitoring System",
+    "department": "Procurement",
+    "description": "Build a contract and SLA performance monitoring system for the telecom company to track supplier obligations, KPI delivery, and SLA penalties across critical vendor contracts. The system must import contract terms and SLA thresholds, receive performance data from operational systems (network, IT, facilities), calculate penalty credits, and alert category managers to underperformance. Include contract renewal tracking and vendor performance scorecards. Integrate with the contract management system and SAP for penalty credit processing. Build with React and Python."
+  },
+  {
+    "project_id": "PRC_004",
+    "project_name": "Purchase Order Automation System",
+    "department": "Procurement",
+    "description": "Automate the purchase order process for the telecom company from approved purchase requisition to vendor-acknowledged PO. The system must auto-generate POs in SAP based on approved requisitions, route to vendor via email and supplier portal, track acknowledgements, manage amendments and cancellations, and reconcile against delivery notes. Include PO status dashboards for requestors and procurement team. Implement exception alerting for unacknowledged POs and delivery delays. Build using SAP MM workflows with a custom React monitoring dashboard."
+  },
+  {
+    "project_id": "PRC_005",
+    "project_name": "Spend Analytics & Category Intelligence Platform",
+    "department": "Procurement",
+    "description": "Build a spend analytics platform for the telecom company's procurement function to analyse and optimise total procurement spend of AED 2 billion+ annually. The platform must classify spend by category, supplier, cost centre, and business unit using AI-based spend classification. Provide opportunity identification for consolidation, renegotiation, and compliance analytics. Include supplier concentration risk analysis and maverick spend detection. Integrate with SAP FI/MM and the procurement platform. Build with Python, dbt, Azure Synapse, and Power BI."
+  },
+  {
+    "project_id": "PRC_006",
+    "project_name": "Vendor Risk Assessment Platform",
+    "department": "Procurement",
+    "description": "Build a vendor risk assessment and monitoring platform for the telecom company to continuously evaluate financial, operational, cybersecurity, geopolitical, and compliance risks across the critical supplier base. The platform must automate risk questionnaire distribution, score vendor responses, integrate with external risk data providers (D&B, BitSight), and flag high-risk suppliers for escalation. Include a risk heat map and supply chain resilience dashboard. Integrate with the supplier qualification and contract management systems. Build with React, Python, and FastAPI."
+  },
+  {
+    "project_id": "PRC_007",
+    "project_name": "Import & Export Compliance Portal",
+    "department": "Procurement",
+    "description": "Build a trade compliance portal for the telecom company to manage import and export of network equipment, devices, and technology products. The system must track customs classification codes (HS codes), import duties and VAT calculations, import permit management, restricted party screening (sanctions lists), and export licence tracking. Integrate with customs brokerage APIs for shipment status and duty calculations. Include compliance dashboards and audit logs for customs authority inspections. Build with React, FastAPI, and PostgreSQL."
+  },
+  {
+    "project_id": "PRC_008",
+    "project_name": "ESG & Sustainability Reporting Platform",
+    "department": "Procurement",
+    "description": "Build a sustainability and ESG (Environmental, Social, Governance) reporting platform for the telecom company to track carbon emissions, energy consumption, water usage, waste management, diversity metrics, and supply chain sustainability. The system must aggregate data from facilities, fleet, network operations, and procurement to calculate Scope 1, 2, and 3 emissions. Automate ESG report generation aligned to GRI and TCFD frameworks. Include supplier sustainability scorecards and net-zero roadmap tracking. Build with Python, Azure, and Power BI."
+  }
+]
