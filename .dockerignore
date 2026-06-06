@@ -1,0 +1,42 @@
+# Python virtual environments (both)
+venv/
+venv2/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Frontend node_modules only — dist/ is committed and copied into the image
+frontend/node_modules/
+
+# Environment — NEVER bake real API keys into the image
+.env
+
+# Logs and run outputs — generated at runtime, not part of the image
+logs/
+output_examples/
+output_examples_2/
+reports/
+
+# Local dev artefacts not needed in image
+pairings/
+
+# Git
+.git/
+.gitignore
+
+# Editor / OS
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Test artefacts
+.pytest_cache/
+htmlcov/
+.coverage
