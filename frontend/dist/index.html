@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multi-Agent PM System</title>
+    <link rel="stylesheet" href="/static/styles.css?v=5" />
+</head>
+<body>
+    <div class="app-shell">
+        <header>
+            <div>
+                <h1>Multi-Agent PM System</h1>
+                <p>Run a collaborative office simulation using Planner, Engineer, QA, Risk, and Stakeholder agents.</p>
+            </div>
+            <button id="refreshStatus">Refresh Status</button>
+        </header>
+
+        <!-- Dataset Browser -->
+        <section class="panel dataset-panel">
+            <h2>Telecom Project Dataset</h2>
+            <p class="dataset-hint">Select a project to auto-fill the simulation form, or fill in the form manually.</p>
+
+            <div class="dept-filters" id="deptFilters">
+                <button class="dept-btn active" data-dept="">All</button>
+            </div>
+
+            <div class="project-grid" id="projectGrid">
+                <div class="dataset-loading">Loading projects…</div>
+            </div>
+        </section>
+
+        <section class="panel form-panel">
+            <h2>Launch Simulation</h2>
+            <form id="projectForm">
+                <label for="projectId">Project ID</label>
+                <input id="projectId" name="project_id" required placeholder="example-project-01" />
+
+                <label for="projectName">Project Name</label>
+                <input id="projectName" name="project_name" required placeholder="AI Office Simulation" />
+
+                <label for="projectDescription">Description</label>
+                <textarea id="projectDescription" name="description" required placeholder="Describe the simulation objective..."></textarea>
+
+                <button type="submit">Run Simulation</button>
+            </form>
+        </section>
+
+        <section class="panel status-panel">
+            <h2>System Status</h2>
+            <pre id="statusOutput">Loading system status...</pre>
+        </section>
+
+        <section class="panel result-panel">
+            <h2>Last Execution Result</h2>
+            <div id="resultSummary" class="result-summary">No execution yet.</div>
+            <details id="resultDetails">
+                <summary>Show full response JSON</summary>
+                <pre id="resultJson">{} </pre>
+            </details>
+        </section>
+    </div>
+
+    <script src="/static/app.js?v=5"></script>
+</body>
+</html>
