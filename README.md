@@ -8,7 +8,7 @@ The **Risk Analyst** enriches every risk assessment with real workforce data fro
 
 ---
 
-## Judge Quick-Start (2 minutes)
+## Quick-Start (2 minutes)
 
 ### Option 1 — Docker (recommended)
 
@@ -58,7 +58,7 @@ Or open **http://localhost:8000** → pick any of the 20 telecom projects → cl
 
 ---
 
-## Disqualification Check — All Clear
+## Agentathon Checklist
 
 | Criterion | Status | Evidence |
 |---|---|---|
@@ -367,8 +367,8 @@ multi_agent_pm/
 │   ├── compass_integration.py    # Compass LLM calls + SHA-256 fallback
 │   └── trace_logger.py           # Appends to logs/agent_trace.jsonl
 │
-├── input_examples/               # 6 ready-to-run project JSON inputs
-├── output_examples/              # 6+ completed runs (MVP HTML + JSON per run)
+├── input_examples/               # 3 ready-to-run project JSON inputs
+├── output_examples/              # 3+ completed runs (MVP HTML + JSON per run)
 ├── logs/                         # agent_trace.jsonl written at runtime
 ├── reports/                      # HTML reports generated per run
 ├── dataset/telecom_projects.json # 20 telecom projects (web UI dataset)
