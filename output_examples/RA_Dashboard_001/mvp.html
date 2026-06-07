@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Revenue Assurance Dashboard</title>
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: Inter, system-ui, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 180px;
+      background: #1e293b;
+      padding: 24px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-right: 1px solid #334155;
+    }
+    .sidebar h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 32px;
+      color: #2563eb;
+      letter-spacing: 1px;
+    }
+    .sidebar nav {
+      width: 100%;
+    }
+    .sidebar nav a {
+      display: block;
+      color: #e2e8f0;
+      text-decoration: none;
+      padding: 12px 32px;
+      border-radius: 6px;
+      margin: 4px 0;
+      transition: background 0.2s;
+      font-size: 0.98rem;
+    }
+    .sidebar nav a.active, .sidebar nav a:hover {
+      background: #2563eb;
+      color: #fff;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: auto;
+      padding: 0 0 32px 0;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 32px 40px 16px 40px;
+      border-bottom: 1px solid #334155;
+      background: #0f172a;
+    }
+    .header-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .status-badge {
+      background: #2563eb;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 12px;
+      margin-left: 12px;
+      display: inline-block;
+    }
+    .kpi-row {
+      display: flex;
+      gap: 24px;
+      padding: 32px 40px 16px 40px;
+    }
+    .kpi-card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 22px 28px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 8px 0 rgba(16,21,40,0.10);
+      min-width: 0;
+    }
+    .kpi-emoji {
+      font-size: 2rem;
+      margin-right: 18px;
+      flex-shrink: 0;
+    }
+    .kpi-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .kpi-value {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .kpi-label {
+      font-size: 0.97rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .section {
+      margin: 0 40px;
+      margin-top: 32px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    .add-btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .add-btn:hover {
+      background: #1d4ed8;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px 0 rgba(16,21,40,0.08);
+    }
+    .data-table th, .data-table td {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.98rem;
+    }
+    .data-table th {
+      background: #1e293b;
+      color: #94a3b8;
+      font-weight: 600;
+      border-bottom: 1px solid #334155;
+    }
+    .data-table tr:not(:last-child) td {
+      border-bottom: 1px solid #334155;
+    }
+    .chip {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .chip-open { background: #ef4444; }
+    .chip-inprogress { background: #f59e42; }
+    .chip-closed { background: #22c55e; }
+    .chip-review { background: #2563eb; }
+    @media (max-width: 900px) {
+      .kpi-row { flex-direction: column; gap: 18px; }
+      .main { padding: 0; }
+      .section { margin: 0 12px; }
+      .header { padding: 24px 12px 12px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>RA Dashboard</h2>
+      <nav>
+        <a href="#" class="active">Overview</a>
+        <a href="#">Leakage Cases</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <div class="header">
+        <span class="header-title">Revenue Assurance Dashboard</span>
+        <span class="status-badge">LIVE</span>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span class="kpi-emoji">💸</span>
+          <div class="kpi-info">
+            <span class="kpi-value">$1.2M</span>
+            <span class="kpi-label">Revenue at Risk</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-emoji">🔎</span>
+          <div class="kpi-info">
+            <span class="kpi-value">37</span>
+            <span class="kpi-label">Open Leakage Cases</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-emoji">📈</span>
+          <div class="kpi-info">
+            <span class="kpi-value">92.3%</span>
+            <span class="kpi-label">Recovery Rate</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-emoji">🌍</span>
+          <div class="kpi-info">
+            <span class="kpi-value">5</span>
+            <span class="kpi-label">Regions Impacted</span>
+          </div>
+        </div>
+      </div>
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Recent Leakage Cases</span>
+          <button class="add-btn" onclick="addRow()">+ Add</button>
+        </div>
+        <table class="data-table" id="leakage-table">
+          <thead>
+            <tr>
+              <th>Case ID</th>
+              <th>Region</th>
+              <th>Product</th>
+              <th>Detected</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>LC-1021</td>
+              <td>North</td>
+              <td>Prepaid Voice</td>
+              <td>2024-06-13</td>
+              <td>$120,000</td>
+              <td><span class="chip chip-open">Open</span></td>
+            </tr>
+            <tr>
+              <td>LC-1020</td>
+              <td>East</td>
+              <td>Postpaid Data</td>
+              <td>2024-06-12</td>
+              <td>$85,400</td>
+              <td><span class="chip chip-inprogress">In Progress</span></td>
+            </tr>
+            <tr>
+              <td>LC-1019</td>
+              <td>West</td>
+              <td>SMS</td>
+              <td>2024-06-11</td>
+              <td>$42,300</td>
+              <td><span class="chip chip-review">Under Review</span></td>
+            </tr>
+            <tr>
+              <td>LC-1018</td>
+              <td>South</td>
+              <td>Prepaid Data</td>
+              <td>2024-06-10</td>
+              <td>$67,800</td>
+              <td><span class="chip chip-closed">Closed</span></td>
+            </tr>
+            <tr>
+              <td>LC-1017</td>
+              <td>Central</td>
+              <td>Postpaid Voice</td>
+              <td>2024-06-09</td>
+              <td>$33,500</td>
+              <td><span class="chip chip-open">Open</span></td>
+            </tr>
+            <tr>
+              <td>LC-1016</td>
+              <td>North</td>
+              <td>SMS</td>
+              <td>2024-06-08</td>
+              <td>$14,200</td>
+              <td><span class="chip chip-closed">Closed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+  <script>
+    function addRow() {
+      var region = prompt('Enter region (e.g., North):');
+      if (!region) return;
+      var product = prompt('Enter product (e.g., Prepaid Voice):');
+      if (!product) return;
+      var amount = prompt('Enter amount (e.g., $10,000):');
+      if (!amount) return;
+      var status = prompt('Enter status (Open, In Progress, Under Review, Closed):');
+      if (!status) return;
+      var statusClass = {
+        'Open': 'chip chip-open',
+        'In Progress': 'chip chip-inprogress',
+        'Under Review': 'chip chip-review',
+        'Closed': 'chip chip-closed'
+      }[status] || 'chip chip-open';
+      var table = document.getElementById('leakage-table').getElementsByTagName('tbody')[0];
+      var row = table.insertRow(0);
+      var caseId = 'LC-' + (1022 + Math.floor(Math.random()*100));
+      var today = new Date().toISOString().slice(0,10);
+      row.innerHTML =
+        '<td>' + caseId + '</td>' +
+        '<td>' + region + '</td>' +
+        '<td>' + product + '</td>' +
+        '<td>' + today + '</td>' +
+        '<td>' + amount + '</td>' +
+        '<td><span class="' + statusClass + '">' + status + '</span></td>';
+    }
+  </script>
+</body>
+</html>

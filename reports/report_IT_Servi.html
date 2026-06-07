@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent Report – IT Service Management Portal</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          background: #f0f2f5; color: #1a1a2e; }
+  header { background: linear-gradient(135deg,#1a1a2e,#16213e);
+            color: #fff; padding: 32px 40px; }
+  header h1 { font-size: 1.8rem; font-weight: 700; }
+  header .meta { margin-top: 8px; opacity: .75; font-size: .9rem; }
+  header .status-chip { display:inline-block; background:#27ae60; color:#fff;
+                          padding:3px 12px; border-radius:20px; font-size:.8rem;
+                          font-weight:600; margin-left:12px; vertical-align:middle; }
+  .container { max-width: 1200px; margin: 32px auto; padding: 0 24px; }
+  .section { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.08);
+              padding: 28px 32px; margin-bottom: 28px; }
+  .section h2 { font-size: 1.2rem; color: #1a1a2e; margin-bottom: 20px;
+                 padding-bottom: 12px; border-bottom: 2px solid #f0f2f5; }
+  .scores-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+  .score-card { flex: 1; min-width: 140px; background: #f8f9fa; border-radius: 10px;
+                 padding: 16px; text-align: center; }
+  .score-value { font-size: 2rem; font-weight: 700; }
+  .score-bar-bg { height: 6px; background: #e0e0e0; border-radius: 3px; margin: 8px 0; }
+  .score-bar { height: 6px; border-radius: 3px; transition: width .3s; }
+  .score-label { font-size: .8rem; color: #666; font-weight: 500; }
+  .mermaid-wrap { overflow-x: auto; background: #fafafa; border-radius: 8px;
+                   padding: 20px; border: 1px solid #e8e8e8; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 10px 14px; background: #f8f9fa;
+        font-size: .85rem; color: #555; font-weight: 600; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f0f2f5; font-size: .9rem; }
+  tr:last-child td { border-bottom: none; }
+  .badge { display: inline-block; color: #fff; padding: 2px 10px;
+            border-radius: 12px; font-size: .75rem; font-weight: 700; }
+  .timeline-item { display: flex; gap: 16px; margin-bottom: 18px; position: relative; }
+  .timeline-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+                   margin-top: 4px; }
+  .timeline-content { flex: 1; background: #f8f9fa; border-radius: 8px; padding: 12px 16px; }
+  .timeline-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .agent-chip { background: #1a1a2e; color: #fff; padding: 2px 10px;
+                 border-radius: 12px; font-size: .75rem; font-weight: 600; }
+  .timeline-ts { font-size: .75rem; color: #999; }
+  .timeline-decision { font-weight: 600; font-size: .9rem; margin-bottom: 4px; }
+  .timeline-reasoning { font-size: .85rem; color: #666; }
+  .msg-row { padding: 10px 0; border-bottom: 1px solid #f0f2f5; }
+  .msg-row:last-child { border-bottom: none; }
+  .msg-badge { display: inline-block; color: #fff; padding: 2px 8px;
+                border-radius: 10px; font-size: .72rem; font-weight: 600; }
+  .msg-agents { font-weight: 600; font-size: .9rem; margin: 0 10px; }
+  .msg-ts { font-size: .75rem; color: #999; }
+  .msg-content { margin-top: 4px; font-size: .85rem; color: #555; padding-left: 4px; }
+  .fl-pair { margin-bottom: 16px; }
+  .fl-pair ul { margin-top: 8px; padding-left: 20px; }
+  .fl-pair li { margin-bottom: 6px; font-size: .88rem; color: #555; }
+  .fl-ts { font-size: .75rem; color: #999; margin-right: 8px; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+                   gap: 14px; }
+  .metric-box { background: #f8f9fa; border-radius: 8px; padding: 14px;
+                 text-align: center; }
+  .metric-num { font-size: 1.8rem; font-weight: 700; color: #1a1a2e; }
+  .metric-label { font-size: .8rem; color: #888; margin-top: 4px; }
+  .concern-list { margin-top: 10px; padding-left: 20px; }
+  .concern-list li { color: #e67e22; margin-bottom: 4px; font-size: .9rem; }
+  .pattern-chip { display:inline-block; background:#3498db; color:#fff;
+                   padding: 4px 14px; border-radius: 20px; font-size: .85rem;
+                   font-weight: 600; margin-bottom: 14px; }
+  footer { text-align: center; padding: 24px; color: #aaa; font-size: .8rem; }
+  .project-summary { font-size:1rem; color:#444; line-height:1.6; margin-bottom:16px;
+                      padding:14px; background:#f0f4ff; border-left:4px solid #3498db; border-radius:4px; }
+  .plan-meta { display:flex; gap:24px; margin-bottom:18px; flex-wrap:wrap; }
+  .plan-meta span { background:#f8f9fa; padding:6px 14px; border-radius:20px;
+                     font-size:.88rem; color:#555; }
+  .phases-row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px; }
+  .phase-card { flex:1; min-width:180px; background:#1a1a2e; color:#fff;
+                 border-radius:10px; padding:16px; }
+  .phase-name { font-weight:700; font-size:1rem; margin-bottom:4px; }
+  .phase-dur { font-size:.8rem; opacity:.7; margin-bottom:8px; }
+  .phase-goal { font-size:.85rem; opacity:.9; margin-bottom:8px; }
+  .phase-tasks { font-size:.75rem; opacity:.6; }
+  .task-card { border:1px solid #e8e8e8; border-radius:10px; padding:18px;
+                margin-bottom:14px; background:#fafafa; }
+  .task-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+  .task-id { font-size:.75rem; color:#888; font-family:monospace; }
+  .task-title { font-weight:700; font-size:.95rem; flex:1; }
+  .task-effort { margin-left:auto; font-size:.85rem; color:#555; font-weight:600; }
+  .task-desc { font-size:.88rem; color:#444; margin-bottom:12px; line-height:1.5; }
+  .task-section { margin-bottom:10px; }
+  .task-section strong { font-size:.82rem; color:#666; display:block; margin-bottom:4px; }
+  .task-section ul { padding-left:18px; }
+  .task-section li { font-size:.83rem; color:#555; margin-bottom:3px; }
+  .task-meta { font-size:.78rem; color:#aaa; margin-top:10px; border-top:1px solid #eee; padding-top:8px; }
+  .public-data-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:16px; margin-top:14px; }
+  .public-data-card { background:#f8f9fa; border:1px solid #e8e8e8; border-radius:12px; padding:18px; min-height:160px; }
+  .public-data-card h4 { margin-bottom:10px; font-size:1rem; }
+  .public-data-card table { width:100%; margin-top:10px; border-collapse: collapse; }
+  .public-data-card th, .public-data-card td { padding:8px 10px; border:1px solid #e8e8e8; font-size:.84rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>IT Service Management Portal
+    <span class="status-chip">COMPLETED</span>
+  </h1>
+  <div class="meta">
+    Project ID: IT_ServiceDesk_001 &nbsp;|&nbsp;
+    Run ID: IT_Servi &nbsp;|&nbsp;
+    Iterations: 2 &nbsp;|&nbsp;
+    Stakeholder Score: 78/100
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- COLLABORATION METRICS -->
+  <div class="section">
+    <h2>Collaboration Metrics</h2>
+    <div class="metrics-grid">
+      <div class="metric-box">
+        <div class="metric-num">15</div>
+        <div class="metric-label">Total Messages</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-num">14</div>
+        <div class="metric-label">Decisions Made</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-num">2</div>
+        <div class="metric-label">Feedback Loops</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-num">2</div>
+        <div class="metric-label">Exec Iterations</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-num">3</div>
+        <div class="metric-label">Risks Identified</div>
+      </div>
+    </div>
+    <div style="margin-top:16px">
+      <span class="pattern-chip">delegated_with_escalation</span>
+      <span class="msg-badge" style="background:#3498db">request: 3</span> <span class="msg-badge" style="background:#9b59b6">task_assignment: 2</span> <span class="msg-badge" style="background:#e74c3c">escalation: 2</span> <span class="msg-badge" style="background:#27ae60">approval: 3</span> <span class="msg-badge" style="background:#e67e22">feedback: 4</span> <span class="msg-badge" style="background:#95a5a6">notification: 1</span>
+    </div>
+  </div>
+
+  <!-- PROJECT PLAN -->
+  <div class="section">
+    <h2>Project Plan</h2>
+    <p class='project-summary'>Develop an internal IT Service Management (ITSM) portal for a telecom company's Corporate IT department, enabling incident ticketing, change request workflows, SLA tracking, asset inventory, and a knowledge base. The portal will serve end-users, IT technicians, and IT managers, with strict role-based access and real-time email notifications. Key constraints include integration of dashboards, SLA breach alerts, and robust workflow management.</p>
+    <div class='plan-meta'><span>Total effort: <strong>80h</strong></span><span>Recommended team: <strong>3 people</strong></span><span>Phases: <strong>2</strong></span></div>
+    <h3 style="font-size:1rem;margin:18px 0 10px">Technology Stack</h3>
+    <table><tr><td><strong>Backend</strong></td><td>Django REST Framework + Python 3.11</td></tr><tr><td><strong>Frontend</strong></td><td>Vue 3 + TypeScript</td></tr><tr><td><strong>Database</strong></td><td>PostgreSQL 15</td></tr><tr><td><strong>Infrastructure</strong></td><td>Docker + AWS ECS</td></tr><tr><td><strong>Key Libraries</strong></td><td>django-rest-framework, django-celery-email, vue-router, vuex, chart.js</td></tr></table>
+    <h3 style="font-size:1rem;margin:18px 0 10px">Phases</h3>
+    <div class="phases-row">
+        <div class="phase-card">
+            <div class="phase-name">Core Ticketing &amp; Asset Management</div>
+            <div class="phase-dur">3 weeks</div>
+            <div class="phase-goal">Deliver core incident ticketing, asset inventory, user roles, and email notifications.</div>
+            <div class="phase-tasks">Tasks: task_001, task_002, task_003</div>
+        </div>
+        <div class="phase-card">
+            <div class="phase-name">Workflow, SLA, and Dashboard Enhancements</div>
+            <div class="phase-dur">2 weeks</div>
+            <div class="phase-goal">Implement change request workflows, SLA tracking, dashboard, and knowledge base.</div>
+            <div class="phase-tasks">Tasks: task_004, task_005</div>
+        </div></div>
+    <h3 style="font-size:1rem;margin:18px 0 10px">Tasks</h3>
+    
+    <div class="task-card">
+        <div class="task-header">
+            <span class="task-id">task_001</span>
+            <span class="task-title">Incident Ticketing Module with Email Notifications</span>
+            <span class="badge" style="background:#e67e22">MEDIUM</span>
+            <span class="task-effort">24h</span>
+        </div>
+        <div class="task-desc">Build REST APIs and frontend for ticket creation, assignment, escalation, resolution, and email notifications on state changes.</div>
+        <div class='task-section'><strong>Acceptance Criteria</strong><ul><li>Tickets can be created, assigned, escalated, and resolved via API and UI</li><li>Email notifications sent on every ticket state change</li><li>Role-based access enforced for end-user, technician, and manager</li></ul></div>
+        <div class='task-section'><strong>Deliverables</strong><ul><li>Ticketing API</li><li>Vue ticketing UI</li><li>Email notification system</li></ul></div>
+        <div class="task-meta">Phase: phase_1 &nbsp;|&nbsp; Dependencies: None</div>
+    </div>
+    <div class="task-card">
+        <div class="task-header">
+            <span class="task-id">task_002</span>
+            <span class="task-title">Asset Inventory Integration</span>
+            <span class="badge" style="background:#27ae60">LOW</span>
+            <span class="task-effort">12h</span>
+        </div>
+        <div class="task-desc">Develop asset inventory CRUD APIs and link assets to incident tickets in both backend and frontend.</div>
+        <div class='task-section'><strong>Acceptance Criteria</strong><ul><li>Assets can be created, updated, and deleted via API and UI</li><li>Tickets can be linked to assets</li><li>Asset details visible from ticket view</li></ul></div>
+        <div class='task-section'><strong>Deliverables</strong><ul><li>Asset inventory API</li><li>Asset management UI</li></ul></div>
+        <div class="task-meta">Phase: phase_1 &nbsp;|&nbsp; Dependencies: task_001</div>
+    </div>
+    <div class="task-card">
+        <div class="task-header">
+            <span class="task-id">task_003</span>
+            <span class="task-title">User Role &amp; Authentication Implementation</span>
+            <span class="badge" style="background:#27ae60">LOW</span>
+            <span class="task-effort">8h</span>
+        </div>
+        <div class="task-desc">Implement authentication and role-based access for end-users, IT technicians, and IT managers.</div>
+        <div class='task-section'><strong>Acceptance Criteria</strong><ul><li>Users can log in and out securely</li><li>Role-based permissions restrict access to ticket actions and asset management</li><li>Role switching tested for all flows</li></ul></div>
+        <div class='task-section'><strong>Deliverables</strong><ul><li>Auth backend</li><li>Role-based frontend guards</li></ul></div>
+        <div class="task-meta">Phase: phase_1 &nbsp;|&nbsp; Dependencies: None</div>
+    </div>
+    <div class="task-card">
+        <div class="task-header">
+            <span class="task-id">task_004</span>
+            <span class="task-title">Change Request Workflow &amp; SLA Tracking</span>
+            <span class="badge" style="background:#e74c3c">HIGH</span>
+            <span class="task-effort">16h</span>
+        </div>
+        <div class="task-desc">Implement change request submission, approval workflow, SLA timers, and breach alerts with email notifications.</div>
+        <div class='task-section'><strong>Acceptance Criteria</strong><ul><li>Change requests can be submitted and routed for approval</li><li>SLA timers start on ticket creation and breach alerts are emailed</li><li>SLA status visible in ticket view</li></ul></div>
+        <div class='task-section'><strong>Deliverables</strong><ul><li>Change request API/UI</li><li>SLA tracking logic</li><li>Breach alert emails</li></ul></div>
+        <div class="task-meta">Phase: phase_2 &nbsp;|&nbsp; Dependencies: task_001, task_003</div>
+    </div>
+    <div class="task-card">
+        <div class="task-header">
+            <span class="task-id">task_005</span>
+            <span class="task-title">Dashboard &amp; Knowledge Base</span>
+            <span class="badge" style="background:#e67e22">MEDIUM</span>
+            <span class="task-effort">20h</span>
+        </div>
+        <div class="task-desc">Create dashboard showing open tickets by priority, SLA compliance, MTTR by category, and implement a searchable knowledge base.</div>
+        <div class='task-section'><strong>Acceptance Criteria</strong><ul><li>Dashboard displays real-time ticket and SLA metrics</li><li>MTTR by category is calculated and shown</li><li>Knowledge base is searchable and accessible by role</li></ul></div>
+        <div class='task-section'><strong>Deliverables</strong><ul><li>Dashboard UI/API</li><li>Knowledge base module</li></ul></div>
+        <div class="task-meta">Phase: phase_2 &nbsp;|&nbsp; Dependencies: task_001, task_004</div>
+    </div>
+  </div>
+
+  <!-- COMPASS SCORES -->
+  <div class="section">
+    <h2>Compass Evaluation Scores</h2>
+    <div class="scores-grid"><p>No scores available</p></div>
+    
+  </div>
+
+  <!-- PUBLIC DATA ENRICHMENT -->
+  <div class="section">
+    <h2>Public Data Enrichment</h2>
+    <div class='public-data-grid'><div class='public-data-card'><h4>BLS OES Cost Estimate</h4><p>Estimated annual team cost: <strong>$342,410</strong></p><table><thead><tr><th>Occupation</th><th>SOC Code</th><th>Annual Wage</th></tr></thead><tbody><tr><td>Software Developers</td><td>15-1252</td><td>$124,200</td></tr><tr><td>Software Developers</td><td>15-1252</td><td>$124,200</td></tr><tr><td>Software Quality Assurance Analysts and Testers</td><td>15-1253</td><td>$94,010</td></tr></tbody></table></div><div class='public-data-card'><h4>O*NET Workforce Intelligence</h4><p><strong>Overall resource risk:</strong> MEDIUM</p><ul><li>Python: demand Very High, pool large, risk LOW — large talent pool, readily available</li><li>TypeScript: demand High, pool medium, risk MEDIUM — moderate competition for skilled developers</li><li>PostgreSQL: demand High, pool large, risk LOW — large talent pool, readily available</li><li>Docker: demand Very High, pool medium, risk MEDIUM — moderate competition for skilled developers</li><li>AWS: demand Very High, pool medium, risk MEDIUM — moderate competition for skilled developers</li><li>Vue: demand Medium, pool medium, risk MEDIUM — moderate competition for skilled developers</li></ul></div><div class='public-data-card'><h4>NIST NVD CVE Findings</h4><ul><li>CVE-2011-2520</li><li>CVE-2012-5822</li><li>CVE-2015-7489</li><li>CVE-2002-1657</li><li>CVE-2016-0766</li><li>CVE-2016-0773</li></ul></div></div>
+  </div>
+
+  <!-- SEQUENCE DIAGRAM -->
+  <div class="section">
+    <h2>Agent Interaction Sequence Diagram</h2>
+    <div class="mermaid-wrap">
+      <pre class="mermaid">
+sequenceDiagram
+    participant PM
+    participant Risk
+    participant Engineer
+    participant QA
+    participant Stakeholder
+    PM->>Risk: "Project plan ready: 6 tasks, ~80h total effort. Stack: Djang..."
+    PM->>Engineer: "5 implementation task(s) assigned. Stack: Django REST Framew..."
+    PM->>QA: "0 QA task(s) assigned. Prepare test strategy based on accept..."
+    Risk->>PM: "ESCALATION: 2 high-severity risks:"
+    Stakeholder-->>PM: "STAKEHOLDER APPROVED. Score: 78/100. Recommendations: Conduc..."
+    Engineer->>QA: "Implementation of 'Incident Ticketing Module with Email Noti..."
+    QA->>Engineer: "QA CRITIQUE (attempt 1) of 'Incident Ticketing Module with E..."
+    Engineer->>QA: "Revision 1 of 'Incident Ticketing Module with Email Notifica..."
+    QA-->>Engineer: "QA APPROVED 'Incident Ticketing Module with Email Notificati..."
+    Engineer->>QA: "Implementation of 'Asset Inventory Integration' ready for QA..."
+    QA->>Engineer: "QA CRITIQUE (attempt 1) of 'Asset Inventory Integration': Fo..."
+    Engineer->>QA: "Revision 1 of 'Asset Inventory Integration' ready. Addressed..."
+    QA-->>Engineer: "QA APPROVED 'Asset Inventory Integration'. The implementatio..."
+    Stakeholder-->>PM: "Stakeholder progress update: 62% complete, satisfaction 75/1..."
+    QA->>PM: "ESCALATION: Quality gates failed: pass_rate"
+      </pre>
+    </div>
+  </div>
+
+  <!-- RISK REGISTER -->
+  <div class="section">
+    <h2>Risk Register</h2>
+    <table>
+      <thead>
+        <tr><th>Severity</th><th>Title</th><th>Description</th><th>Probability</th></tr>
+      </thead>
+      <tbody>
+    <tr>
+        <td><span class="badge" style="background:#f1c40f">MEDIUM</span></td>
+        <td><strong>Known Security Vulnerabilities (NIST NVD)</strong></td>
+        <td>NIST NVD reports 6 HIGH/CRITICAL CVE(s) for stack technologies (Python): CVE-2011-2520, CVE-2015-7489, CVE-2012-5822. Security review and patch validation required before go-live. Source: NIST National Vulnerability Database (nvd.nist.gov).</td>
+        <td>high</td>
+    </tr>
+    <tr>
+        <td><span class="badge" style="background:#f1c40f">MEDIUM</span></td>
+        <td><strong>Resource Availability (O*NET Data)</strong></td>
+        <td>Based on O*NET 28.3 workforce data: key stack technologies show MEDIUM availability risk. Highest demand programming language; large talent pool globally. Source: O*NET 28.3 Database, U.S. Dept of Labor.</td>
+        <td>medium</td>
+    </tr>
+    <tr>
+        <td><span class="badge" style="background:#f1c40f">MEDIUM</span></td>
+        <td><strong>Integration Complexity with Asset Inventory</strong></td>
+        <td>Integrating the ITSM portal with existing asset inventory systems may face unforeseen technical challenges and data inconsistencies.</td>
+        <td>medium</td>
+    </tr></tbody>
+    </table>
+    <div style='margin-top:14px'><strong>Stakeholder Concerns:</strong><ul class='concern-list'><li>Security vulnerabilities in Python stack (CVE-2011-2520, CVE-2015-7489, CVE-2012-5822) must be addressed before production.</li><li>Risk register appears to only list security risks; operational and integration risks should be considered.</li><li>Project plan is truncated and may lack detail on dashboard and knowledge base implementation.</li></ul></div>
+  </div>
+
+  <!-- AGENT MESSAGE LOG -->
+  <div class="section">
+    <h2>Agent Message Log</h2>
+    
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#3498db">request</span>
+        <span class="msg-agents">PM &rarr; Risk</span>
+        <span class="msg-ts">2026-06-07 17:10:08</span>
+        <div class="msg-content">Project plan ready: 6 tasks, ~80h total effort. Stack: Django REST Framework + Python 3.11, PostgreSQL 15. Please assess delivery risks before implementation begins.</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#9b59b6">task_assignment</span>
+        <span class="msg-agents">PM &rarr; Engineer</span>
+        <span class="msg-ts">2026-06-07 17:10:08</span>
+        <div class="msg-content">5 implementation task(s) assigned. Stack: Django REST Framework + Python 3.11, PostgreSQL 15. Await risk clearance before starting.</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#9b59b6">task_assignment</span>
+        <span class="msg-agents">PM &rarr; QA</span>
+        <span class="msg-ts">2026-06-07 17:10:08</span>
+        <div class="msg-content">0 QA task(s) assigned. Prepare test strategy based on acceptance criteria once risk assessment completes.</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#e74c3c">escalation</span>
+        <span class="msg-agents">Risk &rarr; PM</span>
+        <span class="msg-ts">2026-06-07 17:10:16</span>
+        <div class="msg-content">ESCALATION: 2 high-severity risks: </div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#27ae60">approval</span>
+        <span class="msg-agents">Stakeholder &rarr; PM</span>
+        <span class="msg-ts">2026-06-07 17:10:18</span>
+        <div class="msg-content">STAKEHOLDER APPROVED. Score: 78/100. Recommendations: Conduct a thorough security review and patch all known vulnerabilities before go-live.; Expand the risk register to include operational, integration, and user adoption risks.; Ensure the project plan is complete and includes all modules, especially dashboard and knowledge base.; Plan for user training and change management to maximize adoption..</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#3498db">request</span>
+        <span class="msg-agents">Engineer &rarr; QA</span>
+        <span class="msg-ts">2026-06-07 17:10:21</span>
+        <div class="msg-content">Implementation of 'Incident Ticketing Module with Email Notifications' ready for QA review. Summary: Built REST APIs and Vue UI for ticket lifecycle management with role-based access and automated email notifications on t</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#e67e22">feedback</span>
+        <span class="msg-agents">QA &rarr; Engineer</span>
+        <span class="msg-ts">2026-06-07 17:10:27</span>
+        <div class="msg-content">QA CRITIQUE (attempt 1) of 'Incident Ticketing Module with Email Notifications': Found 2 issue(s): The stack includes Python and PostgreSQL versions with known HIGH severity vulnerabilities (e.g., unsafe use of pickle in Python and weak password salting in PostgreSQL), which could expose the application to security risks if not patched.; The implementation summary is incomplete and does not specify mitigation steps for the identified CVEs, leaving risk management unaddressed.. Reason: Critical vulnerabilities in the stack are unaddressed and the implementation summary lacks details on risk mitigation.</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#e67e22">feedback</span>
+        <span class="msg-agents">Engineer &rarr; QA</span>
+        <span class="msg-ts">2026-06-07 17:10:28</span>
+        <div class="msg-content">Revision 1 of 'Incident Ticketing Module with Email Notifications' ready. Addressed: Upgraded Python and PostgreSQL to patched versions to address vulnerabilities.; Replaced unsafe pickle usage with JSON serialization.</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#27ae60">approval</span>
+        <span class="msg-agents">QA &rarr; Engineer</span>
+        <span class="msg-ts">2026-06-07 17:10:29</span>
+        <div class="msg-content">QA APPROVED 'Incident Ticketing Module with Email Notifications'. The implementation addresses security concerns by upgrading dependencies and removing unsafe code, with no critical issu</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#3498db">request</span>
+        <span class="msg-agents">Engineer &rarr; QA</span>
+        <span class="msg-ts">2026-06-07 17:10:31</span>
+        <div class="msg-content">Implementation of 'Asset Inventory Integration' ready for QA review. Summary: Implemented CRUD APIs for asset inventory and linked assets to incident tickets, exposing asset details in the ticket vi</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#e67e22">feedback</span>
+        <span class="msg-agents">QA &rarr; Engineer</span>
+        <span class="msg-ts">2026-06-07 17:10:37</span>
+        <div class="msg-content">QA CRITIQUE (attempt 1) of 'Asset Inventory Integration': Found 2 issue(s): The stack contains Python and PostgreSQL components with known HIGH severity CVEs (e.g., unsafe pickle usage, weak permissions, and insecure password handling) that are not addressed in the implementation summary.; The implementation summary is incomplete and appears to be truncated, making it unclear whether all required integration and security controls (such as input validation and secure linking of assets to tickets) have been properly implemented.. Reason: Critical security vulnerabilities are present in the stack and the implementation summary is incomplete, so the integration cannot be approved.</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#e67e22">feedback</span>
+        <span class="msg-agents">Engineer &rarr; QA</span>
+        <span class="msg-ts">2026-06-07 17:10:39</span>
+        <div class="msg-content">Revision 1 of 'Asset Inventory Integration' ready. Addressed: Replaced unsafe pickle usage with JSON serialization in asset models.; Updated PostgreSQL connection settings to enforce least-privilege and strong password requirements.</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#27ae60">approval</span>
+        <span class="msg-agents">QA &rarr; Engineer</span>
+        <span class="msg-ts">2026-06-07 17:10:40</span>
+        <div class="msg-content">QA APPROVED 'Asset Inventory Integration'. The implementation addresses major security risks by patching unsafe pickle usage, enforcing strong database permissions</div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#95a5a6">notification</span>
+        <span class="msg-agents">Stakeholder &rarr; PM</span>
+        <span class="msg-ts">2026-06-07 17:10:41</span>
+        <div class="msg-content">Stakeholder progress update: 62% complete, satisfaction 75/100. </div>
+    </div>
+    <div class="msg-row">
+        <span class="msg-badge" style="background:#e74c3c">escalation</span>
+        <span class="msg-agents">QA &rarr; PM</span>
+        <span class="msg-ts">2026-06-07 17:10:41</span>
+        <div class="msg-content">ESCALATION: Quality gates failed: pass_rate</div>
+    </div>
+  </div>
+
+  <!-- DECISION TIMELINE -->
+  <div class="section">
+    <h2>Decision Timeline</h2>
+    <div class="timeline">
+      
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#3498db"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">PM</span>
+                <span class="timeline-ts">2026-06-07 17:10:08</span>
+            </div>
+            <div class="timeline-decision">Create project plan</div>
+            <div class="timeline-reasoning">The plan prioritizes foundational ticketing and authentication before workflow and analytics, aligns with the required tech stack, and balances effort for a small team.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#3498db"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">Risk</span>
+                <span class="timeline-ts">2026-06-07 17:10:16</span>
+            </div>
+            <div class="timeline-decision">Risk assessment</div>
+            <div class="timeline-reasoning">Security vulnerabilities and resource risks are supported by recent CVE data and O*NET workforce analysis, both of which directly impact project delivery.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#3498db"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">PM</span>
+                <span class="timeline-ts">2026-06-07 17:10:16</span>
+            </div>
+            <div class="timeline-decision">Project readiness check</div>
+            <div class="timeline-reasoning">Project is ready to execute</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#27ae60"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">Stakeholder</span>
+                <span class="timeline-ts">2026-06-07 17:10:18</span>
+            </div>
+            <div class="timeline-decision">Approve project plan</div>
+            <div class="timeline-reasoning">The project scope is clear and the major tasks are defined, covering core ITSM functionalities. Risks have been identified, particularly around security, though the risk register could be more comprehensive. The technical stack and user roles are appropriate for the requirements. Approval is granted with the expectation that security issues are resolved and the project plan is finalized in detail.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#3498db"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">Engineer</span>
+                <span class="timeline-ts">2026-06-07 17:10:21</span>
+            </div>
+            <div class="timeline-decision">Implement Incident Ticketing Module with Email Notifications</div>
+            <div class="timeline-reasoning">Used Django REST Framework for backend APIs, integrated Django signals for email notifications, and implemented Vue components with role-based routing.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#e74c3c"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">QA</span>
+                <span class="timeline-ts">2026-06-07 17:10:27</span>
+            </div>
+            <div class="timeline-decision">Reject 'Incident Ticketing Module with Email Notifications' – needs revision</div>
+            <div class="timeline-reasoning">Critical vulnerabilities in the stack are unaddressed and the implementation summary lacks details on risk mitigation.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#3498db"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">Engineer</span>
+                <span class="timeline-ts">2026-06-07 17:10:28</span>
+            </div>
+            <div class="timeline-decision">Revise Incident Ticketing Module with Email Notifications (attempt 1)</div>
+            <div class="timeline-reasoning">Addressed: Upgraded Python and PostgreSQL to patched versions to address vulnerabilities.; Replaced unsafe pickle usage with JSON serialization.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#27ae60"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">QA</span>
+                <span class="timeline-ts">2026-06-07 17:10:29</span>
+            </div>
+            <div class="timeline-decision">Approve 'Incident Ticketing Module with Email Notifications'</div>
+            <div class="timeline-reasoning">The implementation addresses security concerns by upgrading dependencies and removing unsafe code, with no critical issues evident from the summary.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#3498db"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">Engineer</span>
+                <span class="timeline-ts">2026-06-07 17:10:31</span>
+            </div>
+            <div class="timeline-decision">Implement Asset Inventory Integration</div>
+            <div class="timeline-reasoning">Used Django REST Framework for asset CRUD endpoints and Vue components for asset management and ticket linkage.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#e74c3c"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">QA</span>
+                <span class="timeline-ts">2026-06-07 17:10:37</span>
+            </div>
+            <div class="timeline-decision">Reject 'Asset Inventory Integration' – needs revision</div>
+            <div class="timeline-reasoning">Critical security vulnerabilities are present in the stack and the implementation summary is incomplete, so the integration cannot be approved.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#3498db"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">Engineer</span>
+                <span class="timeline-ts">2026-06-07 17:10:39</span>
+            </div>
+            <div class="timeline-decision">Revise Asset Inventory Integration (attempt 1)</div>
+            <div class="timeline-reasoning">Addressed: Replaced unsafe pickle usage with JSON serialization in asset models.; Updated PostgreSQL connection settings to enforce least-privilege and strong password requirements.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#27ae60"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">QA</span>
+                <span class="timeline-ts">2026-06-07 17:10:40</span>
+            </div>
+            <div class="timeline-decision">Approve 'Asset Inventory Integration'</div>
+            <div class="timeline-reasoning">The implementation addresses major security risks by patching unsafe pickle usage, enforcing strong database permissions, improving password handling, and adding input validation.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#3498db"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">Stakeholder</span>
+                <span class="timeline-ts">2026-06-07 17:10:41</span>
+            </div>
+            <div class="timeline-decision">Monitor progress</div>
+            <div class="timeline-reasoning">Progress check: 62% done; satisfaction 75/100. On track.</div>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <div class="timeline-dot" style="background:#3498db"></div>
+        <div class="timeline-content">
+            <div class="timeline-header">
+                <span class="agent-chip">Engineer</span>
+                <span class="timeline-ts">2026-06-07 17:10:58</span>
+            </div>
+            <div class="timeline-decision">Generate MVP</div>
+            <div class="timeline-reasoning">Self-contained HTML MVP created with 3 feature(s): Fixed sidebar navigation and responsive dark-themed layout, KPI stat cards for open tickets, MTTR, SLA compliance, and escalated tickets, Recent tickets data table with status chips and an Add button to append new rows</div>
+        </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- FEEDBACK LOOPS -->
+  <div class="section">
+    <h2>QA / Engineer Feedback Loops</h2>
+    <div class="fl-pair"><strong>qa &rarr; engineer_IT_ServiceDesk_001</strong> — 2 exchange(s)<ul><li><span class="fl-ts">2026-06-07 17:10:27</span> Issues: Found 2 issue(s): The stack includes Python and PostgreSQL versions with known HIGH severity vulnera</li><li><span class="fl-ts">2026-06-07 17:10:37</span> Issues: Found 2 issue(s): The stack contains Python and PostgreSQL components with known HIGH severity CVEs </li></ul></div><div class="fl-pair"><strong>engineer &rarr; qa_IT_ServiceDesk_001</strong> — 2 exchange(s)<ul><li><span class="fl-ts">2026-06-07 17:10:28</span> Revision 1: Upgraded Python and PostgreSQL to secure versions, removed unsafe pickle usage, and updated document</li><li><span class="fl-ts">2026-06-07 17:10:39</span> Revision 1: Patched unsafe pickle usage, enforced strong DB permissions, improved password handling, and added i</li></ul></div>
+  </div>
+
+</div>
+
+<footer>Generated by Multi-Agent PM System &mdash; Run IT_Servi</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "default",
+    sequence: { actorMargin: 60, messageMargin: 20 },
+  });
+</script>
+</body>
+</html>

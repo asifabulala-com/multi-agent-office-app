@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NOC Monitoring Platform</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    body {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 180px;
+      background: #1e293b;
+      padding: 24px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-right: 1px solid #334155;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 2;
+    }
+    .sidebar h2 {
+      color: #2563eb;
+      font-size: 1.1rem;
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .sidebar nav {
+      width: 100%;
+      margin-top: 8px;
+    }
+    .sidebar nav a {
+      display: block;
+      color: #e2e8f0;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      margin: 4px 0;
+      transition: background 0.2s;
+      font-size: 0.97rem;
+    }
+    .sidebar nav a.active, .sidebar nav a:hover {
+      background: #2563eb22;
+      color: #2563eb;
+    }
+    .main {
+      margin-left: 180px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: auto;
+      background: #0f172a;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 36px 12px 36px;
+      border-bottom: 1px solid #334155;
+      background: #0f172a;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .header-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .status-badge {
+      display: inline-block;
+      background: #2563eb;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 4px 16px;
+      border-radius: 14px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 1px 4px #1e293b44;
+    }
+    .kpi-row {
+      display: flex;
+      gap: 24px;
+      margin: 28px 36px 12px 36px;
+    }
+    .kpi-card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 22px 24px 18px 24px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 1px 4px #0f172a33;
+      min-width: 0;
+    }
+    .kpi-icon {
+      font-size: 2rem;
+      margin-right: 18px;
+    }
+    .kpi-content {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .kpi-value {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 2px;
+      white-space: nowrap;
+    }
+    .kpi-label {
+      font-size: 0.97rem;
+      color: #a0aec0;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .section {
+      margin: 24px 36px 0 36px;
+    }
+    .section-title {
+      font-size: 1.08rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #e2e8f0;
+      letter-spacing: 0.2px;
+    }
+    .table-container {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 18px 0 10px 0;
+      box-shadow: 0 1px 4px #0f172a33;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.98rem;
+      min-width: 720px;
+    }
+    th, td {
+      padding: 10px 18px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    th {
+      color: #a0aec0;
+      font-weight: 600;
+      background: #1e293b;
+      font-size: 0.97rem;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .status-chip {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-size: 0.93rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .status-p1 {
+      background: #dc2626;
+    }
+    .status-p2 {
+      background: #f59e42;
+      color: #1e293b;
+    }
+    .status-p3 {
+      background: #facc15;
+      color: #1e293b;
+    }
+    .status-ok {
+      background: #22c55e;
+      color: #1e293b;
+    }
+    .add-btn {
+      background: #2563eb;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 22px;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 18px 0 0 0;
+      cursor: pointer;
+      transition: background 0.18s;
+      box-shadow: 0 1px 4px #1e293b44;
+    }
+    .add-btn:hover {
+      background: #1746a2;
+    }
+    @media (max-width: 900px) {
+      .kpi-row { flex-direction: column; gap: 14px; }
+      .kpi-card { padding: 16px 14px; }
+      .main { margin-left: 0; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>NOC Dashboard</h2>
+    <nav>
+      <a href="#" class="active">Overview</a>
+      <a href="#">Incidents</a>
+      <a href="#">Devices</a>
+      <a href="#">SLA Reports</a>
+    </nav>
+  </aside>
+  <main class="main">
+    <div class="header">
+      <span class="header-title">Network Operations Center Monitoring Platform</span>
+      <span class="status-badge">LIVE</span>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <span class="kpi-icon">📡</span>
+        <div class="kpi-content">
+          <span class="kpi-value" id="kpi-devices">512</span>
+          <span class="kpi-label">Active Devices</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-icon">🚨</span>
+        <div class="kpi-content">
+          <span class="kpi-value" id="kpi-incidents">7</span>
+          <span class="kpi-label">Open Incidents</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-icon">⏱️</span>
+        <div class="kpi-content">
+          <span class="kpi-value" id="kpi-mttr">38m</span>
+          <span class="kpi-label">Avg. MTTR</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-icon">🌐</span>
+        <div class="kpi-content">
+          <span class="kpi-value" id="kpi-availability">99.98%</span>
+          <span class="kpi-label">Network Availability</span>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Recent Incidents</div>
+      <div class="table-container">
+        <table id="incident-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Device</th>
+              <th>Region</th>
+              <th>Severity</th>
+              <th>Status</th>
+              <th>Opened</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#1042</td>
+              <td>Router-23</td>
+              <td>East</td>
+              <td><span class="status-chip status-p1">P1</span></td>
+              <td><span class="status-chip status-p1">Open</span></td>
+              <td>08:14</td>
+            </tr>
+            <tr>
+              <td>#1041</td>
+              <td>Switch-11</td>
+              <td>North</td>
+              <td><span class="status-chip status-p2">P2</span></td>
+              <td><span class="status-chip status-p2">Investigating</span></td>
+              <td>07:58</td>
+            </tr>
+            <tr>
+              <td>#1040</td>
+              <td>Base-Station-7</td>
+              <td>West</td>
+              <td><span class="status-chip status-p3">P3</span></td>
+              <td><span class="status-chip status-p3">Monitoring</span></td>
+              <td>07:44</td>
+            </tr>
+            <tr>
+              <td>#1039</td>
+              <td>Router-12</td>
+              <td>South</td>
+              <td><span class="status-chip status-p2">P2</span></td>
+              <td><span class="status-chip status-ok">Resolved</span></td>
+              <td>07:10</td>
+            </tr>
+            <tr>
+              <td>#1038</td>
+              <td>Switch-8</td>
+              <td>Central</td>
+              <td><span class="status-chip status-p1">P1</span></td>
+              <td><span class="status-chip status-p1">Open</span></td>
+              <td>06:51</td>
+            </tr>
+            <tr>
+              <td>#1037</td>
+              <td>Base-Station-2</td>
+              <td>East</td>
+              <td><span class="status-chip status-p3">P3</span></td>
+              <td><span class="status-chip status-ok">Resolved</span></td>
+              <td>06:35</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="add-btn" id="add-incident">+ Add Incident</button>
+    </div>
+  </main>
+  <script>
+    document.getElementById('add-incident').onclick = function() {
+      var device = window.prompt('Device name? (e.g. Router-99)');
+      if (!device) return;
+      var region = window.prompt('Region? (East, West, North, South, Central)');
+      if (!region) return;
+      var severity = window.prompt('Severity? (P1, P2, P3)');
+      if (!severity || !/^P[123]$/i.test(severity)) severity = 'P3';
+      var status = window.prompt('Status? (Open, Investigating, Monitoring, Resolved)');
+      if (!status) status = 'Open';
+      var now = new Date();
+      var hh = String(now.getHours()).padStart(2, '0');
+      var mm = String(now.getMinutes()).padStart(2, '0');
+      var opened = hh + ':' + mm;
+      var table = document.getElementById('incident-table').getElementsByTagName('tbody')[0];
+      var lastId = table.rows.length ? parseInt(table.rows[0].cells[0].textContent.replace('#','')) : 1042;
+      var newId = '#' + (lastId + 1);
+      var sevClass = severity.toUpperCase() === 'P1' ? 'status-p1' : severity.toUpperCase() === 'P2' ? 'status-p2' : 'status-p3';
+      var statusClass = status.toLowerCase() === 'resolved' ? 'status-ok' : sevClass;
+      var row = table.insertRow(0);
+      row.innerHTML =
+        '<td>' + newId + '</td>' +
+        '<td>' + device + '</td>' +
+        '<td>' + region + '</td>' +
+        '<td><span class="status-chip ' + sevClass + '">' + severity.toUpperCase() + '</span></td>' +
+        '<td><span class="status-chip ' + statusClass + '">' + status.charAt(0).toUpperCase() + status.slice(1) + '</span></td>' +
+        '<td>' + opened + '</td>';
+      // Update KPI
+      var kpiIncidents = document.getElementById('kpi-incidents');
+      kpiIncidents.textContent = parseInt(kpiIncidents.textContent) + 1;
+    };
+  </script>
+</body>
+</html>

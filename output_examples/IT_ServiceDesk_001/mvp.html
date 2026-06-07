@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>ITSM Portal Dashboard</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    body {
+      display: flex;
+      height: 100vh;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 180px;
+      background: #1e293b;
+      padding: 32px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      z-index: 10;
+    }
+    .sidebar h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 32px 0;
+      color: #2563eb;
+      letter-spacing: 1px;
+    }
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      align-items: center;
+    }
+    .sidebar nav a {
+      color: #e2e8f0;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 8px 24px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .sidebar nav a.active,
+    .sidebar nav a:hover {
+      background: #2563eb;
+      color: #fff;
+    }
+    .main {
+      margin-left: 180px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100vh;
+      overflow-x: auto;
+      background: #0f172a;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 32px 40px 16px 40px;
+      border-bottom: 1px solid #334155;
+    }
+    .header-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #e2e8f0;
+    }
+    .status-badge {
+      background: #2563eb;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 5px 16px;
+      border-radius: 16px;
+      letter-spacing: 0.5px;
+      margin-left: 12px;
+      display: inline-block;
+    }
+    .kpi-row {
+      display: flex;
+      gap: 24px;
+      margin: 32px 40px 0 40px;
+    }
+    .kpi-card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 22px 28px;
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      box-shadow: 0 2px 8px rgba(16,21,40,0.08);
+    }
+    .kpi-emoji {
+      font-size: 1.7rem;
+      margin-bottom: 8px;
+    }
+    .kpi-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 2px;
+    }
+    .kpi-label {
+      font-size: 1rem;
+      color: #e2e8f0;
+      opacity: 0.8;
+    }
+    .section {
+      margin: 36px 40px 0 40px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .add-btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .add-btn:hover {
+      background: #1d4ed8;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(16,21,40,0.05);
+    }
+    th, td {
+      padding: 14px 12px;
+      text-align: left;
+      font-size: 1rem;
+      border-bottom: 1px solid #334155;
+    }
+    th {
+      background: #1e293b;
+      color: #93c5fd;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .status-chip {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 12px;
+      font-size: 0.98rem;
+      font-weight: 500;
+      color: #fff;
+    }
+    .chip-open { background: #2563eb; }
+    .chip-inprogress { background: #f59e42; }
+    .chip-resolved { background: #22c55e; }
+    .chip-escalated { background: #ef4444; }
+    .chip-pending { background: #fbbf24; }
+    .chip-closed { background: #64748b; }
+    @media (max-width: 900px) {
+      .kpi-row { flex-direction: column; gap: 14px; }
+      .main, .section, .header { padding-left: 16px !important; padding-right: 16px !important; }
+    }
+    ::selection { background: #2563eb; color: #fff; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>ITSM Portal</h2>
+    <nav>
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Tickets</a>
+      <a href="#">Assets</a>
+      <a href="#">Knowledge</a>
+      <a href="#">Settings</a>
+    </nav>
+  </aside>
+  <main class="main">
+    <div class="header">
+      <span class="header-title">IT Service Management Dashboard</span>
+      <span class="status-badge">LIVE</span>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <span class="kpi-emoji">🛠️</span>
+        <span class="kpi-value" id="kpi-open">14</span>
+        <span class="kpi-label">Open Tickets</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-emoji">⏱️</span>
+        <span class="kpi-value" id="kpi-mttr">2.3h</span>
+        <span class="kpi-label">Mean Time to Resolution</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-emoji">⚡</span>
+        <span class="kpi-value" id="kpi-sla">97%</span>
+        <span class="kpi-label">SLA Compliance</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-emoji">🔺</span>
+        <span class="kpi-value" id="kpi-escalated">3</span>
+        <span class="kpi-label">Escalated Tickets</span>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Recent Incident Tickets</span>
+        <button class="add-btn" onclick="addRow()">+ Add</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="tickets-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Priority</th>
+              <th>Category</th>
+              <th>Assignee</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#1023</td>
+              <td>VPN Access Issue</td>
+              <td>High</td>
+              <td>Network</td>
+              <td>J. Smith</td>
+              <td><span class="status-chip chip-inprogress">In Progress</span></td>
+            </tr>
+            <tr>
+              <td>#1022</td>
+              <td>Email Not Syncing</td>
+              <td>Medium</td>
+              <td>Software</td>
+              <td>M. Lee</td>
+              <td><span class="status-chip chip-open">Open</span></td>
+            </tr>
+            <tr>
+              <td>#1021</td>
+              <td>Printer Offline</td>
+              <td>Low</td>
+              <td>Hardware</td>
+              <td>S. Patel</td>
+              <td><span class="status-chip chip-resolved">Resolved</span></td>
+            </tr>
+            <tr>
+              <td>#1020</td>
+              <td>Account Locked</td>
+              <td>High</td>
+              <td>Access</td>
+              <td>R. Chen</td>
+              <td><span class="status-chip chip-escalated">Escalated</span></td>
+            </tr>
+            <tr>
+              <td>#1019</td>
+              <td>Phone Not Working</td>
+              <td>Medium</td>
+              <td>Telecom</td>
+              <td>K. Brown</td>
+              <td><span class="status-chip chip-pending">Pending</span></td>
+            </tr>
+            <tr>
+              <td>#1018</td>
+              <td>Software Install Request</td>
+              <td>Low</td>
+              <td>Software</td>
+              <td>-</td>
+              <td><span class="status-chip chip-open">Open</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <script>
+    function addRow() {
+      var title = window.prompt('Enter ticket title:');
+      if (!title || !title.trim()) return;
+      var priority = window.prompt('Enter priority (Low, Medium, High):', 'Low');
+      if (!priority) priority = 'Low';
+      var category = window.prompt('Enter category:', 'General');
+      if (!category) category = 'General';
+      var assignee = window.prompt('Enter assignee (or leave blank):', '-');
+      if (!assignee) assignee = '-';
+      var status = 'Open';
+      var table = document.getElementById('tickets-table').getElementsByTagName('tbody')[0];
+      var newId = '#10' + (18 + table.rows.length + 1);
+      var row = table.insertRow(0);
+      row.innerHTML =
+        '<td>' + newId + '</td>' +
+        '<td>' + title.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</td>' +
+        '<td>' + priority + '</td>' +
+        '<td>' + category + '</td>' +
+        '<td>' + assignee + '</td>' +
+        '<td><span class="status-chip chip-open">Open</span></td>';
+      // Update KPI
+      var openKpi = document.getElementById('kpi-open');
+      openKpi.textContent = parseInt(openKpi.textContent) + 1;
+    }
+  </script>
+</body>
+</html>
