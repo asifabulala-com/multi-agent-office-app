@@ -471,9 +471,6 @@ Ready-to-run pairs in `input_examples/` and `output_examples/`:
 | `input_1.json` | IT Service Management Portal (judge default) | Corporate IT |
 | `input_2.json` | Revenue Assurance Dashboard | Finance |
 | `input_3.json` | NOC Monitoring Platform | Network Operations |
-| `input_it_service_desk.json` | IT Service Management Portal (ITSM) | Corporate IT |
-| `input_revenue_assurance.json` | Revenue Assurance Dashboard | Finance |
-| `input_leave_attendance.json` | Leave & Attendance Management System | Human Capital |
 
 Completed output runs matching the above inputs are in `output_examples/` — `output_1.json` shows the standard `RunResponse` API format; per-project HTML MVP reports are in `output_examples/{project_id}/mvp.html`. The `dataset/telecom_projects.json` file contains 20 additional pre-configured project descriptions available through the web UI.
 
