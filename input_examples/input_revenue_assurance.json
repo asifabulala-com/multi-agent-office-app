@@ -1,5 +1,0 @@
-{
-  "project_id": "RA_Dashboard_001",
-  "project_name": "Revenue Assurance Dashboard",
-  "description": "Build a web-based Revenue Assurance Dashboard for a telecom company's finance team. The system must ingest daily CDR (Call Detail Records) and billing feeds, detect revenue leakage through automated reconciliation rules, flag discrepancies between network usage and billed amounts, and produce drill-down reports by region, product, and time period. Use FastAPI and Python 3.11 for the backend, React 18 and TypeScript for the frontend, PostgreSQL for structured data, and Redis for caching reconciliation results. Include role-based access for analysts, managers, and auditors. The dashboard must display KPIs for revenue at risk, recovery rate, and open leakage cases."
-}
