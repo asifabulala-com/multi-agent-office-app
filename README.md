@@ -757,12 +757,24 @@ API_HOST=0.0.0.0
 **Version:** 1.0.0 · **Event:** G42 AI Agenthon 2026 · **Use Case ID:** 1
 
 **Submission files:**
-- `metadata.json` — agent definitions, tools, models, endpoints
-- `ARCHITECTURE.md` — full agent architecture document with LangGraph node map, collaboration patterns, real data integration table, and file layout
-- `docs/submission_demo.html` — interactive demo (served at `http://localhost:8000/docs/submission_demo.html`)
-- `docs/pitch_deck.html` — judge-facing pitch deck (10 slides)
-- `docs/architecture_diagram.html` — interactive architecture diagram
+
+### Core entry points
+- `metadata.json` — agent definitions, tools, models, endpoints, and `api_port`
+- `run.py` — FastAPI server and CLI entry point; `POST /run` on port 8000
+- `Dockerfile` + `docker-compose.yml` — one-command container build and launch
+
+### Documentation (`docs/`)
+
+#### Reference markdown
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — full system architecture: Mermaid flowchart of the LangGraph StateGraph (16 nodes, 4 conditional edges), high-level text diagram, node-by-node workflow walkthrough, `ProjectState` contract, `SharedMemory` layout, deterministic operations, MVP and report generation, dataset browser, and annotated file tree. **Start here to understand how the system works.**
+- [docs/AGENTS.md](docs/AGENTS.md) — per-agent specification for all 5 agents (Project Manager, Engineer, QA, Risk Analyst, Stakeholder): role, LLM prompts, key methods, input/output schemas, messages sent, and the full agent communication matrix with typical interaction counts per run.
+- [docs/API.md](docs/API.md) — REST API reference for all 10 endpoints (`/run`, `/run-sync`, `/health`, `/status`, `/project/{id}`, `/interactions/{id}`, `/dataset`, `/mvp/{id}`, `/report/{id}`, `/compass/probe`, `/reset`, `/demo`, `/submission_demo`): request/response schemas, error codes, example curl commands, execution timeline, and Python client example.
+- [docs/COLLABORATION.md](docs/COLLABORATION.md) — six named collaboration patterns with timestamped sequence diagrams: QA→Engineer feedback loop, escalation chain, PM delegation and status tracking, cross-agent consultation, concurrent monitoring, and plan refinement cycle. Includes anti-patterns (what the system deliberately avoids) and a full end-to-end worked example with log evidence.
+- [docs/STRONG_COLLABORATION.md](docs/STRONG_COLLABORATION.md) — judge-facing evidence document. Eight numbered indicators of strong multi-agent collaboration (feedback loops, cross-agent communication, hierarchical escalation, shared memory, adaptive planning, quality gates with authority, multi-perspective monitoring, genuine decision-making), each backed by inline code excerpts. Includes collaboration metric breakdown, complexity analysis, requirements checklist, differentiation table vs. weak systems, and the full annotated file structure.
+- [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md) — honest engineering trade-offs: `MAX_QA_RETRIES=1` and `MAX_ITERATIONS=2` caps with rationale, in-memory state limitations, LLM schema-drift handling, MVP HTML quality variance, Compass integration error behaviour, and Docker/Python version notes.
+
+### Data and examples
 - `input_examples/` — 3 ready-to-run project inputs (`input_1.json` is the judge default)
-- `output_examples/` — 3 completed runs including `output_1.json` (standard RunResponse format)
+- `output_examples/` — 3 completed runs including `output_1.json` (standard `RunResponse` format)
 - `data/onet_tech_skills.json` — O\*NET 28.3 workforce data (real public data, CC BY 4.0)
 - `logs/agent_trace.jsonl` — 1,933 pre-existing trace events from 24 completed runs; new events appended on each run
