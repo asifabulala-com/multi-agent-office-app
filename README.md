@@ -773,6 +773,34 @@ API_HOST=0.0.0.0
 - [docs/STRONG_COLLABORATION.md](docs/STRONG_COLLABORATION.md) — judge-facing evidence document. Eight numbered indicators of strong multi-agent collaboration (feedback loops, cross-agent communication, hierarchical escalation, shared memory, adaptive planning, quality gates with authority, multi-perspective monitoring, genuine decision-making), each backed by inline code excerpts. Includes collaboration metric breakdown, complexity analysis, requirements checklist, differentiation table vs. weak systems, and the full annotated file structure.
 - [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md) — honest engineering trade-offs: `MAX_QA_RETRIES=1` and `MAX_ITERATIONS=2` caps with rationale, in-memory state limitations, LLM schema-drift handling, MVP HTML quality variance, Compass integration error behaviour, and Docker/Python version notes.
 
+### Presentations and training (`reports/`)
+
+- [reports/judge_presentation.html](reports/judge_presentation.html) — **Judge-facing interactive presentation.** A fully self-contained HTML document designed for evaluators reviewing the submission. Sections covered:
+  - **Problem** — why isolated agent roles produce delivery failures, and how this system closes the loop
+  - **Agents** — table of all 5 agents with model assignment, authority, and collaboration signals
+  - **Flow** — annotated LangGraph node-by-node walkthrough with all 4 conditional edges explained
+  - **Input / Output** — side-by-side sample input JSON and the corresponding `RunResponse` output with trace events
+  - **Real Data** — four integrated public data sources (O\*NET, NIST NVD, BLS OES, npm/PyPI) with sample output snippets
+  - **Memory** — `SharedMemory` + `ProjectState` layout, who writes and who reads each key
+  - **Pressure Test** — what happens when every conditional edge fires simultaneously (risk escalation + QA rejection + stakeholder concern in one run)
+  - **Primitives** — the 8 LangGraph/multi-agent primitives used (StateGraph, conditional edges, shared state, async nodes, agent messaging, decision logging, JSONL tracing, deterministic fallback)
+  - **Checklist** — all 9 evaluation criteria with evidence pointers for each
+
+- [reports/technical_training_guide.html](reports/technical_training_guide.html) — **Deep-dive technical training guide for developers.** A 13-section reference document covering the full codebase with annotated code excerpts, design rationale boxes, and a 50+ question Q&A bank. Sections covered:
+  - **System Overview** — one-page big-picture view of agent roles, data flow, and output artifacts
+  - **File Structure** — every file annotated with its responsibility and dependencies
+  - **data_types.py** — `AgentRole`, `Task`, `Project`, `Message` models with field-level commentary
+  - **memory.py** — `SharedMemory` internals: threading lock, `agent_summaries` pattern, feedback loop logging
+  - **base_agent.py** — shared infrastructure all agents inherit: `llm_decide`, `send_message`, `make_decision`, `log_trace`, `escalate_issue`
+  - **The 5 Agents** — per-agent section with LLM prompt text, key method walkthrough, and design rationale for each decision
+  - **graph.py** — the LangGraph `StateGraph` in detail: node registration, edge wiring, all 4 conditional edge functions, `MAX_QA_RETRIES` and `MAX_ITERATIONS` rationale
+  - **state.py** — `ProjectState` TypedDict contract, field ownership table, why TypedDict over Pydantic
+  - **compass_integration.py** — `CompassClient` internals, model selection logic (`gpt-5.1` vs `gpt-4.1`), SHA-256 deterministic fallback, JSON parsing with graceful degradation
+  - **run.py** — FastAPI server setup, all endpoint handlers, `RunResponse` schema, CLI mode, `_RUN_TIMEOUT` enforcement
+  - **Complete End-to-End Execution Flow** — step-by-step trace of a full run from `POST /run` to final JSON, showing every state mutation
+  - **How to Present to Judges** — talking points, what to demo live, common questions to anticipate
+  - **Q&A Bank** — 50+ categorised questions (Architecture, Code, Design, Collaboration, Hard) with full answers
+
 ### Data and examples
 - `input_examples/` — 3 ready-to-run project inputs (`input_1.json` is the judge default)
 - `output_examples/` — 3 completed runs including `output_1.json` (standard `RunResponse` format)
