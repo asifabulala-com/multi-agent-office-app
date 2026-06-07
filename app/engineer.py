@@ -1,6 +1,7 @@
 """Engineer Agent – writes real source files and revises based on QA critique."""
 import asyncio
 import json
+import re
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -450,13 +451,30 @@ class EngineerAgent(BaseAgent):
             status="success",
         )
 
-        llm_result = await self.llm_decide(_MVP_SYSTEM, context, max_tokens=3500)
+        # Call LLM directly so we can fall back to raw-HTML extraction if JSON parsing fails
+        raw = await self.compass.call_llm(_MVP_SYSTEM, context, max_tokens=4000)
 
-        html_content = llm_result.get("html_content", "")
-        features = llm_result.get("features_implemented", [])
-        mvp_desc = llm_result.get("mvp_description", "")
+        html_content = ""
+        features: List[str] = []
+        mvp_desc = ""
 
-        # Some LLMs over-escape JSON strings — normalise backslash sequences
+        # Attempt 1: parse as JSON (LLM returned the expected format)
+        try:
+            cleaned = raw.strip()
+            for prefix in ("```json", "```"):
+                if cleaned.startswith(prefix):
+                    cleaned = cleaned[len(prefix):]
+            if cleaned.endswith("```"):
+                cleaned = cleaned[:-3]
+            parsed = json.loads(cleaned.strip())
+            if isinstance(parsed, dict):
+                html_content = parsed.get("html_content", "")
+                features = parsed.get("features_implemented", [])
+                mvp_desc = parsed.get("mvp_description", "")
+        except Exception:
+            pass
+
+        # Normalise backslash-escaped sequences that survive JSON parsing
         if html_content and "\\n" in html_content:
             html_content = (
                 html_content
@@ -465,6 +483,15 @@ class EngineerAgent(BaseAgent):
                 .replace("\\'", "'")
                 .replace("\\t", "\t")
             )
+
+        # Attempt 2: LLM returned raw HTML instead of JSON — extract it directly
+        if not html_content or not html_content.strip().startswith("<!"):
+            match = re.search(
+                r"(<!DOCTYPE\s+html.*?</html>)", raw, re.DOTALL | re.IGNORECASE
+            )
+            if match:
+                html_content = match.group(1)
+                self.logger.info("MVP: extracted HTML via fallback regex (JSON parse failed)")
 
         if not html_content or not html_content.strip().startswith("<!"):
             self.logger.warning("MVP generation returned empty or invalid HTML")

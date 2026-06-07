@@ -813,6 +813,9 @@ class PMWorkflowGraph:
         except asyncio.TimeoutError:
             logger.warning("Workflow timed out after 12 minutes — returning partial results")
             final_state = state  # type: ignore[assignment]
+        except Exception as exc:
+            logger.error(f"Workflow raised an exception — returning partial results: {exc}")
+            final_state = state  # type: ignore[assignment]
 
         # ── Build the result dict expected by run.py / FastAPI ──────────────
         interactions = self.memory.get_all_interactions()
@@ -847,6 +850,10 @@ class PMWorkflowGraph:
             "mvp_path": final_state.get("mvp_path", ""),
         }
 
-        report_path = generate_report(result, name)
-        result["report_path"] = str(report_path)
+        try:
+            report_path = generate_report(result, name)
+            result["report_path"] = str(report_path)
+        except Exception as exc:
+            logger.error(f"Report generation failed: {exc}")
+            result["report_path"] = ""
         return result
