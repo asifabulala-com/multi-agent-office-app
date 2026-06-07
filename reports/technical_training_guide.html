@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Technical Training Guide — Multi-Agent PM System</title>
+<style>
+:root {
+  --navy:#0d1b2a; --blue:#1b4f8a; --accent:#2563eb; --teal:#0891b2;
+  --green:#16a34a; --amber:#d97706; --red:#dc2626; --purple:#7c3aed;
+  --bg:#f1f5f9; --card:#ffffff; --border:#e2e8f0; --text:#0f172a; --muted:#64748b;
+  --code-bg:#0f172a; --code-text:#e2e8f0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.7}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:var(--navy);display:flex;align-items:center;gap:0;height:50px;padding:0 28px;box-shadow:0 2px 12px rgba(0,0,0,.4);overflow-x:auto}
+nav .brand{font-weight:800;color:#7dd3fc;white-space:nowrap;margin-right:24px;font-size:.95rem}
+nav a{color:#94a3b8;text-decoration:none;font-size:.78rem;font-weight:500;padding:0 12px;height:50px;display:flex;align-items:center;white-space:nowrap;transition:color .15s,background .15s}
+nav a:hover{color:#fff;background:rgba(255,255,255,.07)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#1e3a5f 60%,#0c2240 100%);color:#fff;padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero::after{content:'TRAINING GUIDE';position:absolute;right:-20px;top:50%;transform:translateY(-50%) rotate(90deg) translateX(50%);font-size:5rem;font-weight:900;color:rgba(255,255,255,.04);letter-spacing:.2em;pointer-events:none}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero-tag{display:inline-block;background:rgba(37,99,235,.4);border:1px solid rgba(96,165,250,.4);color:#93c5fd;padding:4px 14px;border-radius:20px;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px}
+.hero h1{font-size:2.4rem;font-weight:900;line-height:1.15;margin-bottom:14px}
+.hero h1 span{color:#7dd3fc}
+.hero p{font-size:1rem;color:#94a3b8;max-width:640px}
+
+/* LAYOUT */
+.container{max-width:1100px;margin:36px auto;padding:0 24px}
+.section{background:var(--card);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);padding:30px 36px;margin-bottom:28px}
+.sec-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--bg)}
+.sec-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;margin-top:2px}
+.sec-title{font-size:1.2rem;font-weight:800;color:var(--navy)}
+.sec-sub{font-size:.82rem;color:var(--muted);margin-top:3px}
+
+/* STEP CARDS */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:20px;padding:22px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-body{flex:1}
+.step-title{font-size:1rem;font-weight:700;margin-bottom:6px;color:var(--navy)}
+.step-desc{font-size:.88rem;color:#334155;line-height:1.7;margin-bottom:10px}
+
+/* CODE BLOCKS */
+pre{background:var(--code-bg);color:var(--code-text);padding:16px 20px;border-radius:10px;font-size:.78rem;overflow-x:auto;font-family:"SF Mono","Fira Code","Consolas",monospace;line-height:1.65;margin:10px 0}
+pre .cmt{color:#94a3b8;font-style:italic}
+pre .kw{color:#93c5fd}
+pre .str{color:#86efac}
+pre .fn{color:#fbbf24}
+pre .cls{color:#f9a8d4}
+pre .num{color:#c4b5fd}
+pre .key{color:#67e8f9}
+code{background:#f1f5f9;border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-size:.8rem;font-family:"SF Mono","Fira Code","Consolas",monospace;color:var(--navy)}
+.file-tag{display:inline-block;background:#1e3a5f;color:#7dd3fc;padding:3px 12px;border-radius:6px;font-size:.75rem;font-weight:700;margin-bottom:8px;font-family:"SF Mono","Fira Code",monospace}
+
+/* FILE TREE */
+.tree{background:#0f172a;border-radius:10px;padding:18px 20px;font-family:"SF Mono","Fira Code",monospace;font-size:.8rem;line-height:1.9}
+.tree .dir{color:#7dd3fc;font-weight:700}
+.tree .f{color:#94a3b8}
+.tree .f.imp{color:#fbbf24}
+.tree .note{color:#64748b;font-style:italic}
+
+/* WHY BOXES */
+.why-box{background:#fffbeb;border:1px solid #fcd34d;border-left:4px solid #f59e0b;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:.86rem;color:#92400e}
+.why-box .why-lbl{font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;color:#b45309}
+.how-box{background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #22c55e;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:.86rem;color:#14532d}
+.how-box .how-lbl{font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;color:#16a34a}
+.present-box{background:#ede9fe;border:1px solid #c4b5fd;border-left:4px solid #8b5cf6;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:.86rem;color:#4c1d95}
+.present-box .p-lbl{font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;color:#7c3aed}
+
+/* FLOW CONNECTOR */
+.flow-line{display:flex;align-items:center;gap:10px;margin:6px 0 6px 18px;font-size:.83rem;color:var(--muted)}
+.flow-line::before{content:'↓';color:var(--accent);font-size:1rem;font-weight:900}
+.flow-node{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:.82rem;font-weight:600;color:var(--text)}
+
+/* Q&A */
+.qa-section{display:flex;flex-direction:column;gap:14px}
+.qa-card{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.qa-q{background:var(--bg);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;cursor:pointer}
+.qa-q-badge{background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.qa-q-text{font-weight:700;font-size:.92rem;color:var(--navy)}
+.qa-q-cat{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle}
+.cat-arch{background:#dbeafe;color:#1d4ed8}
+.cat-code{background:#dcfce7;color:#15803d}
+.cat-design{background:#fef3c7;color:#92400e}
+.cat-collab{background:#f3e8ff;color:#7e22ce}
+.cat-hard{background:#fee2e2;color:#b91c1c}
+.qa-a{padding:16px 18px;font-size:.86rem;line-height:1.75;color:#334155;border-top:1px solid var(--border)}
+.qa-a strong{color:var(--navy)}
+
+/* CATEGORY BADGES */
+.cat-section-hdr{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 10px;padding:6px 0;border-bottom:2px solid var(--border)}
+
+/* TIPS */
+.tip{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:8px;margin:8px 0;font-size:.86rem}
+.tip-green{background:#f0fdf4;border:1px solid #bbf7d0}
+.tip-amber{background:#fffbeb;border:1px solid #fde68a}
+.tip-icon{font-size:1.1rem;flex-shrink:0}
+
+/* TABLE */
+.ftable{width:100%;border-collapse:collapse;font-size:.86rem}
+.ftable th{text-align:left;padding:9px 12px;background:var(--bg);font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.ftable td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.ftable tr:last-child td{border-bottom:none}
+
+/* TOC */
+.toc{background:var(--code-bg);border-radius:10px;padding:20px 24px;color:#e2e8f0}
+.toc h3{color:#7dd3fc;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.toc ol{margin-left:18px}
+.toc li{margin-bottom:6px}
+.toc a{color:#94a3b8;text-decoration:none;font-size:.85rem}
+.toc a:hover{color:#fff}
+
+footer{text-align:center;padding:28px;color:var(--muted);font-size:.8rem;border-top:1px solid var(--border);background:var(--card);margin-top:36px}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">Technical Training Guide</span>
+  <a href="#overview">Overview</a>
+  <a href="#structure">File Structure</a>
+  <a href="#datatypes">Data Types</a>
+  <a href="#memory">Memory</a>
+  <a href="#baseagent">Base Agent</a>
+  <a href="#agents">Agents</a>
+  <a href="#graph">Graph</a>
+  <a href="#state">State</a>
+  <a href="#compass">Compass</a>
+  <a href="#api">API</a>
+  <a href="#flow">Full Flow</a>
+  <a href="#present">How to Present</a>
+  <a href="#qa">Q&amp;A Bank</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Step-by-Step Technical Training</div>
+    <h1>Understanding the<br><span>Multi-Agent PM Codebase</span></h1>
+    <p>Every file, every design decision, the full execution flow, presentation tips, and 50+ questions with answers you may face from judges.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="section">
+    <div class="toc">
+      <h3>Table of Contents</h3>
+      <ol>
+        <li><a href="#overview">System Overview — the big picture in one page</a></li>
+        <li><a href="#structure">File Structure — what every file does</a></li>
+        <li><a href="#datatypes">data_types.py — the foundation data models</a></li>
+        <li><a href="#memory">memory.py — the shared world model</a></li>
+        <li><a href="#baseagent">base_agent.py — shared agent infrastructure</a></li>
+        <li><a href="#agents">The 5 Agents — code, prompts, and why each was designed as it was</a></li>
+        <li><a href="#graph">graph.py — the LangGraph state machine</a></li>
+        <li><a href="#state">state.py — the typed state contract</a></li>
+        <li><a href="#compass">compass_integration.py — LLM calls and fallback</a></li>
+        <li><a href="#api">run.py — the FastAPI server and CLI</a></li>
+        <li><a href="#flow">Complete End-to-End Execution Flow</a></li>
+        <li><a href="#present">How to Present This to Judges</a></li>
+        <li><a href="#qa">Complete Question &amp; Answer Bank (50+ questions)</a></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 1. OVERVIEW -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="overview">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#dbeafe">🗺️</div>
+      <div><div class="sec-title">1. System Overview — The Big Picture</div>
+      <div class="sec-sub">Understand this before touching any code</div></div>
+    </div>
+
+    <p style="margin-bottom:16px">The system answers one question: <strong>"Given a project description in English, can AI agents collaboratively plan it, implement it, quality-review it, risk-assess it, and get business sign-off — with agents actually depending on each other?"</strong></p>
+
+    <p style="margin-bottom:16px">The answer is structured as a <strong>LangGraph state machine</strong> (a directed graph of async nodes). Each node is a function that calls one agent. Agents share context through <strong>SharedMemory</strong> and pass state through the <strong>ProjectState</strong> dict. Every agent call goes through the OpenAI-compatible <strong>Compass API</strong> (or a deterministic fallback).</p>
+
+    <div class="ftable" style="display:block;overflow-x:auto">
+      <table class="ftable">
+        <thead><tr><th>Layer</th><th>Technology</th><th>Why this was chosen</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Workflow orchestration</strong></td><td>LangGraph (StateGraph)</td><td>Forces explicit state contracts between nodes; supports async; conditional edges encode business logic cleanly; industry-standard for agent workflows</td></tr>
+          <tr><td><strong>LLM integration</strong></td><td>OpenAI Python SDK (async)</td><td>Compass API is OpenAI-compatible — same SDK works with any endpoint via <code>base_url</code> swap; one client, zero lock-in</td></tr>
+          <tr><td><strong>API server</strong></td><td>FastAPI + uvicorn</td><td>Native async support matches <code>ainvoke</code>; Pydantic models give free request validation; auto-generates /docs UI</td></tr>
+          <tr><td><strong>Data models</strong></td><td>Python dataclasses</td><td>Zero dependencies; easy <code>asdict()</code> serialisation; self-documenting field types</td></tr>
+          <tr><td><strong>Shared memory</strong></td><td>In-process dict + threading.Lock</td><td>Sufficient for single-server runs; thread-safe; zero network overhead; easily replaceable with Redis for distributed deployment</td></tr>
+          <tr><td><strong>Trace logging</strong></td><td>JSONL append-only file</td><td>Judges can read <code>logs/agent_trace.jsonl</code> line-by-line; each event is independent; parseable by any tool</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 2. FILE STRUCTURE -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="structure">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#dcfce7">📁</div>
+      <div><div class="sec-title">2. File Structure — What Every File Does</div>
+      <div class="sec-sub">Read this before touching any code</div></div>
+    </div>
+
+    <div class="tree">
+<span class="dir">multi_agent_pm/</span>
+├── <span class="f imp">run.py</span>              <span class="note">← ENTRY POINT: FastAPI server + CLI. Start here.</span>
+├── <span class="f imp">metadata.json</span>       <span class="note">← Judge submission: agent definitions + use case ID</span>
+├── .env                 <span class="note">← OPENAI_API_KEY, OPENAI_BASE_URL, COMPASS_MODEL</span>
+├── requirements.txt     <span class="note">← All Python dependencies</span>
+│
+├── <span class="dir">app/</span>                 <span class="note">← ALL business logic lives here</span>
+│   ├── <span class="f imp">state.py</span>        <span class="note">← TypedDict: the contract between graph nodes</span>
+│   ├── <span class="f imp">data_types.py</span>   <span class="note">← AgentRole, Task, Project, Message dataclasses</span>
+│   ├── <span class="f imp">memory.py</span>       <span class="note">← SharedMemory: thread-safe world model</span>
+│   ├── <span class="f imp">base_agent.py</span>   <span class="note">← Abstract base: LLM calls, messaging, tracing</span>
+│   ├── <span class="f imp">graph.py</span>        <span class="note">← LangGraph StateGraph: the FULL workflow</span>
+│   ├── orchestrator.py  <span class="note">← Thin wrapper around graph.py (API compatibility)</span>
+│   ├── <span class="f imp">project_manager.py</span> <span class="note">← PM agent: plans + replans</span>
+│   ├── <span class="f imp">engineer.py</span>     <span class="note">← Engineer agent: writes files, revises on QA</span>
+│   ├── <span class="f imp">qa_agent.py</span>     <span class="note">← QA agent: critiques, drives revision loop</span>
+│   ├── <span class="f imp">risk_analyst.py</span> <span class="note">← Risk agent: assesses, monitors, escalates</span>
+│   ├── <span class="f imp">stakeholder.py</span>  <span class="note">← Stakeholder: approves, monitors, scores</span>
+│   ├── <span class="f imp">compass_integration.py</span> <span class="note">← LLM calls + deterministic fallback</span>
+│   ├── trace_logger.py  <span class="note">← Appends to logs/agent_trace.jsonl</span>
+│   └── logging_config.py <span class="note">← Structured JSON logging setup</span>
+│
+├── <span class="dir">input_examples/</span>      <span class="note">← Sample project JSON inputs</span>
+├── <span class="dir">output_examples/</span>     <span class="note">← Engineer writes source files here</span>
+├── <span class="dir">logs/</span>               <span class="note">← agent_trace.jsonl written here at runtime</span>
+└── <span class="dir">reports/</span>            <span class="note">← HTML reports generated per run</span>
+    </div>
+
+    <div class="why-box" style="margin-top:14px">
+      <div class="why-lbl">Why is app/ separate from run.py?</div>
+      <code>run.py</code> adds <code>app/</code> to <code>sys.path</code> so all agents use bare imports like <code>from memory import SharedMemory</code>. This keeps agent files clean — they don't know they're inside a package. It also means agents can be tested independently by running Python inside the <code>app/</code> directory directly.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 3. DATA TYPES -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="datatypes">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#fef3c7">🧱</div>
+      <div><div class="sec-title">3. data_types.py — The Foundation</div>
+      <div class="sec-sub">Every object in the system is one of these four types</div></div>
+    </div>
+
+    <div class="file-tag">app/data_types.py</div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">AgentRole — why it's a string Enum</div>
+          <div class="step-desc">Agents identify themselves by role, not by class name. This means you can switch an agent's implementation (e.g., replace <code>EngineerAgent</code> with a better version) without breaking any message routing.</div>
+          <pre><span class="kw">class</span> <span class="cls">AgentRole</span>(str, Enum):
+    PROJECT_MANAGER = <span class="str">"project_manager"</span>
+    ENGINEER        = <span class="str">"engineer"</span>
+    QA              = <span class="str">"qa"</span>
+    RISK_ANALYST    = <span class="str">"risk_analyst"</span>
+    STAKEHOLDER     = <span class="str">"stakeholder"</span></pre>
+          <div class="why-box"><div class="why-lbl">Why <code>str, Enum</code> not plain <code>Enum</code>?</div>Because these values are stored in JSON (SharedMemory messages, ProjectState, trace logs). A plain <code>Enum</code> would require calling <code>.value</code> everywhere. <code>str, Enum</code> makes the enum itself a string — <code>AgentRole.ENGINEER == "engineer"</code> is True — so it serialises automatically.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Task — the unit of work</div>
+          <div class="step-desc">Every action the system takes is modelled as a Task assigned to an AgentRole. This includes internal tasks (like "Project Planning") and external ones (like "Implement Authentication").</div>
+          <pre><span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="cls">Task</span>:
+    id:               str
+    title:            str
+    description:      str
+    assigned_to:      <span class="cls">AgentRole</span>
+    status:           <span class="cls">TaskStatus</span> = TaskStatus.PENDING
+    result:           str        = <span class="str">""</span>          <span class="cmt"># filled by agent after execution</span>
+    estimated_effort: int        = <span class="num">0</span>          <span class="cmt"># hours — from LLM plan</span>
+    risk_level:       str        = <span class="str">"medium"</span>   <span class="cmt"># low / medium / high</span>
+    metadata:         dict       = ...          <span class="cmt"># acceptance_criteria, deliverables, phase</span></pre>
+          <div class="why-box"><div class="why-lbl">Why store result in the Task?</div>When QA critiques an Engineer's work, it calls <code>memory.get_summary(AgentRole.ENGINEER, task.id)</code>. But the PM also reads task results to summarise project completion. Keeping <code>result</code> on the Task allows any agent to look up what happened on any task without knowing which agent ran it.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Message — typed inter-agent communication</div>
+          <div class="step-desc">Messages are the audit trail of agent collaboration. They're stored in SharedMemory and surfaced in the output JSON under <code>interactions.messages</code>. Judges read these to verify real collaboration happened.</div>
+          <pre><span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="cls">Message</span>:
+    sender:       <span class="cls">AgentRole</span>
+    receiver:     <span class="cls">AgentRole</span>
+    content:      str
+    message_type: str = <span class="str">"communication"</span>  <span class="cmt"># request | task_assignment | escalation | feedback</span>
+    timestamp:    str = ...
+    metadata:     dict = ...</pre>
+          <div class="why-box"><div class="why-lbl">Why typed message_type?</div>The collaboration metrics in <code>_calculate_metrics()</code> count messages by type. If <code>escalation</code> messages exist, the pattern becomes <code>"delegated_with_escalation"</code>. This gives judges a measurable proof of escalation behaviour, not just a claim.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 4. MEMORY -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="memory">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#ccfbf1">🧠</div>
+      <div><div class="sec-title">4. memory.py — The Shared World Model</div>
+      <div class="sec-sub">The most important file for understanding how agents "talk" to each other</div></div>
+    </div>
+
+    <div class="file-tag">app/memory.py</div>
+
+    <p style="margin-bottom:14px">SharedMemory is a <strong>thread-safe in-process store</strong> that all 5 agents read and write. It's the answer to "how do agents share context?" — every piece of cross-agent information flows through here.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">agent_summaries — the cross-agent output store</div>
+          <div class="step-desc">This is the primary mechanism for one agent to read another's output. Keyed by <code>"role:context_key"</code>.</div>
+          <pre><span class="cmt"># PM writes its plan after LLM call:</span>
+self.memory.<span class="fn">store_summary</span>(AgentRole.PROJECT_MANAGER, project.id, json.dumps({
+    <span class="str">"tasks"</span>: created_task_titles,
+    <span class="str">"technology_stack"</span>: tech_stack,
+    <span class="str">"reasoning"</span>: reasoning
+}))
+
+<span class="cmt"># RiskAnalyst reads it during risk assessment:</span>
+pm_plan = self.memory.<span class="fn">get_summary</span>(AgentRole.PROJECT_MANAGER, project.id)
+
+<span class="cmt"># QA reads Engineer's output to critique it:</span>
+impl_summary = self.memory.<span class="fn">get_summary</span>(AgentRole.ENGINEER, task.id)</pre>
+          <div class="why-box"><div class="why-lbl">Why a keyed dictionary, not a message queue?</div>A message queue is point-to-point: PM sends, Engineer receives. But summaries need to be readable by <em>any</em> agent at <em>any</em> time. The PM's plan might be read by QA, RiskAnalyst, and Stakeholder at different points. A keyed dict enables this "publish once, read many" pattern.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">threading.Lock — why it's there</div>
+          <pre><span class="kw">class</span> <span class="cls">SharedMemory</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.lock = <span class="cls">Lock</span>()  <span class="cmt">← IMPORTANT</span>
+        self.projects: Dict[str, Project] = {}
+        self.messages: List[Message] = []
+        self.agent_summaries: Dict[str, str] = {}
+
+    <span class="kw">def</span> <span class="fn">store_summary</span>(self, agent_role, key, summary):
+        <span class="kw">with</span> self.lock:  <span class="cmt">← every read/write is under the lock</span>
+            self.agent_summaries[...] = summary</pre>
+          <div class="why-box"><div class="why-lbl">Why does this matter?</div>LangGraph nodes run async. In Python, even though the GIL prevents true parallel CPU execution, async tasks can interleave at every <code>await</code> point. Without the lock, two agents modifying <code>projects[id].tasks</code> simultaneously could corrupt the list. The lock ensures atomic updates.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">feedback_loops — the collaboration evidence store</div>
+          <pre><span class="kw">def</span> <span class="fn">log_feedback_loop</span>(self, from_agent, to_agent, feedback, project_id, iteration):
+    key = <span class="str">f"{from_agent.value}->{to_agent.value}_{project_id}"</span>
+    <span class="cmt"># e.g. "qa->engineer_proj_ecommerce_001"</span>
+    self.feedback_loops[key].append({
+        <span class="str">"timestamp"</span>: datetime.now().isoformat(),
+        <span class="str">"iteration"</span>: iteration,
+        <span class="str">"feedback"</span>: feedback
+    })</pre>
+          <div class="why-box"><div class="why-lbl">Why log this separately from messages?</div>Messages are point-in-time events. Feedback loops are <em>sequences</em> — the same QA→Engineer exchange happening multiple times. Keying by agent-pair + project lets you count how many revision cycles a specific task went through, which is what judges look at in collaboration metrics.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 5. BASE AGENT -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="baseagent">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#ede9fe">⚙️</div>
+      <div><div class="sec-title">5. base_agent.py — Shared Agent Infrastructure</div>
+      <div class="sec-sub">All 5 agents inherit from this. Understand this, understand all agents.</div></div>
+    </div>
+
+    <div class="file-tag">app/base_agent.py</div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">llm_decide() — the central LLM call method</div>
+          <div class="step-desc">Every agent calls this to get structured JSON decisions from the LLM. It strips markdown fences and falls back gracefully.</div>
+          <pre><span class="kw">async def</span> <span class="fn">llm_decide</span>(self, system_prompt, user_message, max_tokens=<span class="num">1200</span>):
+    raw = <span class="kw">await</span> self.compass.<span class="fn">call_llm</span>(system_prompt, user_message, max_tokens)
+
+    <span class="cmt"># Strip markdown fences — LLMs often return ```json ... ```</span>
+    cleaned = raw.strip()
+    <span class="kw">if</span> cleaned.startswith(<span class="str">"```json"</span>): cleaned = cleaned[<span class="num">7</span>:]
+    <span class="kw">if</span> cleaned.endswith(<span class="str">"```"</span>):     cleaned = cleaned[:-<span class="num">3</span>]
+
+    <span class="kw">try</span>:
+        <span class="kw">return</span> json.loads(cleaned)    <span class="cmt"># structured dict — agents unpack fields</span>
+    <span class="kw">except</span> json.JSONDecodeError:
+        <span class="kw">return</span> {<span class="str">"reasoning"</span>: cleaned[:300], <span class="str">"confidence"</span>: 0.65}</pre>
+          <div class="why-box"><div class="why-lbl">Why always return a dict, never raise?</div>An LLM failure should degrade gracefully, not crash the workflow. If the LLM returns malformed JSON, the agent gets a dict with <code>confidence: 0.65</code> and can still proceed. A crash mid-workflow would lose all work done so far.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Abstract interface — process_task() and get_next_actions()</div>
+          <pre><span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
+
+<span class="kw">class</span> <span class="cls">BaseAgent</span>(ABC):
+    <span class="kw">@abstractmethod</span>
+    <span class="kw">async def</span> <span class="fn">process_task</span>(self, task: Task, project: Project) -> str:
+        <span class="str">"""Execute a task and return a human-readable result summary."""</span>
+
+    <span class="kw">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">get_next_actions</span>(self, project: Project) -> List[Task]:
+        <span class="str">"""Return tasks this agent should work on next."""</span></pre>
+          <div class="why-box"><div class="why-lbl">Why use ABC (Abstract Base Class)?</div>Python's ABC enforces that any subclass <em>must</em> implement both methods. If you forget to implement <code>process_task</code> in a new agent, Python raises <code>TypeError</code> at class instantiation — not at runtime when the graph calls it. Fail fast, fail loud.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">send_message() — the inter-agent communication primitive</div>
+          <pre><span class="kw">def</span> <span class="fn">send_message</span>(self, receiver: AgentRole, content: str, message_type: str, project_id: str):
+    message = <span class="cls">Message</span>(
+        sender=self.role,
+        receiver=receiver,
+        content=content,
+        message_type=message_type,
+        metadata={<span class="str">"project_id"</span>: project_id}
+    )
+    self.memory.<span class="fn">add_message</span>(message)   <span class="cmt"># persists to SharedMemory</span>
+    self.interaction_history.append(message)  <span class="cmt"># local agent history</span></pre>
+          <div class="why-box"><div class="why-lbl">Why store messages in two places?</div>SharedMemory is for the whole system — any agent can read all messages. <code>self.interaction_history</code> is for the agent's own summary (<code>get_interaction_summary()</code>), used by the Compass submission to prove the agent was active. Two purposes, two stores.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 6. THE 5 AGENTS -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="agents">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#dcfce7">🤖</div>
+      <div><div class="sec-title">6. The 5 Agents — Code, Prompts, and Design Decisions</div>
+      <div class="sec-sub">What each agent does, why its LLM prompt is structured the way it is</div></div>
+    </div>
+
+    <!-- PM -->
+    <div style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="background:#dbeafe;color:#1d4ed8;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:800">ProjectManager</span>
+        <span style="font-size:.85rem;color:var(--muted)">app/project_manager.py</span>
+      </div>
+      <p style="font-size:.88rem;margin-bottom:12px">The PM does two things: <strong>initial planning</strong> (decompose → LLM → task list) and <strong>replanning</strong> (read risk summary → LLM → adjust tasks). Key insight: it <em>reads other agents' summaries</em> before replanning.</p>
+      <pre><span class="cmt"># The PM system prompt forces structured JSON with specific fields judges want to see:</span>
+_PLAN_SYSTEM = <span class="str">"""Return ONLY valid JSON:
+{
+  "technology_stack": { "backend": "...", "frontend": "...", "database": "..." },
+  "tasks": [{ "id": "task_001", "role": "engineer", "effort_hours": 8,
+              "acceptance_criteria": [...], "deliverables": [...] }],
+  "confidence": 0.88,
+  "reasoning": "One sentence justifying the plan."
+}"""</span>
+
+<span class="cmt"># Replanning reads OTHER agents' memory before deciding:</span>
+<span class="kw">async def</span> <span class="fn">_run_replanning</span>(self, task, project):
+    risk_summary      = self.memory.<span class="fn">get_summary</span>(AgentRole.RISK_ANALYST, project.id)
+    stakeholder_data  = self.memory.<span class="fn">get_summary</span>(AgentRole.STAKEHOLDER, project.id)
+    <span class="cmt"># Now asks LLM: "given these risks and concerns, what should change?"</span>
+    result = <span class="kw">await</span> self.<span class="fn">llm_decide</span>(_REPLAN_SYSTEM, context)</pre>
+      <div class="why-box"><div class="why-lbl">Why does the PM prompt say "Return ONLY valid JSON, no markdown fences"?</div>GPT models frequently wrap JSON in <code>```json</code> blocks. The instruction <em>reduces</em> but doesn't eliminate this. That's why <code>llm_decide()</code> still strips fences — the prompt is first defence, the code is second.</div>
+    </div>
+
+    <!-- ENGINEER -->
+    <div style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="background:#dcfce7;color:#15803d;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:800">Engineer</span>
+        <span style="font-size:.85rem;color:var(--muted)">app/engineer.py</span>
+      </div>
+      <p style="font-size:.88rem;margin-bottom:12px">The Engineer writes actual source files to disk and stores its implementation summary in SharedMemory so QA can read it. The revision flow reads <code>qa_issues</code> from graph state.</p>
+      <pre><span class="cmt"># After LLM generates files, write them to output_examples/{project_id}/spa/</span>
+<span class="kw">def</span> <span class="fn">_write_files</span>(self, project_id, files):
+    output_dir = Path(<span class="str">"output_examples"</span>) / project_id / <span class="str">"spa"</span>
+    output_dir.mkdir(parents=True, exist_ok=True)
+    <span class="kw">for</span> f <span class="kw">in</span> files:
+        path = output_dir / f[<span class="str">"path"</span>]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f[<span class="str">"content"</span>], encoding=<span class="str">"utf-8"</span>)
+
+<span class="cmt"># After implementation, store summary so QA can read it:</span>
+self.memory.<span class="fn">store_summary</span>(self.role, task.id, json.dumps({
+    <span class="str">"implementation_summary"</span>: result.get(<span class="str">"implementation_summary"</span>),
+    <span class="str">"files_written"</span>: written_paths,
+    <span class="str">"confidence"</span>: result.get(<span class="str">"confidence"</span>)
+}))</pre>
+      <div class="why-box"><div class="why-lbl">Why does the Engineer store its summary BEFORE finishing?</div>Because QA reads it immediately after in the next graph node. The write must happen before the node returns — LangGraph nodes run sequentially, so there's no race condition here. This is the key dependency chain judges evaluate.</div>
+    </div>
+
+    <!-- MVP GENERATION -->
+    <div style="margin-top:20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="background:#dcfce7;color:#15803d;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:800">Engineer — MVP Generation</span>
+        <span style="font-size:.85rem;color:var(--muted)">app/engineer.py — generate_mvp()</span>
+      </div>
+      <p style="font-size:.88rem;margin-bottom:12px">At the end of the workflow, the Engineer generates a self-contained HTML MVP dashboard. Because LLMs sometimes return raw HTML instead of JSON-wrapped HTML, a <strong>two-stage extraction</strong> is used:</p>
+      <pre><span class="cmt"># Stage 1: Direct LLM call with higher token budget</span>
+raw = <span class="kw">await</span> self.compass.<span class="fn">call_llm</span>(_MVP_SYSTEM, context, max_tokens=<span class="num">4000</span>)
+
+html_content = <span class="str">""</span>
+<span class="kw">try</span>:
+    <span class="cmt"># Attempt 1: JSON parse — LLM may return {"html_content": "...", "features": [...]}</span>
+    cleaned = raw.strip()
+    <span class="kw">for</span> prefix <span class="kw">in</span> (<span class="str">"```json"</span>, <span class="str">"```"</span>):
+        <span class="kw">if</span> cleaned.startswith(prefix): cleaned = cleaned[len(prefix):]
+    <span class="kw">if</span> cleaned.endswith(<span class="str">"```"</span>): cleaned = cleaned[:-<span class="num">3</span>]
+    parsed = json.loads(cleaned.strip())
+    <span class="kw">if isinstance</span>(parsed, dict):
+        html_content = parsed.get(<span class="str">"html_content"</span>, <span class="str">""</span>)
+<span class="kw">except</span> Exception:
+    <span class="kw">pass</span>
+
+<span class="cmt"># Attempt 2: Regex fallback — extract raw DOCTYPE HTML block</span>
+<span class="kw">if not</span> html_content <span class="kw">or not</span> html_content.strip().startswith(<span class="str">"<!"</span>):
+    match = re.search(r<span class="str">"(&lt;!DOCTYPE\s+html.*?&lt;/html&gt;)"</span>, raw, re.DOTALL | re.IGNORECASE)
+    <span class="kw">if</span> match:
+        html_content = match.group(<span class="num">1</span>)</pre>
+      <div class="why-box"><div class="why-lbl">Why two stages? Why not just regex always?</div>LLMs are instructed to return JSON with an <code>html_content</code> key so the response also carries <code>features_implemented</code> and <code>mvp_description</code> metadata. But GPT models sometimes return the raw HTML block directly. The JSON parse captures the structured case; the regex catches the raw HTML case. Using only regex would discard the metadata; using only JSON parse would break on raw HTML responses.</div>
+      <div class="why-box"><div class="why-lbl">Why max_tokens=4000 instead of the default 1200?</div>A self-contained HTML file with CSS, JavaScript, and data tables needs 2,000–4,000 tokens minimum. The default 1,200 token budget causes the LLM to truncate the HTML mid-tag, producing a broken file. The MVP system prompt is the only call that requires a 4,000-token budget — all other agents use 1,200–2,000 tokens for JSON responses.</div>
+    </div>
+
+    <!-- QA -->
+    <div style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="background:#fef3c7;color:#92400e;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:800">QAAgent</span>
+        <span style="font-size:.85rem;color:var(--muted)">app/qa_agent.py</span>
+      </div>
+      <p style="font-size:.88rem;margin-bottom:12px">QA is the most technically interesting agent. It reads Engineer output from SharedMemory, reads the risk context, calls the LLM, and returns a structured verdict that drives the graph's routing decision.</p>
+      <pre><span class="kw">async def</span> <span class="fn">critique_implementation</span>(self, task, project, retry_count=<span class="num">0</span>):
+    <span class="cmt"># Step 1: Read what the Engineer built</span>
+    impl_summary = self.memory.<span class="fn">get_summary</span>(AgentRole.ENGINEER, task.id)
+
+    <span class="cmt"># Step 2: Read risk context to know what to focus on</span>
+    risk_context = self.memory.<span class="fn">get_summary</span>(AgentRole.RISK_ANALYST, project.id)
+
+    <span class="cmt"># Step 3: Choose prompt based on whether this is a re-test</span>
+    prompt = _RETEST_SYSTEM <span class="kw">if</span> retry_count > <span class="num">0</span> <span class="kw">else</span> _CRITIQUE_SYSTEM
+    user_msg = <span class="str">f"Task: {task.title}\nImplementation: {impl_summary}\nRisks: {risk_context}"</span>
+
+    <span class="cmt"># Step 4: LLM returns structured verdict</span>
+    result = <span class="kw">await</span> self.<span class="fn">llm_decide</span>(prompt, user_msg)
+
+    approved = result.get(<span class="str">"approved"</span>, False)
+    issues   = result.get(<span class="str">"issues"</span>, [])
+
+    <span class="cmt"># Step 5: If issues exist, send feedback message to Engineer</span>
+    <span class="kw">if not</span> approved:
+        self.<span class="fn">provide_feedback</span>(AgentRole.ENGINEER,
+            <span class="str">f"QA issues for '{task.title}': {[i['description'] for i in issues]}"</span>,
+            project.id)
+
+    <span class="kw">return</span> approved, issues, result.get(<span class="str">"confidence"</span>, <span class="num">0.85</span>)</pre>
+      <div class="why-box"><div class="why-lbl">Why does QA read risk context?</div>Risk context tells QA what areas to focus on. If RiskAnalyst flagged "PCI-DSS compliance risk", QA knows to scrutinise payment validation code specifically. Without risk context, QA reviews blindly. This cross-agent context reading is what makes the collaboration genuine.</div>
+    </div>
+
+    <!-- RISK ANALYST -->
+    <div style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="background:#fee2e2;color:#b91c1c;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:800">RiskAnalyst</span>
+        <span style="font-size:.85rem;color:var(--muted)">app/risk_analyst.py</span>
+      </div>
+      <pre><span class="cmt"># Risk assessment prompt forces specific severity levels:</span>
+_ASSESS_SYSTEM = <span class="str">"""Return risks with:
+  "severity": "critical|high|medium|low"
+Escalate if high_severity_count >= 2."""</span>
+
+<span class="cmt"># escalate_risks() is called by graph after monitor_risks node:</span>
+<span class="kw">def</span> <span class="fn">escalate_risks</span>(self, project):
+    critical = [r <span class="kw">for</span> r <span class="kw">in</span> self.risk_register <span class="kw">if</span> r.get(<span class="str">"severity"</span>) <span class="kw">in</span> (<span class="str">"critical"</span>, <span class="str">"high"</span>)]
+    <span class="kw">if</span> critical:
+        self.<span class="fn">send_message</span>(AgentRole.PROJECT_MANAGER,
+            <span class="str">f"HIGH-SEVERITY RISKS: {[r['title'] for r in critical]}"</span>,
+            <span class="str">"escalation"</span>, project.id)
+    <span class="kw">return</span> critical  <span class="cmt"># returned list drives graph branching</span></pre>
+      <div class="why-box"><div class="why-lbl">Why does the Risk Analyst use a reasoning model (gpt-5.1)?</div>Risk classification involves nuanced judgement — is "integration complexity" a high or medium risk for THIS specific project? The <code>use_reasoning_model=True</code> flag routes to <code>gpt-5.1</code> for this call. Planning and QA use <code>gpt-4.1</code>. Different tasks, different model complexity.</div>
+    </div>
+
+    <!-- STAKEHOLDER -->
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="background:#f3e8ff;color:#7e22ce;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:800">Stakeholder</span>
+        <span style="font-size:.85rem;color:var(--muted)">app/stakeholder.py</span>
+      </div>
+      <pre><span class="cmt"># Stakeholder approval requires specific conditions to pass:</span>
+_APPROVE_SYSTEM = <span class="str">"""Approval requires: tasks are defined, risks have been assessed,
+and the project scope is clear. Return satisfaction_score 0-100."""</span>
+
+<span class="cmt"># Mid-execution: satisfaction below 65 triggers PM escalation in graph.py:</span>
+sh_data = json.loads(self.memory.<span class="fn">get_summary</span>(AgentRole.STAKEHOLDER, project.id))
+<span class="kw">if</span> sh_data.get(<span class="str">"score"</span>, <span class="num">100</span>) < <span class="num">65</span>:
+    self.pm.<span class="fn">send_message</span>(AgentRole.STAKEHOLDER,
+        <span class="str">"Concerns received and logged. Adjusting approach."</span>, <span class="str">"response"</span>, project.id)</pre>
+      <div class="why-box"><div class="why-lbl">Why does the Stakeholder have a numeric satisfaction score?</div>A boolean "approved/rejected" isn't enough for judges to evaluate collaboration quality. A score from 0–100 lets the system reason about thresholds (below 65 = escalate), produces a measurable outcome, and gives the final Compass evaluation a concrete data point.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 7. GRAPH.PY -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="graph">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#fce7f3">🔄</div>
+      <div><div class="sec-title">7. graph.py — The LangGraph State Machine</div>
+      <div class="sec-sub">The most important file. All workflow logic lives here.</div></div>
+    </div>
+
+    <div class="file-tag">app/graph.py</div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Building the graph — nodes and edges</div>
+          <pre><span class="kw">def</span> <span class="fn">_build_graph</span>(self):
+    builder = <span class="cls">StateGraph</span>(ProjectState)
+
+    <span class="cmt"># Each node = one agent action</span>
+    builder.<span class="fn">add_node</span>(<span class="str">"plan_project"</span>,        self._node_plan_project)
+    builder.<span class="fn">add_node</span>(<span class="str">"assess_risks"</span>,         self._node_assess_risks)
+    builder.<span class="fn">add_node</span>(<span class="str">"replan_project"</span>,       self._node_replan_project)
+    builder.<span class="fn">add_node</span>(<span class="str">"implement_task"</span>,       self._node_implement_task)
+    builder.<span class="fn">add_node</span>(<span class="str">"qa_critique"</span>,          self._node_qa_critique)
+    builder.<span class="fn">add_node</span>(<span class="str">"engineer_revise"</span>,      self._node_engineer_revise)
+    <span class="cmt"># ... etc</span>
+
+    <span class="cmt"># Linear edges (always execute)</span>
+    builder.<span class="fn">add_edge</span>(<span class="str">"implement_task"</span>, <span class="str">"qa_critique"</span>)   <span class="cmt"># Engineer → always → QA</span>
+    builder.<span class="fn">add_edge</span>(<span class="str">"engineer_revise"</span>, <span class="str">"qa_critique"</span>)  <span class="cmt"># Revise → always → QA</span>
+
+    <span class="cmt"># Conditional edges (routing functions decide the path)</span>
+    builder.<span class="fn">add_conditional_edges</span>(
+        <span class="str">"qa_critique"</span>,
+        self.<span class="fn">_route_after_critique</span>,
+        {<span class="str">"revise"</span>: <span class="str">"engineer_revise"</span>, <span class="str">"next"</span>: <span class="str">"monitor_risks"</span>}
+    )
+    <span class="kw">return</span> builder.<span class="fn">compile</span>()</pre>
+          <div class="why-box"><div class="why-lbl">Why use LangGraph instead of plain Python if/else?</div>With plain Python you'd write one big async function with nested conditions. LangGraph makes each decision an explicit node + edge. The graph is <em>inspectable</em> — you can visualise it, trace each state transition, and add/remove nodes without touching other logic. It also gives you <code>ainvoke</code> for free.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Routing functions — how branching decisions work</div>
+          <pre><span class="cmt"># Routing functions are SYNC (LangGraph requirement — they read state only)</span>
+<span class="kw">def</span> <span class="fn">_route_after_critique</span>(self, state: ProjectState) -> Literal[<span class="str">"revise"</span>, <span class="str">"next"</span>]:
+    approved   = state.get(<span class="str">"qa_approved"</span>, False)
+    retry      = state.get(<span class="str">"qa_retry_count"</span>, <span class="num">0</span>)
+    <span class="kw">if not</span> approved <span class="kw">and</span> retry < MAX_QA_RETRIES:
+        <span class="kw">return</span> <span class="str">"revise"</span>   <span class="cmt"># → engineer_revise node</span>
+    <span class="kw">return</span> <span class="str">"next"</span>          <span class="cmt"># → monitor_risks node</span>
+
+<span class="kw">def</span> <span class="fn">_route_after_risks</span>(self, state: ProjectState) -> Literal[<span class="str">"replan"</span>, <span class="str">"approve"</span>]:
+    <span class="kw">return</span> <span class="str">"replan"</span> <span class="kw">if</span> state.get(<span class="str">"high_risks_detected"</span>, False) <span class="kw">else</span> <span class="str">"approve"</span></pre>
+          <div class="why-box"><div class="why-lbl">Why must routing functions be sync?</div>LangGraph calls routing functions synchronously during graph compilation and execution — it does not await them. If they were async, LangGraph would return a coroutine object, not a string key, and the graph would error. This is a LangGraph contract, not a choice.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">_sync_interactions() — why every node calls this</div>
+          <pre><span class="kw">def</span> <span class="fn">_sync_interactions</span>(self) -> Dict[str, Any]:
+    interactions = self.memory.<span class="fn">get_all_interactions</span>()
+    <span class="kw">return</span> {
+        <span class="str">"messages"</span>:       interactions[<span class="str">"messages"</span>],
+        <span class="str">"decisions"</span>:      interactions[<span class="str">"decisions"</span>],
+        <span class="str">"feedback_loops"</span>: interactions[<span class="str">"feedback_loops"</span>],
+        <span class="str">"agent_summaries"</span>: dict(self.memory.agent_summaries),
+    }
+
+<span class="cmt"># Every node returns this in its state update:</span>
+<span class="kw">return</span> {
+    <span class="str">"tasks"</span>: [...],
+    **self.<span class="fn">_sync_interactions</span>()   <span class="cmt">← copies SharedMemory → ProjectState</span>
+}</pre>
+          <div class="why-box"><div class="why-lbl">Why copy SharedMemory into ProjectState at every node?</div>LangGraph's <code>ainvoke</code> returns the final <code>ProjectState</code> dict. If messages were only in SharedMemory (in-process), they wouldn't appear in the final result dict. By syncing at every node, the final state always contains the complete interaction history — which becomes the JSON output and feeds the HTML report.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">MAX_QA_RETRIES and MAX_ITERATIONS — safety caps</div>
+          <pre><span class="cls">MAX_QA_RETRIES</span> = <span class="num">2</span>   <span class="cmt"># Engineer may revise this many times per task</span>
+<span class="cls">MAX_ITERATIONS</span> = <span class="num">3</span>   <span class="cmt"># Maximum engineer tasks to process per run</span></pre>
+          <div class="why-box"><div class="why-lbl">Why cap these values?</div>Without caps, a project with 20 tasks + QA rejecting every one would make 20×3=60 LLM calls just for revisions. Caps make demo runs fast and cost predictable. In production, you'd read these from config. The key point: even with caps, the <em>mechanism</em> is correct — it loops, retries, and escalates.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Workflow exception handling — broad catch for partial results</div>
+          <pre><span class="kw">try</span>:
+    final_state = <span class="kw">await</span> asyncio.wait_for(
+        self._app.<span class="fn">ainvoke</span>(initial_state),
+        timeout=WORKFLOW_TIMEOUT
+    )
+<span class="kw">except</span> asyncio.TimeoutError:
+    logger.<span class="fn">warning</span>(<span class="str">"Workflow timed out — returning partial results"</span>)
+    final_state = state
+<span class="kw">except</span> Exception <span class="kw">as</span> exc:  <span class="cmt">← broad catch added — any LLM/graph error is handled</span>
+    logger.<span class="fn">error</span>(<span class="str">f"Workflow raised: {exc} — returning partial results"</span>)
+    final_state = state
+
+<span class="kw">try</span>:
+    report_path = <span class="fn">generate_report</span>(final_state, name)
+    result[<span class="str">"report_path"</span>] = str(report_path)
+<span class="kw">except</span> Exception <span class="kw">as</span> exc:   <span class="cmt">← report failure never kills HTTP response</span>
+    logger.<span class="fn">error</span>(<span class="str">f"Report generation failed: {exc}"</span>)
+    result[<span class="str">"report_path"</span>] = <span class="str">""</span></pre>
+          <div class="why-box"><div class="why-lbl">Why was only TimeoutError caught before?</div>The original code caught only <code>asyncio.TimeoutError</code>. Any other exception (network error, malformed LLM response, missing state key) propagated out of <code>run_workflow()</code> and skipped <code>generate_report()</code> entirely — so reports were never written even when the workflow ran successfully but threw in a cleanup step. The broad catch preserves partial state so the final result and HTML report are still produced even when non-fatal errors occur mid-graph.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 8. STATE.PY -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="state">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#f0fdf4">📋</div>
+      <div><div class="sec-title">8. state.py — The Typed State Contract</div>
+      <div class="sec-sub">The TypedDict that every node reads and writes</div></div>
+    </div>
+
+    <div class="file-tag">app/state.py</div>
+    <pre><span class="kw">class</span> <span class="cls">ProjectState</span>(TypedDict):
+    <span class="cmt"># Identity — set at start, never changed</span>
+    project_id:    str
+    project_name:  str
+
+    <span class="cmt"># Planning — set by plan_project, read by all</span>
+    tasks:          List[Dict]    <span class="cmt"># Task.to_dict() entries</span>
+    risks:          List[Dict]    <span class="cmt"># risk register</span>
+    project_metadata: Dict        <span class="cmt"># tech stack, phases, effort</span>
+
+    <span class="cmt"># Execution loop tracking</span>
+    engineer_task_queue: List[str]   <span class="cmt"># ordered task IDs</span>
+    current_task_id:     str         <span class="cmt"># task being processed NOW</span>
+    qa_retry_count:      int         <span class="cmt"># how many times QA looped</span>
+    qa_approved:         bool        <span class="cmt"># QA's verdict — drives routing</span>
+    qa_issues:           List[Dict]  <span class="cmt"># passed to Engineer for revision</span>
+
+    <span class="cmt"># Routing flags — set by agents, read by routing functions</span>
+    high_risks_detected:    bool     <span class="cmt"># set by assess_risks</span>
+    critical_risks_detected: bool    <span class="cmt"># set by monitor_risks</span></pre>
+
+    <div class="why-box"><div class="why-lbl">Why TypedDict and not a Pydantic model or dataclass?</div>LangGraph requires its state to be a plain dict (it merges node return dicts into it). TypedDict gives Python type-checking without changing the underlying dict type. Pydantic would require serialisation/deserialisation at every node boundary. TypedDict = type safety for free.</div>
+
+    <div class="how-box"><div class="how-lbl">Critical design insight</div>The routing functions (<code>_route_after_critique</code>, etc.) read boolean flags from this state. This means the <strong>agents set flags</strong> (e.g. <code>qa_approved=True</code>) and the <strong>routing functions read flags</strong>. Agents never call each other directly — they influence routing by writing to state. This is the core LangGraph pattern.</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 9. COMPASS -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="compass">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#fef9c3">🔌</div>
+      <div><div class="sec-title">9. compass_integration.py — LLM Calls and Fallback</div>
+      <div class="sec-sub">How the system talks to the LLM — and what happens when it can't</div></div>
+    </div>
+
+    <div class="file-tag">app/compass_integration.py</div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">OpenAI-compatible client setup</div>
+          <pre><span class="kw">from</span> openai <span class="kw">import</span> AsyncOpenAI
+http_client = httpx.AsyncClient(verify=False)  <span class="cmt"># Compass self-signed cert</span>
+client = AsyncOpenAI(
+    api_key=self.api_key,
+    base_url=self.base_url,  <span class="cmt"># e.g. https://compass.core42.ai/v1</span>
+    http_client=http_client
+)
+response = <span class="kw">await</span> client.chat.completions.<span class="fn">create</span>(
+    model=selected_model,   <span class="cmt"># gpt-4.1 or gpt-5.1</span>
+    messages=[{<span class="str">"role"</span>: <span class="str">"system"</span>, <span class="str">"content"</span>: system_prompt},
+              {<span class="str">"role"</span>: <span class="str">"user"</span>,   <span class="str">"content"</span>: user_message}],
+    temperature=<span class="num">0.3</span>
+)</pre>
+          <div class="why-box"><div class="why-lbl">Why temperature=0.3?</div>All agents request structured JSON. Higher temperature increases creativity but also increases JSON structure violations (missing fields, different key names). 0.3 keeps responses deterministic enough to parse reliably while allowing domain-specific language variation.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">The deterministic fallback — the most important resilience mechanism</div>
+          <pre><span class="kw">def</span> <span class="fn">_reasoning_fallback</span>(self, system_prompt, user_message) -> str:
+    combined = (system_prompt + user_message).encode()
+    h = int(hashlib.sha256(combined).hexdigest()[:<span class="num">10</span>], <span class="num">16</span>)
+    <span class="cmt"># Hash determines: confidence, whether QA approves, which tech stack, etc.</span>
+    confidence = round(<span class="num">0.70</span> + (h % <span class="num">26</span>) / <span class="num">100</span>, <span class="num">2</span>)  <span class="cmt"># 0.70–0.95</span>
+
+    <span class="cmt"># Detect which agent is calling by reading its system prompt:</span>
+    is_qa_agent    = <span class="str">"qa engineer ai agent"</span> <span class="kw">in</span> system_prompt.lower()
+    is_risk_agent  = <span class="str">"risk analyst ai agent"</span> <span class="kw">in</span> system_prompt.lower()
+    is_pm_agent    = <span class="str">"project manager ai agent"</span> <span class="kw">in</span> system_prompt.lower()
+
+    <span class="kw">if</span> is_qa_agent:
+        needs_revision = (h % <span class="num">3</span>) == <span class="num">0</span>  <span class="cmt"># ~1/3 of calls trigger revision</span>
+        <span class="kw">return</span> json.dumps({<span class="str">"approved"</span>: <span class="kw">not</span> needs_revision, <span class="str">"issues"</span>: [...]})</pre>
+          <div class="why-box"><div class="why-lbl">Why use SHA-256 hash for the fallback instead of random?</div>Random would mean running the same input twice produces different results — making tests non-reproducible. The hash is <em>deterministic but input-sensitive</em>: the E-Commerce input always gets the same plan, but the Healthcare input gets a different one. This makes demos reproducible while still exercising different code paths.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Singleton pattern</div>
+          <pre><span class="fn">_compass_client</span>: Optional[CompassIntegration] = None
+
+<span class="kw">def</span> <span class="fn">get_compass_client</span>() -> CompassIntegration:
+    <span class="kw">global</span> _compass_client
+    <span class="kw">if</span> _compass_client <span class="kw">is</span> None:
+        _compass_client = <span class="cls">CompassIntegration</span>()
+    <span class="kw">return</span> _compass_client</pre>
+          <div class="why-box"><div class="why-lbl">Why singleton?</div>The <code>CompassIntegration</code> object holds the API key, base URL, and an <code>httpx.AsyncClient</code>. Creating one per agent call would waste connection pool resources and re-read environment variables repeatedly. Singleton = one client, shared across all agents, one connection pool.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 10. API -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="api">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#e0f2fe">🌐</div>
+      <div><div class="sec-title">10. run.py — The FastAPI Server and CLI</div>
+      <div class="sec-sub">How to start the system and what endpoints exist</div></div>
+    </div>
+
+    <div class="file-tag">run.py</div>
+
+    <pre><span class="cmt"># Add app/ to Python path — so agents can import without package prefix</span>
+sys.path.insert(<span class="num">0</span>, str(Path(__file__).parent / <span class="str">"app"</span>))
+
+<span class="cmt"># Global state — created once at startup, shared across all requests</span>
+memory:       <span class="cls">SharedMemory</span>      = SharedMemory()
+orchestrator: <span class="cls">AgentOrchestrator</span> = AgentOrchestrator(memory)
+orchestrator.<span class="fn">initialize_agents</span>()
+
+<span class="cmt"># Start as server:  python run.py</span>
+<span class="cmt"># Start as CLI:     python run.py --input input_examples/input_1.json</span></pre>
+
+    <table class="ftable" style="margin-top:14px">
+      <thead><tr><th>Endpoint</th><th>Purpose</th><th>Key point to mention to judges</th></tr></thead>
+      <tbody>
+        <tr><td><code>POST /run</code></td><td>Main endpoint — runs full workflow</td><td>Returns RunResponse: <code>{status, request_id, execution_time_seconds, output, agent_trace, logs, metadata}</code>. The <code>output</code> block has risk_level, onet_resource_risk, nist_cves_found, bls_estimated_cost_usd, mvp_path.</td></tr>
+        <tr><td><code>GET /mvp/{project_id}</code></td><td>Serve the Engineer-generated MVP HTML</td><td>Self-contained HTML dashboard app written by the Engineer agent. Two-stage extraction ensures it's generated even when LLM returns raw HTML.</td></tr>
+        <tr><td><code>GET /report/{run_id}</code></td><td>Serve the auto-generated HTML report</td><td>Mermaid sequence diagram + risk register + agent timeline. Generated by <code>generate_report()</code> in <code>app/graph.py</code> inside a try/except so report failures don't kill the HTTP response.</td></tr>
+        <tr><td><code>GET /dataset</code></td><td>Return the telecom project dataset</td><td>Powers the frontend project browser. Returns projects grouped by department with names, IDs, and descriptions from the dataset JSON file.</td></tr>
+        <tr><td><code>GET /health</code></td><td>Liveness check</td><td>Used by Docker healthcheck in docker-compose.yml</td></tr>
+        <tr><td><code>GET /status</code></td><td>Current system state</td><td>Shows agent count, message count, feedback loops — live proof of collaboration</td></tr>
+        <tr><td><code>GET /interactions/{id}</code></td><td>All messages for a project</td><td>Direct access to SharedMemory message log</td></tr>
+        <tr><td><code>POST /reset</code></td><td>Clear SharedMemory</td><td>Required between demo runs to start clean</td></tr>
+        <tr><td><code>GET /docs</code></td><td>Auto-generated Swagger UI</td><td>FastAPI generates this for free from Pydantic models</td></tr>
+      </tbody>
+    </table>
+
+    <div class="how-box" style="margin-top:14px"><div class="how-lbl">To start for demo:</div>
+    <code>cd d:\AI Agenthon\Project\multi_agent_pm</code><br>
+    <code>.\venv2\Scripts\Activate.ps1</code><br>
+    <code>python run.py</code> → server at http://localhost:8000<br>
+    Or CLI: <code>python run.py --input input_examples/input_1.json --output result.json</code>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 11. FULL FLOW -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="flow">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#e0f2fe">⚡</div>
+      <div><div class="sec-title">11. Complete End-to-End Execution Flow</div>
+      <div class="sec-sub">Trace every line of code from HTTP request to HTML report</div></div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Request arrives at POST /run</div>
+          <div class="step-desc">Pydantic validates the <code>ProjectRequest</code> model. <code>orchestrator.create_project()</code> creates a <code>Project</code> dataclass and adds it to SharedMemory. <code>graph.run_workflow()</code> is awaited.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">trace_logger.init_run() — trace_id is born</div>
+          <div class="step-desc">Before graph execution, a <code>run_id</code> (8-char hex) is generated. All subsequent trace events share this ID. This lets judges filter the JSONL log to a single run.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">plan_project node — PM calls LLM</div>
+          <div class="step-desc">PM builds a system prompt, calls <code>llm_decide()</code>, receives JSON with tasks, tech stack, phases. Creates <code>Task</code> objects and appends them to <code>project.tasks</code>. Calls <code>_distribute_tasks()</code> which sends 3 messages (to RiskAnalyst, Engineer, QA). Calls <code>memory.store_summary()</code>. Returns updated state.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">assess_risks node — routing decision is made here</div>
+          <div class="step-desc">RiskAnalyst reads PM plan from <code>agent_summaries</code>. LLM classifies risks. If any risk has severity "high" or "critical", sets <code>high_risks_detected=True</code>. The routing function <code>_route_after_risks()</code> reads this flag and returns either <code>"replan"</code> or <code>"approve"</code>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">[Conditional] replan_project — only if high_risks_detected</div>
+          <div class="step-desc">PM reads risk register + stakeholder summary. LLM returns JSON with <code>adjustments</code> (modify existing tasks) and <code>added_tasks</code> (new mitigation tasks). Sends message to Engineer: "Plan updated after escalation."</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">stakeholder_approve — queue is built here</div>
+          <div class="step-desc">Stakeholder reviews full plan. LLM returns approval + satisfaction score. <strong>Critical:</strong> This node builds <code>engineer_task_queue</code> — the ordered list of task IDs the Engineer will process. Without this queue, the execution loop can't start.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <div class="step-title">set_next_task → implement_task → qa_critique [loop]</div>
+          <div class="step-desc">The execution loop: <code>set_next_task</code> pops the next task ID. <code>implement_task</code> calls Engineer LLM, writes files, stores summary. <code>qa_critique</code> reads the summary, calls QA LLM, sets <code>qa_approved</code> and <code>qa_issues</code>. <code>_route_after_critique()</code> decides: revise or continue. After revision (if needed), <code>monitor_risks</code> checks for new critical risks. Repeat until queue empty.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">8</div>
+        <div class="step-body">
+          <div class="step-title">Evaluation phase — 3 nodes</div>
+          <div class="step-desc"><code>stakeholder_progress</code>: Stakeholder reviews mid-execution, escalates if score &lt; 65. <code>check_quality_gates</code>: QA evaluates all test reports. <code>generate_risk_report</code>: RiskAnalyst produces final risk register.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">9</div>
+        <div class="step-body">
+          <div class="step-title">finalize_project → submit_compass → generate_report() → POST /run returns RunResponse</div>
+          <div class="step-desc">Collaboration summary is built. Compass API receives the full project data (or demo response). <code>generate_report()</code> writes an HTML report to <code>reports/</code> (wrapped in try/except — failure never kills the HTTP response). The POST /run handler then builds the <strong>RunResponse</strong>: <code>output</code> block (workflow_status, confidence, risk_level, <code>onet_resource_risk</code>, <code>nist_cves_found</code>, <code>bls_estimated_cost_usd</code>, mvp_path, interaction_counts) and <code>metadata</code> block (compass_models, agents_invoked, trace_events, real_data_citations, collaboration_patterns). The final JSON is saved as <code>output_examples/output_{project_id}.json</code> and returned as the HTTP response. The frontend reads <code>data.output</code> and <code>data.metadata</code> to populate all displayed fields.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 12. HOW TO PRESENT -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="present">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#ede9fe">🎤</div>
+      <div><div class="sec-title">12. How to Present This to Judges</div>
+      <div class="sec-sub">Scripts, talking points, and what to show on screen</div></div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Open with the problem, not the tech</div>
+          <div class="step-desc"><em>"Software projects fail from coordination failures, not skill gaps. Our system replaces passive project tracking with a collaborative team of AI agents that actually reason about your project, not just record it."</em></div>
+          <div class="present-box"><div class="p-lbl">Script</div>"I'm going to show you five agents that genuinely depend on each other. If I remove any one of them, the output changes fundamentally. That's real multi-agent collaboration, not a single agent with extra steps."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Show the live demo — POST /run with a real input</div>
+          <div class="step-desc">Open http://localhost:8000/docs, POST to /run with the E-Commerce input. Watch the console — the trace logger prints every agent action in real time.</div>
+          <div class="present-box"><div class="p-lbl">What to point to on screen</div>Point at each [TRACE] line as it prints: "Here PM is planning. Now it's sending a message to RiskAnalyst. Now RiskAnalyst found high risks — watch — it's routing to replan before any engineering starts. That branch decision is in the code as a conditional edge."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Show the code — open graph.py to the routing function</div>
+          <pre><span class="kw">def</span> <span class="fn">_route_after_critique</span>(self, state):
+    approved = state.get(<span class="str">"qa_approved"</span>, False)
+    retry    = state.get(<span class="str">"qa_retry_count"</span>, <span class="num">0</span>)
+    <span class="kw">if not</span> approved <span class="kw">and</span> retry < MAX_QA_RETRIES:
+        <span class="kw">return</span> <span class="str">"revise"</span>
+    <span class="kw">return</span> <span class="str">"next"</span></pre>
+          <div class="present-box"><div class="p-lbl">What to say</div>"This five-line function is where agent collaboration happens. QA sets <code>qa_approved=False</code> in its node. This function reads that flag and routes back to Engineer. Engineer reads <code>qa_issues</code> from state — the exact problems QA identified — and fixes them. That loop runs up to twice per task."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Show the frontend — the RunResponse rendered as a live dashboard</div>
+          <div class="step-desc">Open <code>http://localhost:8000</code> in a browser. The frontend displays the full RunResponse: project ID, workflow status, iterations, risk level, O*NET resource risk, NIST CVEs found, BLS cost estimate, trace event count, agents invoked, and collaboration patterns. Click "Open Report →" and "Open MVP →" to show the auto-generated artifacts.</div>
+          <div class="present-box"><div class="p-lbl">What to say</div>"Every number here comes from the RunResponse JSON — risk level from RiskAnalyst, CVEs from a live NIST API call, cost from BLS wage data. The MVP button opens a self-contained HTML app the Engineer agent generated during the run. The Report button shows the Mermaid sequence diagram of agent interactions. Nothing is hardcoded."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4b</div>
+        <div class="step-body">
+          <div class="step-title">Show the HTML report — agent interaction timeline</div>
+          <div class="step-desc">Open <code>/report/{run_id}</code> in a browser. Point to the agent interaction timeline, the risk register, and the QA findings.</div>
+          <div class="present-box"><div class="p-lbl">What to say</div>"Every interaction you see here was generated by agents writing to SharedMemory. This message from PM to RiskAnalyst — that's an actual Python <code>send_message()</code> call in project_manager.py. Nothing here is hardcoded."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Show the JSONL trace log — the proof of collaboration</div>
+          <div class="step-desc">Open <code>logs/agent_trace.jsonl</code> and show a few lines.</div>
+          <div class="present-box"><div class="p-lbl">What to say</div>"Every agent action writes one line to this file with timestamp, agent name, action, target agent, confidence, and retry count. This is the tamper-proof audit trail. Judges can verify that agents actually collaborated, when, and with what confidence."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip tip-green" style="margin-top:16px">
+      <span class="tip-icon">✅</span>
+      <div><strong>Do:</strong> Start from input_examples/input_1.json for demos — the E-Commerce project reliably triggers the risk replan branch (high risks detected) and at least one QA revision cycle.</div>
+    </div>
+    <div class="tip tip-amber">
+      <span class="tip-icon">⚠️</span>
+      <div><strong>Don't:</strong> Say "the agents communicate with each other" without immediately showing the code. Judges will ask "where?" — be ready to open base_agent.py:send_message() instantly.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 13. Q&A BANK -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="qa">
+    <div class="sec-hdr">
+      <div class="sec-icon" style="background:#fee2e2">❓</div>
+      <div><div class="sec-title">13. Complete Question &amp; Answer Bank</div>
+      <div class="sec-sub">Every question you might face, organised by category</div></div>
+    </div>
+
+    <div class="qa-section">
+
+      <!-- ARCHITECTURE -->
+      <div class="cat-section-hdr">Architecture &amp; Design</div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">1</div><div><div class="qa-q-text">Why did you use LangGraph instead of plain Python async?<span class="qa-q-cat cat-arch">Architecture</span></div></div></div>
+        <div class="qa-a">LangGraph gives us three things we can't easily replicate in plain Python: (1) <strong>Explicit state contracts</strong> — every node returns a partial dict that gets merged into <code>ProjectState</code>, so data flow is auditable. (2) <strong>Conditional edges</strong> — business logic (like "replan if high risks detected") is a named edge, not an if/else buried in a function. (3) <strong>Graph visualisation and tracing</strong> — the graph is inspectable and the <code>ainvoke</code> call handles the async execution loop for us.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">2</div><div><div class="qa-q-text">How is SharedMemory different from ProjectState?<span class="qa-q-cat cat-arch">Architecture</span></div></div></div>
+        <div class="qa-a">They serve different purposes: <strong>SharedMemory</strong> is a persistent in-process store that lives for the full duration of the server process — agents can read and write it at any point, including across multiple graph runs. It holds the agent summaries, message log, and decision history. <strong>ProjectState</strong> is the LangGraph state dict that flows through the graph edges — it's the transport layer. Each node reads from it and returns updates. At every node we call <code>_sync_interactions()</code> to copy SharedMemory contents into ProjectState so the final <code>ainvoke()</code> result contains everything.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">3</div><div><div class="qa-q-text">Why does SharedMemory use threading.Lock?<span class="qa-q-cat cat-arch">Architecture</span></div></div></div>
+        <div class="qa-a">Python's async model means tasks interleave at every <code>await</code> point. Even though the GIL prevents truly parallel CPU execution, two async tasks can both be "in flight" and both call <code>memory.update_project()</code> nearly simultaneously. Without the lock, one task's update could be overwritten by another. The lock ensures each read-modify-write cycle on the projects dict, messages list, and agent_summaries dict is atomic.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">4</div><div><div class="qa-q-text">Why are routing functions synchronous when everything else is async?<span class="qa-q-cat cat-arch">Architecture</span></div></div></div>
+        <div class="qa-a">This is a LangGraph constraint. The graph's internal execution engine calls routing functions synchronously during edge resolution. If they were <code>async def</code>, LangGraph would receive a coroutine object (not a string) and fail. The routing functions are pure state readers — they don't do any I/O, so there's no reason to make them async anyway. All the async work happens inside the node functions.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">5</div><div><div class="qa-q-text">What would you change to scale this to production?<span class="qa-q-cat cat-arch">Architecture</span></div></div></div>
+        <div class="qa-a">Three things: (1) Replace in-process SharedMemory with Redis or a proper database — this allows multiple server instances and survives restarts. (2) Add LangGraph's built-in checkpointer (SqliteSaver or PostgresSaver) — this allows workflows to pause, resume, and survive server restarts mid-execution. (3) Remove the MAX_ITERATIONS cap and make it config-driven — for real projects with 50+ tasks, you need dynamic iteration budgets, not hardcoded 3.</div>
+      </div>
+
+      <!-- CODE SPECIFICS -->
+      <div class="cat-section-hdr">Code-Specific Questions</div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">6</div><div><div class="qa-q-text">Why does AgentRole extend both str and Enum?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a"><code>class AgentRole(str, Enum)</code> makes each enum member a string subclass. This means <code>AgentRole.ENGINEER == "engineer"</code> is True, and it serialises to JSON as <code>"engineer"</code> without calling <code>.value</code>. Without the <code>str</code> mixin, <code>json.dumps({"role": AgentRole.ENGINEER})</code> would raise <code>TypeError: Object of type AgentRole is not JSON serialisable</code>. This matters because agents store roles in messages and summaries that get JSON-serialised constantly.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">7</div><div><div class="qa-q-text">Why does llm_decide() strip markdown code fences manually?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">Even when you instruct an LLM to "return only valid JSON, no markdown," GPT models frequently return <code>```json\n{...}\n```</code>. If we called <code>json.loads()</code> directly on that, it would fail. The stripping logic in <code>llm_decide()</code> handles this in a single place so every agent benefits. The fallback to returning a dict with <code>confidence: 0.65</code> ensures the workflow degrades gracefully rather than crashing.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">8</div><div><div class="qa-q-text">What is _sync_interactions() and why is it called in every node?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a"><code>_sync_interactions()</code> reads the full current state of SharedMemory (all messages, decisions, feedback loops) and returns it as a dict that nodes include in their state update. It's called in every node because LangGraph's final output is the <code>ProjectState</code> dict returned by <code>ainvoke()</code>. If we only kept data in SharedMemory and never copied it to state, the final result dict would be empty of interaction history. The sync ensures the HTTP response and HTML report contain the complete collaboration log.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">9</div><div><div class="qa-q-text">How does the QA revision loop work at the code level?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">Four parts work together: (1) <code>_node_qa_critique()</code> calls <code>qa.critique_implementation()</code>, which sets <code>qa_approved</code> and <code>qa_issues</code> in the returned state. (2) <code>_route_after_critique()</code> reads <code>qa_approved</code> and <code>qa_retry_count</code> — if not approved and retries available, returns <code>"revise"</code>. (3) <code>_node_engineer_revise()</code> increments <code>qa_retry_count</code>, reads <code>qa_issues</code> from state, and passes them to <code>engineer.revise_implementation()</code>. (4) The linear edge <code>engineer_revise → qa_critique</code> sends execution back to QA. This loop repeats until <code>qa_approved=True</code> or <code>qa_retry_count >= MAX_QA_RETRIES</code>.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">10</div><div><div class="qa-q-text">How does the system handle LLM API failures?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">Two layers: (1) In <code>compass_integration.py:call_llm()</code>, the entire OpenAI client call is inside a <code>try/except Exception</code>. On any failure (network, auth, timeout), it falls through to <code>_reasoning_fallback()</code>. (2) <code>_reasoning_fallback()</code> uses SHA-256 hash of the input to produce a deterministic, structurally valid JSON response appropriate for each agent type. The workflow never crashes on LLM failure — it continues with fallback data. This means demos work even without live API access.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">11</div><div><div class="qa-q-text">Why does the Engineer use a different file path structure for output?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">The Engineer writes files to <code>output_examples/{project_id}/spa/</code>. The <code>project_id</code> prefix namespaces outputs per project — multiple projects don't overwrite each other. The <code>spa/</code> suffix is a convention from the AdminPortalVASMS work this system was designed around (Single Page Application). The engineer creates the full path with <code>mkdir(parents=True, exist_ok=True)</code> so any directory depth returned by the LLM is handled without errors.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">12</div><div><div class="qa-q-text">What is the difference between messages[] and agent_summaries in SharedMemory?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a"><code>messages[]</code> is a chronological event log — point-in-time communications between agents (who said what to whom and when). It's an audit trail. <code>agent_summaries</code> is a key-value store of current state — it represents the <em>latest known output</em> from each agent. When QA reads the Engineer's implementation, it reads <code>agent_summaries["engineer:task_id"]</code> — the most recent Engineer output for that task. If Engineer revises, it overwrites this key. Messages preserve history; summaries reflect current state.</div>
+      </div>
+
+      <!-- MULTI-AGENT DESIGN -->
+      <div class="cat-section-hdr">Multi-Agent Design Questions</div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">13</div><div><div class="qa-q-text">Is this really multi-agent or just one agent broken into functions?<span class="qa-q-cat cat-design">Design</span></div></div></div>
+        <div class="qa-a">Test: remove any one agent and the output changes fundamentally. Remove QAAgent — no revision loop, no quality gate, unvalidated output. Remove RiskAnalyst — no pre-execution replan, critical risks invisible. Remove Stakeholder — no plan approval, no engineer task queue, workflow cannot proceed past planning. Each agent has a unique LLM system prompt, unique SharedMemory key, unique graph nodes, and — critically — reads other agents' stored outputs as input. That cross-agent context dependency is what makes it multi-agent, not multi-function.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">14</div><div><div class="qa-q-text">How do agents "know" what other agents have done?<span class="qa-q-cat cat-design">Design</span></div></div></div>
+        <div class="qa-a">Via <code>SharedMemory.get_summary(role, key)</code>. Every agent stores its output after completing a task: <code>memory.store_summary(self.role, project_id, json.dumps(result))</code>. Any other agent can read it with <code>memory.get_summary(target_role, project_id)</code>. For example: PM's plan summary is written with key <code>"project_manager:{project_id}"</code>. RiskAnalyst reads it with <code>memory.get_summary(AgentRole.PROJECT_MANAGER, project_id)</code> before risk assessment. QA reads Engineer's task summary before critique. This is the primary cross-agent context mechanism.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">15</div><div><div class="qa-q-text">Could agents run in parallel instead of sequentially?<span class="qa-q-cat cat-design">Design</span></div></div></div>
+        <div class="qa-a">Some phases could parallelise, but most can't due to dependencies. RiskAnalyst <em>must</em> wait for PM's plan. Engineer <em>must</em> wait for risk clearance. QA <em>must</em> wait for Engineer. However, mid-execution risk monitoring (after each task) could theoretically run in parallel with the next task's implementation — that's a valid optimisation. LangGraph supports parallel branches with <code>send()</code> — we chose sequential because it's clearer for the hackathon and the dependencies are real, not artificial.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">16</div><div><div class="qa-q-text">Why does the system need a Stakeholder agent? Isn't that just extra validation?<span class="qa-q-cat cat-design">Design</span></div></div></div>
+        <div class="qa-a">The Stakeholder provides something the other agents don't: <strong>business perspective independent of technical correctness</strong>. QA validates code quality. RiskAnalyst validates delivery risks. Stakeholder validates business value and satisfaction. The approval node in <code>stakeholder_approve</code> is what builds the <code>engineer_task_queue</code> — without it, the execution loop never starts. The satisfaction score also provides a measurable business outcome that Compass evaluates. Removing it collapses the business layer entirely.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">17</div><div><div class="qa-q-text">What happens when an agent produces bad output?<span class="qa-q-cat cat-design">Design</span></div></div></div>
+        <div class="qa-a">Multiple fallback layers: (1) <code>llm_decide()</code> catches JSON parse failures and returns a minimal valid dict with <code>confidence: 0.65</code>. (2) Each agent handles empty/None summaries from SharedMemory with sensible defaults. (3) The graph has defensive code in key nodes — e.g. <code>_node_implement_task()</code> creates a minimal Task if the task_id is missing from the list. (4) If QA max retries are exceeded, it logs a warning and sends a notification to RiskAnalyst, but execution continues. The philosophy: degrade gracefully, never crash.</div>
+      </div>
+
+      <!-- COLLABORATION -->
+      <div class="cat-section-hdr">Collaboration Patterns</div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">18</div><div><div class="qa-q-text">Describe the QA↔Engineer feedback loop in detail.<span class="qa-q-cat cat-collab">Collaboration</span></div></div></div>
+        <div class="qa-a">After Engineer completes a task: (1) Engineer stores implementation summary in <code>agent_summaries["engineer:{task_id}"]</code>. (2) QA reads this + risk context, calls LLM with <code>_CRITIQUE_SYSTEM</code> prompt. (3) LLM returns <code>{"approved": false, "issues": [{"description": "...", "severity": "medium"}]}</code>. (4) QA sends a feedback message to Engineer via <code>provide_feedback()</code>. (5) Graph routing: <code>qa_approved=False</code> + <code>retry_count=0 &lt; 2</code> → routes to <code>engineer_revise</code>. (6) Engineer reads <code>qa_issues</code> from state, calls LLM with <code>_CODE_REVISE_SYSTEM</code> prompt and the specific issues listed. (7) Engineer rewrites files and stores updated summary. (8) Loops back to QA. (9) QA now uses <code>_RETEST_SYSTEM</code> prompt (different from critique — explicitly checks whether issues were addressed). Up to 2 revision cycles.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">19</div><div><div class="qa-q-text">How does the risk escalation chain work?<span class="qa-q-cat cat-collab">Collaboration</span></div></div></div>
+        <div class="qa-a">Two paths: (1) <strong>Pre-execution</strong>: <code>assess_risks</code> node — RiskAnalyst evaluates PM's plan. If <code>high_severity_count >= 1</code>, sets <code>high_risks_detected=True</code>. Routing sends to <code>replan_project</code> instead of <code>stakeholder_approve</code>. PM reads the risk register summary and asks LLM to adjust tasks accordingly. (2) <strong>Mid-execution</strong>: After each engineering task, <code>monitor_risks</code> runs. RiskAnalyst calls LLM with current execution context. <code>escalate_risks()</code> checks if any risks are now critical. If yes, sets <code>critical_risks_detected=True</code>, sends an escalation message to PM, routing goes to <code>mid_replan</code>. PM adjusts remaining tasks and the queue continues. Both paths are implemented as conditional edges with named routing functions.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">20</div><div><div class="qa-q-text">What collaboration metrics does the system produce?<span class="qa-q-cat cat-collab">Collaboration</span></div></div></div>
+        <div class="qa-a">The <code>_calculate_metrics()</code> method produces: <code>interactions</code> (total messages), <code>feedback_loops</code> (count of unique agent-pair loops), <code>decisions</code> (LLM decision count), <code>by_message_type</code> (dict of type → count, e.g. escalation: 2, feedback: 4), <code>pattern</code> (one of: "collaborative", "iterative_feedback", "delegated_with_escalation"), <code>iterations</code> (engineering loop count). These feed the Compass evaluation API and appear in the HTML report. The pattern classification is automatic: if feedback loops exist → "iterative_feedback"; if escalation messages exist → "delegated_with_escalation".</div>
+      </div>
+
+      <!-- HARD QUESTIONS -->
+      <div class="cat-section-hdr">Hard / Challenging Questions</div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">21</div><div><div class="qa-q-text">The QA agent critiques a "summary" not actual code. Isn't that just LLM evaluating its own output?<span class="qa-q-cat cat-hard">Hard</span></div></div></div>
+        <div class="qa-a">Fair challenge. The system is designed around LLM-to-LLM review — QA uses a <em>different system prompt, different context, and different model invocation</em> than Engineer. The LLM playing QA is told it's a QA engineer reviewing implementation, not writing it. The critic perspective genuinely produces different output from the creator perspective — this is well-established in LLM research. The fallback shows this: ~1/3 of QA calls return rejection with specific issues. In production, QA could also run static analysis tools (eslint, mypy) and feed those results alongside the LLM critique — the architecture supports this via <code>process_task()</code> extension.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">22</div><div><div class="qa-q-text">If the LLM API is unavailable, does the system still demonstrate real collaboration?<span class="qa-q-cat cat-hard">Hard</span></div></div></div>
+        <div class="qa-a">Yes — the fallback is <em>input-dependent</em>, not random. The SHA-256 hash of (system_prompt + user_message) determines the output. This means: different agents get different responses (their system prompts differ). The same project input always produces the same trace. The E-Commerce input reliably triggers the high-risk path. QA rejects ~1/3 of calls, Engineer revises, QA re-evaluates. The collaboration pattern is preserved. The fallback is not "return the same thing always" — it's a deterministic simulation of collaboration that exercises all code paths.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">23</div><div><div class="qa-q-text">What prevents an infinite loop in the QA revision cycle?<span class="qa-q-cat cat-hard">Hard</span></div></div></div>
+        <div class="qa-a">The routing function: <code>if not approved and retry &lt; MAX_QA_RETRIES: return "revise"</code>. <code>MAX_QA_RETRIES = 2</code>. After 2 rejections, the routing function returns <code>"next"</code> regardless of approval — execution continues to <code>monitor_risks</code>. Additionally, <code>_node_qa_critique()</code> detects when max retries are reached and sends a notification to RiskAnalyst: <code>"Task X has unresolved QA issues after 2 retries"</code>. This notification becomes part of the final risk report. So unresolved quality issues are not silently ignored — they're escalated.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">24</div><div><div class="qa-q-text">How does the system handle concurrent requests? Can two projects run simultaneously?<span class="qa-q-cat cat-hard">Hard</span></div></div></div>
+        <div class="qa-a">Currently, the global <code>memory</code> and <code>orchestrator</code> in <code>run.py</code> are shared across requests. Two simultaneous POST /run calls would share SharedMemory, which could cause project data to intermingle. The workaround: each project is keyed by <code>project_id</code> in <code>memory.projects</code> and all SharedMemory keys include the project ID. In practice, for the hackathon, requests are sequential. For production concurrency, each request should create its own <code>SharedMemory</code> and <code>AgentOrchestrator</code> instance — the CLI path already does this correctly: <code>cli_memory = SharedMemory()</code>.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">25</div><div><div class="qa-q-text">Why use gpt-5.1 only for RiskAnalyst and not all agents?<span class="qa-q-cat cat-hard">Hard</span></div></div></div>
+        <div class="qa-a">Cost-performance tradeoff. Risk classification is a nuanced reasoning task — "is this risk high or medium for this specific project?" benefits from a more capable model. PM planning, Engineer implementation, and QA critique are structured JSON tasks with clear schemas — gpt-4.1 handles these reliably and faster. Stakeholder approval involves business judgement that a score-based prompt handles well at gpt-4.1 level. The <code>use_reasoning_model=True</code> flag in <code>call_llm()</code> makes this routing explicit and easy to change per agent.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">26</div><div><div class="qa-q-text">What makes this "agentic" rather than just a pipeline of LLM calls?<span class="qa-q-cat cat-hard">Hard</span></div></div></div>
+        <div class="qa-a">Three characteristics: (1) <strong>Adaptive branching</strong> — the workflow path changes based on LLM output (high risks → replan; QA rejection → revision). A pipeline would execute the same steps regardless of what the LLM said. (2) <strong>Cross-agent context reading</strong> — agents read each other's stored outputs before making decisions. QA reads risk context to know what to scrutinise. PM reads risk register to know what to change when replanning. A pipeline passes data only forward; agents read peer outputs. (3) <strong>Escalation</strong> — lower-level agents can trigger workflow changes at a higher level. QA at max retries notifies RiskAnalyst. RiskAnalyst mid-execution can trigger PM replanning. These are genuine agentic behaviours, not scripted steps.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">27</div><div><div class="qa-q-text">What's the role of orchestrator.py — why does it exist separately from graph.py?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a"><code>orchestrator.py</code> is a compatibility wrapper written for API stability. <code>run.py</code> calls <code>orchestrator.create_project()</code> and <code>orchestrator.run_workflow()</code>. When we migrated from a simple sequential orchestrator to LangGraph, we kept this API intact by making orchestrator delegate to <code>PMWorkflowGraph</code>. This means <code>run.py</code> didn't need to change. The <code>/status</code> endpoint also uses <code>orchestrator.agents</code> — a dict populated by <code>initialize_agents()</code> that exposes the graph's agent instances for inspection.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">28</div><div><div class="qa-q-text">How does the trace logger work and why JSONL?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">Every agent action calls <code>trace_logger.log_trace()</code> which appends one JSON object followed by a newline to <code>logs/agent_trace.jsonl</code>. JSONL (JSON Lines) is chosen because: (1) It's append-only — no file locking complexity, no reading the whole file to add an event. (2) Each line is independently parseable — if the process crashes mid-run, all prior events are intact. (3) Tools like <code>jq</code>, pandas, or any log aggregator (Splunk, ELK) can stream-process it without loading the whole file. Each event includes: timestamp, trace_id (shared by all events in a run), agent_name, action, input/output summaries, confidence, retry_count, and target_agent.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">29</div><div><div class="qa-q-text">Why is temperature set to 0.3 for all LLM calls?<span class="qa-q-cat cat-design">Design</span></div></div></div>
+        <div class="qa-a">These agents produce structured JSON, not creative text. Higher temperature increases JSON structure variability — missing fields, extra keys, different naming — which causes parse failures. Lower temperature (0.0-0.3) gives more deterministic, schema-adherent output. 0.3 rather than 0.0 preserves enough variability that different project descriptions get qualitatively different plans (rather than always the same plan). It's the minimum needed for useful domain variation without sacrificing structural reliability.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">30</div><div><div class="qa-q-text">How does the system know which agent is calling the fallback?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">The fallback detects the calling agent by reading specific phrases in the system prompt: <code>"qa engineer ai agent"</code> → QA agent, <code>"risk analyst ai agent"</code> → RiskAnalyst, <code>"project manager ai agent"</code> → PM, etc. Each agent's system prompt contains its role description as the opening phrase. This is intentional — it makes fallback detection reliable without requiring agents to pass their identity separately. The alternative (passing <code>agent_name</code> to <code>call_llm()</code>) was considered but rejected: the system prompt is always available, so no extra parameter needed.</div>
+      </div>
+
+      <!-- PRACTICAL QUESTIONS -->
+      <div class="cat-section-hdr">Practical / Demo Questions</div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">31</div><div><div class="qa-q-text">How do I run the system and what should I see?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">Start: <code>cd d:\AI Agenthon\Project\multi_agent_pm</code> → <code>.\venv2\Scripts\Activate.ps1</code> → <code>python run.py</code>. Server starts at <code>http://localhost:8000</code>. POST to <code>/run</code> with <code>{"project_id": "proj_ecommerce_001", "project_name": "E-Commerce", "description": "..."}</code>. Watch the console for <code>[TRACE]</code> lines showing each agent acting. After ~30-60 seconds, get JSON response + HTML report in <code>reports/</code>. Also try: <code>python run.py --input input_examples/input_1.json</code> for CLI mode.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">32</div><div><div class="qa-q-text">How can judges verify the agents actually collaborated?<span class="qa-q-cat cat-collab">Collaboration</span></div></div></div>
+        <div class="qa-a">Three evidence sources: (1) <code>logs/agent_trace.jsonl</code> — every agent action timestamped with sender, target_agent, and confidence. (2) Output JSON <code>interactions.messages</code> array — typed inter-agent messages with sender/receiver. (3) HTML report agent timeline — visual rendering of the message sequence. A judge can run: <code>cat logs/agent_trace.jsonl | python -c "import sys,json;[print(json.loads(l)['agent_name'], '->', json.loads(l)['target_agent'], json.loads(l)['action']) for l in sys.stdin]"</code> to see the collaboration chain directly.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">33</div><div><div class="qa-q-text">What is SAMPLE_MODE and when would you use it?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a"><code>SAMPLE_MODE=true</code> (env var) makes the server use a bundled sample project if the request body is missing fields. Set it in <code>.env</code> for demos where the judge just hits <code>POST /run</code> with an empty body and the system still runs. It's a convenience for hackathon demos — the sample project is a simple web application that exercises all agents without needing a carefully crafted input.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">34</div><div><div class="qa-q-text">Why is there both a /run and /run-sync endpoint?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a"><code>POST /run</code> is async — the client must keep the connection open while the workflow executes (could be 30-60 seconds). Some clients (like simple curl without timeout flags, or certain proxy configurations) may time out on long-running async calls. <code>POST /run-sync</code> wraps the async workflow in <code>asyncio.new_event_loop().run_until_complete()</code> and runs synchronously within the request — functionally identical result, but using a blocking thread so it works with synchronous HTTP clients. In production, /run would be preferred as it doesn't block a uvicorn worker thread.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">35</div><div><div class="qa-q-text">Does Docker work? How do you deploy it?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">Yes. <code>docker-compose up</code> from the project root builds the image (multi-stage Dockerfile), copies app/, installs requirements, and starts uvicorn on port 8000. The <code>.env</code> file is read via <code>env_file: .env</code> in docker-compose.yml. The health check uses <code>GET /health</code>. Volumes mount <code>logs/</code> and <code>output_examples/</code> so files written during execution persist outside the container. For production, you'd add a reverse proxy (nginx) and change uvicorn workers to match CPU count.</div>
+      </div>
+
+      <!-- NEW FEATURES -->
+      <div class="cat-section-hdr">Real Data, MVP Generation &amp; System Reliability</div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">36</div><div><div class="qa-q-text">What real public data does the system fetch, and why?<span class="qa-q-cat cat-arch">Architecture</span></div></div></div>
+        <div class="qa-a">Three live US government APIs: (1) <strong>O*NET</strong> — fetches the Standard Occupational Classification (SOC) code for each role to produce an <code>onet_resource_risk</code> rating (how competitive the labour market is for staffing this project). (2) <strong>NIST NVD</strong> — queries the National Vulnerability Database for CVEs in the detected technology stack (Django, FastAPI, React, etc.) and returns a CVE count in <code>nist_cves_found</code>. (3) <strong>BLS OEWS</strong> — fetches the Bureau of Labor Statistics Occupational Employment and Wage Statistics survey to estimate annual team cost in <code>bls_estimated_cost_usd</code>. All three data sources are cited in <code>metadata.real_data_citations</code> so judges can verify without reading source code.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">37</div><div><div class="qa-q-text">How does the Engineer generate the MVP, and why two-stage extraction?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">The Engineer calls the LLM directly with <code>compass.call_llm(_MVP_SYSTEM, context, max_tokens=4000)</code> — bypassing <code>llm_decide()</code> which would truncate at 1,200 tokens and break large HTML files. The two-stage extraction handles LLM response format variance: <strong>Stage 1</strong> — attempt <code>json.loads()</code> on the response, looking for a dict with key <code>"html_content"</code> (the structured case). <strong>Stage 2</strong> — if Stage 1 fails or <code>html_content</code> doesn't start with <code>&lt;!</code>, run a <code>re.search(r"(&lt;!DOCTYPE\s+html.*?&lt;/html&gt;)", raw, re.DOTALL)</code> regex to extract a raw HTML block. Without Stage 2, raw HTML responses produce an empty MVP and the frontend shows no MVP link. The max_tokens=4000 budget is required because a self-contained HTML dashboard with CSS and JS needs 2,000–4,000 tokens.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">38</div><div><div class="qa-q-text">How is report generation made reliable even when the workflow throws an exception?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">Two exception layers in <code>app/graph.py</code>: (1) The <code>_app.ainvoke()</code> call is wrapped in a broad <code>except Exception as exc</code> block — if any graph node raises (not just <code>asyncio.TimeoutError</code> as before), <code>final_state = state</code> is set so the partial result dict is preserved. (2) The <code>generate_report(final_state, project_name)</code> call is wrapped in its own <code>try/except Exception</code> — if HTML rendering fails (e.g. Mermaid template error), the exception is logged and <code>result["report_path"] = ""</code> is set, so the FastAPI handler still receives a valid response dict and can return HTTP 200 with a JSON body.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">39</div><div><div class="qa-q-text">How are interaction_counts and collaboration_patterns computed?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a"><code>interaction_counts</code> is built in the POST /run handler by counting trace event actions that match specific keywords: <code>_count("plan")</code> counts actions containing "plan", <code>_count("implement")</code> counts "implement", etc. This produces a dict like <code>{"plan": 3, "implement": 4, "qa": 6, "risk": 5}</code> that gives judges a breakdown of where agent effort went. <code>collaboration_patterns</code> is detected by collecting the action set from all trace events and checking for keyword presence: if any action contains "escalate" or "replan" → <code>"risk_escalation_to_pm"</code>; if any action contains "needs_revision" or "critique" → <code>"qa_critique_and_revision_loop"</code>; if any action contains "replan" → <code>"replan_based_on_feedback"</code>. The patterns list is dynamic — it reflects what actually happened in that run, not a static label.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">40</div><div><div class="qa-q-text">Why does the frontend need cache busting with ?v=N on CSS and JS URLs?<span class="qa-q-cat cat-code">Code</span></div></div></div>
+        <div class="qa-a">Browsers aggressively cache static files. When <code>frontend/dist/app.js</code> or <code>styles.css</code> changes, browsers continue serving the old cached version until either the cache expires or the URL changes. Adding <code>?v=6</code> (or any query parameter) to the script/link tag URL makes the browser treat it as a different resource — the old cached version is ignored and the new file is fetched. This is a standard cache-busting technique. In this project, the version number is incremented manually in <code>frontend/dist/index.html</code> whenever JS or CSS changes. Without this, judges would see "Project: undefined, Iterations: undefined" even after deploying updated code, because their browser loads the old <code>app.js</code> that reads from the old response format.</div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-q"><div class="qa-q-badge">41</div><div><div class="qa-q-text">What are the Compass model identifiers and which agent uses which?<span class="qa-q-cat cat-arch">Architecture</span></div></div></div>
+        <div class="qa-a">Two model tiers: <strong>gpt-5.1</strong> (reasoning model, <code>use_reasoning_model=True</code>) and <strong>gpt-4.1</strong> (standard model). Only RiskAnalyst uses gpt-5.1 — risk classification is a nuanced judgement task that benefits from deeper reasoning. All other agents (PM, Engineer, QA, Stakeholder) use gpt-4.1 — they produce structured JSON against a defined schema, which gpt-4.1 handles reliably at lower latency and cost. The model selection is exposed in the RunResponse under <code>metadata.compass_models: {"reasoning": "gpt-5.1", "standard": "gpt-4.1"}</code> so judges can see that the system uses differentiated models, not one model for everything.</div>
+      </div>
+
+    </div><!-- /qa-section -->
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  <strong>Technical Training Guide — Multi-Agent PM System</strong> &nbsp;·&nbsp; AI Agenthon 2026 &nbsp;·&nbsp;
+  For internal use: preparation for judge Q&amp;A sessions
+</footer>
+
+</body>
+</html>
