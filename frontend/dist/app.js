@@ -100,17 +100,25 @@ async function fetchStatus() {
 }
 
 function formatResult(data) {
-    const compass = data.compass_evaluation || {};
+    const out = data.output || {};
+    const meta = data.metadata || {};
+    const patterns = (meta.collaboration_patterns || []).join(", ") || "none";
+    const agents = (out.agents_used || []).join(", ") || "—";
+    const cost = out.bls_estimated_cost_usd
+        ? `$${out.bls_estimated_cost_usd.toLocaleString()}/yr`
+        : "N/A";
     const lines = [
-        `Project : ${data.project_id}`,
-        `Status  : ${data.status}`,
-        `Iterations: ${data.iterations}`,
-        `Compass : ${compass.status || "unknown"}`,
-        `Messages: ${data.interactions?.messages?.length ?? 0}`,
+        `Project      : ${out.project_id || "—"}`,
+        `Status       : ${data.status} (workflow: ${out.workflow_status || "—"})`,
+        `Iterations   : ${out.iterations ?? "—"}`,
+        `Risk Level   : ${out.risk_level || "—"} (O*NET: ${out.onet_resource_risk || "—"})`,
+        `NIST CVEs    : ${out.nist_cves_found ?? 0}`,
+        `Est. Cost    : ${cost}`,
+        `Trace Events : ${meta.trace_events ?? 0}`,
+        `Agents       : ${agents}`,
+        `Collab       : ${patterns}`,
     ];
-    if (data.mvp_url) {
-        lines.push(`\n MVP ready → opening in browser…`);
-    }
+    if (out.mvp_path) lines.push(`\n MVP ready → opening in browser…`);
     return lines.join("\n");
 }
 
@@ -152,7 +160,10 @@ async function postRun(formData) {
         const data = await runResp.json();
         resultSummary.textContent = formatResult(data);
         resultJson.textContent = JSON.stringify(data, null, 2);
-        injectResultLinks(data.mvp_url || "", data.report_url || "");
+        const out = data.output || {};
+        const mvpUrl = out.mvp_path ? `/mvp/${out.project_id}` : "";
+        const reportUrl = out.run_id ? `/report/${out.run_id}` : "";
+        injectResultLinks(mvpUrl, reportUrl);
         await fetchStatus();
     } catch (error) {
         resultSummary.textContent = `Execution failed: ${error.message}`;
