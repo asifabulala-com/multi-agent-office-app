@@ -762,9 +762,7 @@ API_HOST=0.0.0.0
 - `docs/submission_demo.html` — interactive demo (served at `http://localhost:8000/docs/submission_demo.html`)
 - `docs/pitch_deck.html` — judge-facing pitch deck (10 slides)
 - `docs/architecture_diagram.html` — interactive architecture diagram
-- `input_examples/` — 6 ready-to-run project inputs (`input_1.json` is the judge default)
-- `output_examples/` — 6 completed runs including `output_1.json` (standard RunResponse format)
+- `input_examples/` — 3 ready-to-run project inputs (`input_1.json` is the judge default)
+- `output_examples/` — 3 completed runs including `output_1.json` (standard RunResponse format)
 - `data/onet_tech_skills.json` — O\*NET 28.3 workforce data (real public data, CC BY 4.0)
 - `logs/agent_trace.jsonl` — 1,933 pre-existing trace events from 24 completed runs; new events appended on each run
-
-> **Demo Video:** [Link to be added before submission] — 2–3 min walkthrough showing problem statement, agent architecture, live `/run` call, agent trace output, and MVP output.
