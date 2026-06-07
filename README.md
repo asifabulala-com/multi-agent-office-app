@@ -8,7 +8,7 @@ The **Risk Analyst** enriches every risk assessment with real workforce data fro
 
 ---
 
-## Judge Quick-Start (2 minutes)
+## Quick-Start (2 minutes)
 
 ### Option 1 — Docker (recommended)
 
@@ -58,7 +58,7 @@ Or open **http://localhost:8000** → pick any of the 20 telecom projects → cl
 
 ---
 
-## Disqualification Check — All Clear
+## Standards Checklist
 
 | Criterion | Status | Evidence |
 |---|---|---|
