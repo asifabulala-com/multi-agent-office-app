@@ -8,7 +8,7 @@ The **Risk Analyst** enriches every risk assessment with real workforce data fro
 
 ---
 
-## Quick-Start (2 minutes)
+## Judge Quick-Start (2 minutes)
 
 ### Option 1 — Docker (recommended)
 
@@ -45,16 +45,20 @@ python run.py
 ```bash
 curl -X POST http://localhost:8000/run \
   -H "Content-Type: application/json" \
-  -d @input_examples/input_it_service_desk.json
+  -d @input_examples/input_1.json
 ```
 
 Or open **http://localhost:8000** → pick any of the 20 telecom projects → click **Run Simulation**.
+
+> Try different inputs to see different agent traces and risk profiles:
+> - `@input_examples/input_2.json` — Revenue Assurance Dashboard (finance domain)
+> - `@input_examples/input_3.json` — NOC Monitoring Platform (network operations domain)
 
 > **No Compass key?** Set `SAMPLE_MODE=true` in `.env`. All 5 agents execute, all collaboration patterns fire, all outputs are generated — LLM responses use a deterministic SHA-256 hash so every run with the same input produces the same trace.
 
 ---
 
-## Agentathon Checklist — All Clear
+## Disqualification Check — All Clear
 
 | Criterion | Status | Evidence |
 |---|---|---|
@@ -464,12 +468,14 @@ Ready-to-run pairs in `input_examples/` and `output_examples/`:
 
 | Input file | Project | Domain |
 |---|---|---|
+| `input_1.json` | IT Service Management Portal (judge default) | Corporate IT |
+| `input_2.json` | Revenue Assurance Dashboard | Finance |
+| `input_3.json` | NOC Monitoring Platform | Network Operations |
 | `input_it_service_desk.json` | IT Service Management Portal (ITSM) | Corporate IT |
 | `input_revenue_assurance.json` | Revenue Assurance Dashboard | Finance |
 | `input_leave_attendance.json` | Leave & Attendance Management System | Human Capital |
 
-
-Completed output runs matching the above inputs are in `output_examples/` (MVP HTML + JSON per project). The `dataset/telecom_projects.json` file contains 20 additional pre-configured project descriptions available through the web UI.
+Completed output runs matching the above inputs are in `output_examples/` — `output_1.json` shows the standard `RunResponse` API format; per-project HTML MVP reports are in `output_examples/{project_id}/mvp.html`. The `dataset/telecom_projects.json` file contains 20 additional pre-configured project descriptions available through the web UI.
 
 ---
 
@@ -479,12 +485,12 @@ Completed output runs matching the above inputs are in `output_examples/` (MVP H
 # Via curl
 curl -X POST http://localhost:8000/run \
   -H "Content-Type: application/json" \
-  -d @input_examples/input_it_service_desk.json
+  -d @input_examples/input_1.json
 
 # Via PowerShell
 Invoke-RestMethod -Method POST http://localhost:8000/run `
   -ContentType "application/json" `
-  -Body (Get-Content input_examples\input_it_service_desk.json -Raw)
+  -Body (Get-Content input_examples\input_1.json -Raw)
 
 # Via Swagger UI
 # Open http://localhost:8000/docs → POST /run → Try it out → paste → Execute
@@ -598,9 +604,13 @@ API_HOST=0.0.0.0
 
 **Submission files:**
 - `metadata.json` — agent definitions, tools, models, endpoints
+- `ARCHITECTURE.md` — full agent architecture document with LangGraph node map, collaboration patterns, real data integration table, and file layout
 - `docs/submission_demo.html` — interactive demo (served at `http://localhost:8000/docs/submission_demo.html`)
 - `docs/pitch_deck.html` — judge-facing pitch deck (10 slides)
-- `input_examples/` — 3 ready-to-run project inputs
-- `output_examples/` — 3 completed runs with MVP, report, and JSON
+- `docs/architecture_diagram.html` — interactive architecture diagram
+- `input_examples/` — 6 ready-to-run project inputs (`input_1.json` is the judge default)
+- `output_examples/` — 6 completed runs including `output_1.json` (standard RunResponse format)
 - `data/onet_tech_skills.json` — O\*NET 28.3 workforce data (real public data, CC BY 4.0)
-- `logs/agent_trace.jsonl` — populated on first run
+- `logs/agent_trace.jsonl` — 1,933 pre-existing trace events from 24 completed runs; new events appended on each run
+
+> **Demo Video:** [Link to be added before submission] — 2–3 min walkthrough showing problem statement, agent architecture, live `/run` call, agent trace output, and MVP output.

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>HR Analytics & Workforce Intelligence Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 180px;
+      background: #1e293b;
+      padding: 32px 16px 16px 16px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      border-right: 1px solid #334155;
+    }
+    .sidebar h2 {
+      font-size: 1.1rem;
+      margin-bottom: 24px;
+      color: #2563eb;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .sidebar nav {
+      width: 100%;
+    }
+    .sidebar nav a {
+      display: block;
+      color: #e2e8f0;
+      text-decoration: none;
+      padding: 10px 0;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      font-size: 0.98rem;
+      transition: background 0.15s;
+    }
+    .sidebar nav a.active, .sidebar nav a:hover {
+      background: #2563eb22;
+      color: #2563eb;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: auto;
+      padding: 0 0 24px 0;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 32px 8px 32px;
+      border-bottom: 1px solid #334155;
+      background: #1e293b;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .header-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .status-badge {
+      background: #2563eb;
+      color: #e2e8f0;
+      padding: 4px 14px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-left: 12px;
+      display: inline-block;
+    }
+    .kpi-row {
+      display: flex;
+      gap: 24px;
+      margin: 32px 32px 24px 32px;
+    }
+    .kpi-card {
+      flex: 1;
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 20px 18px 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px #0002;
+      min-width: 0;
+    }
+    .kpi-emoji {
+      font-size: 2.1rem;
+      background: #2563eb22;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .kpi-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .kpi-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+    .kpi-label {
+      font-size: 0.98rem;
+      color: #94a3b8;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .section {
+      margin: 0 32px 0 32px;
+    }
+    .section-title {
+      font-size: 1.12rem;
+      font-weight: 600;
+      margin: 24px 0 12px 0;
+      letter-spacing: 0.2px;
+      color: #e2e8f0;
+    }
+    .table-container {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 18px 12px 12px 12px;
+      box-shadow: 0 2px 8px #0002;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.98rem;
+      min-width: 700px;
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    th {
+      color: #a5b4fc;
+      font-weight: 600;
+      background: #1e293b;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .status-chip {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-size: 0.93rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .status-active { background: #2563eb; }
+    .status-warning { background: #f59e42; color: #1e293b; }
+    .status-risk { background: #ef4444; color: #fff; }
+    .status-leave { background: #64748b; }
+    .add-btn {
+      background: #2563eb;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 22px;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 18px 0 0 0;
+      cursor: pointer;
+      transition: background 0.15s;
+      box-shadow: 0 2px 8px #0002;
+    }
+    .add-btn:hover {
+      background: #1d4ed8;
+    }
+    @media (max-width: 900px) {
+      .kpi-row { flex-direction: column; gap: 16px; }
+      .main { padding-bottom: 60px; }
+    }
+    @media (max-width: 600px) {
+      .sidebar { display: none; }
+      .main { padding: 0 8px; }
+      .header { padding: 18px 8px 8px 8px; }
+      .kpi-row, .section { margin: 0 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>HR Analytics</h2>
+      <nav>
+        <a href="#" class="active">Dashboard</a>
+        <a href="#">Attrition</a>
+        <a href="#">Absenteeism</a>
+        <a href="#">Diversity</a>
+        <a href="#">Salary</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <div class="header">
+        <span class="header-title">HR Analytics & Workforce Intelligence</span>
+        <span class="status-badge">LIVE</span>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span class="kpi-emoji">👥</span>
+          <div class="kpi-info">
+            <span class="kpi-number" id="kpi-headcount">1,245</span>
+            <span class="kpi-label">Total Headcount</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-emoji">📉</span>
+          <div class="kpi-info">
+            <span class="kpi-number" id="kpi-attrition">7.2%</span>
+            <span class="kpi-label">Annual Attrition</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-emoji">🏥</span>
+          <div class="kpi-info">
+            <span class="kpi-number" id="kpi-absenteeism">2.8%</span>
+            <span class="kpi-label">Absenteeism Rate</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-emoji">♀️♂️</span>
+          <div class="kpi-info">
+            <span class="kpi-number" id="kpi-gender">46% ♀ / 54% ♂</span>
+            <span class="kpi-label">Gender Diversity</span>
+          </div>
+        </div>
+      </div>
+      <section class="section">
+        <div class="section-title">Succession Risk Overview</div>
+        <div class="table-container">
+          <table id="succession-table">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Tenure</th>
+                <th>Risk Level</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Priya Sharma</td>
+                <td>HRBP Lead</td>
+                <td>People Ops</td>
+                <td>8 yrs</td>
+                <td><span class="status-chip status-risk">High</span></td>
+                <td><span class="status-chip status-active">Active</span></td>
+              </tr>
+              <tr>
+                <td>James Lee</td>
+                <td>Payroll Manager</td>
+                <td>Finance</td>
+                <td>5 yrs</td>
+                <td><span class="status-chip status-warning">Medium</span></td>
+                <td><span class="status-chip status-leave">On Leave</span></td>
+              </tr>
+              <tr>
+                <td>Sophia Müller</td>
+                <td>Recruitment Lead</td>
+                <td>Talent</td>
+                <td>3 yrs</td>
+                <td><span class="status-chip status-active">Low</span></td>
+                <td><span class="status-chip status-active">Active</span></td>
+              </tr>
+              <tr>
+                <td>Lucas Wang</td>
+                <td>Learning Manager</td>
+                <td>L&D</td>
+                <td>6 yrs</td>
+                <td><span class="status-chip status-warning">Medium</span></td>
+                <td><span class="status-chip status-active">Active</span></td>
+              </tr>
+              <tr>
+                <td>Maria Rossi</td>
+                <td>Compensation Analyst</td>
+                <td>Rewards</td>
+                <td>2 yrs</td>
+                <td><span class="status-chip status-active">Low</span></td>
+                <td><span class="status-chip status-active">Active</span></td>
+              </tr>
+              <tr>
+                <td>Ahmed El-Sayed</td>
+                <td>HRIS Specialist</td>
+                <td>People Ops</td>
+                <td>4 yrs</td>
+                <td><span class="status-chip status-risk">High</span></td>
+                <td><span class="status-chip status-active">Active</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="add-btn" onclick="addRow()">Add</button>
+      </section>
+    </main>
+  </div>
+  <script>
+    function addRow() {
+      var name = prompt('Employee Name:');
+      if (!name) return;
+      var role = prompt('Role:');
+      if (!role) return;
+      var dept = prompt('Department:');
+      if (!dept) return;
+      var tenure = prompt('Tenure (e.g. 2 yrs):');
+      if (!tenure) return;
+      var risk = prompt('Risk Level (Low, Medium, High):');
+      if (!risk) return;
+      var status = prompt('Status (Active, On Leave):');
+      if (!status) return;
+      var riskClass = risk.toLowerCase() === 'high' ? 'status-risk' : risk.toLowerCase() === 'medium' ? 'status-warning' : 'status-active';
+      var statusClass = status.toLowerCase() === 'on leave' ? 'status-leave' : 'status-active';
+      var tbody = document.querySelector('#succession-table tbody');
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + name + '</td>' +
+        '<td>' + role + '</td>' +
+        '<td>' + dept + '</td>' +
+        '<td>' + tenure + '</td>' +
+        '<td><span class="status-chip ' + riskClass + '">' + risk.charAt(0).toUpperCase() + risk.slice(1).toLowerCase() + '</span></td>' +
+        '<td><span class="status-chip ' + statusClass + '">' + status.charAt(0).toUpperCase() + status.slice(1).toLowerCase() + '</span></td>';
+      tbody.appendChild(tr);
+    }
+  </script>
+</body>
+</html>

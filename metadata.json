@@ -37,8 +37,26 @@
     "project_description_input",
     "shared_agent_memory",
     "data/sample_projects.json",
-    "dataset/telecom_projects.json"
+    "dataset/telecom_projects.json",
+    "onet_28.3_database",
+    "bls_oes_may2023",
+    "nist_nvd_rest_api_v2",
+    "npm_registry_api",
+    "pypi_json_api"
   ],
+  "real_public_data": {
+    "onet": "O*NET 28.3 Database, U.S. Dept of Labor (CC BY 4.0) — technology demand, talent pool, availability risk",
+    "bls": "BLS OES May 2023 (Public Domain) — occupation wages for project cost estimation",
+    "nist_nvd": "NIST National Vulnerability Database REST API 2.0 (Public Domain) — CVEs for stack technologies",
+    "npm": "npm Registry API (public, no auth) — package maintenance health",
+    "pypi": "PyPI JSON API (public, no auth) — Python library maintenance health"
+  },
+  "bonus_features": {
+    "real_public_data": true,
+    "human_in_the_loop": true,
+    "advanced_autonomy": true,
+    "fallback_mode": "SAMPLE_MODE=true (deterministic SHA-256 fallback)"
+  },
   "output_type": "text",
   "compass_models": {
     "reasoning": "gpt-5.1",

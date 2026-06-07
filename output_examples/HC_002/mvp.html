@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payroll Automation System Dashboard</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: Inter, system-ui, sans-serif;
+      box-sizing: border-box;
+    }
+    body {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 180px;
+      background: #1e293b;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0 0 0;
+      border-right: 1px solid #334155;
+    }
+    .sidebar h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2563eb;
+      margin: 0 0 32px 24px;
+      letter-spacing: 0.5px;
+    }
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-left: 24px;
+    }
+    .sidebar nav a {
+      color: #e2e8f0;
+      text-decoration: none;
+      font-size: 1rem;
+      opacity: 0.85;
+      transition: color 0.2s;
+    }
+    .sidebar nav a.active, .sidebar nav a:hover {
+      color: #2563eb;
+      font-weight: 600;
+      opacity: 1;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: auto;
+      padding: 0 0 32px 0;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 32px 40px 16px 40px;
+      border-bottom: 1px solid #334155;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .status-badge {
+      background: #2563eb;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 16px;
+      padding: 4px 16px;
+      display: inline-block;
+      margin-left: 12px;
+      letter-spacing: 0.5px;
+    }
+    .kpi-row {
+      display: flex;
+      gap: 24px;
+      margin: 32px 40px 24px 40px;
+    }
+    .kpi-card {
+      background: #1e293b;
+      flex: 1;
+      border-radius: 14px;
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 2px 8px 0 rgba(16,21,40,0.07);
+    }
+    .kpi-emoji {
+      font-size: 2rem;
+      margin-right: 8px;
+    }
+    .kpi-details {
+      display: flex;
+      flex-direction: column;
+    }
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .kpi-label {
+      font-size: 1rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .table-section {
+      margin: 0 40px;
+    }
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .table-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    .add-btn {
+      background: #2563eb;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .add-btn:hover {
+      background: #1d4ed8;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 14px 10px;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background: #1e293b;
+      color: #94a3b8;
+      font-weight: 600;
+      border-bottom: 1px solid #334155;
+    }
+    tr:not(:last-child) td {
+      border-bottom: 1px solid #334155;
+    }
+    .status-chip {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-size: 0.95em;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .status-success { background: #22c55e; }
+    .status-pending { background: #f59e42; }
+    .status-error { background: #ef4444; }
+    .status-processing { background: #2563eb; }
+    @media (max-width: 900px) {
+      .kpi-row { flex-direction: column; gap: 14px; }
+      .main { padding: 0; }
+      .header, .kpi-row, .table-section { margin: 0 12px; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Payroll System</h2>
+    <nav>
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Payroll Runs</a>
+      <a href="#">Employees</a>
+      <a href="#">Reports</a>
+      <a href="#">Settings</a>
+    </nav>
+  </aside>
+  <main class="main">
+    <div class="header">
+      <div class="header-title">Payroll Automation System <span class="status-badge">LIVE</span></div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <span class="kpi-emoji">👥</span>
+        <div class="kpi-details">
+          <span class="kpi-value" id="kpi-employees">5,000+</span>
+          <span class="kpi-label">Employees Processed</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-emoji">💸</span>
+        <div class="kpi-details">
+          <span class="kpi-value" id="kpi-payroll">AED 12.4M</span>
+          <span class="kpi-label">Last Payroll Amount</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-emoji">⏱️</span>
+        <div class="kpi-details">
+          <span class="kpi-value" id="kpi-ot">1,320</span>
+          <span class="kpi-label">Overtime Hours (Last Month)</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-emoji">📄</span>
+        <div class="kpi-details">
+          <span class="kpi-value" id="kpi-wps">3</span>
+          <span class="kpi-label">WPS Files Generated</span>
+        </div>
+      </div>
+    </div>
+    <div class="table-section">
+      <div class="table-header">
+        <span class="table-title">Recent Payroll Runs</span>
+        <button class="add-btn" id="addRowBtn">+ Add</button>
+      </div>
+      <table id="payrollTable">
+        <thead>
+          <tr>
+            <th>Run ID</th>
+            <th>Date</th>
+            <th>Batch</th>
+            <th>Amount (AED)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PR-202406</td>
+            <td>2024-06-25</td>
+            <td>June 2024</td>
+            <td>12,400,000</td>
+            <td><span class="status-chip status-success">Completed</span></td>
+          </tr>
+          <tr>
+            <td>PR-202405</td>
+            <td>2024-05-26</td>
+            <td>May 2024</td>
+            <td>12,350,000</td>
+            <td><span class="status-chip status-success">Completed</span></td>
+          </tr>
+          <tr>
+            <td>PR-202404</td>
+            <td>2024-04-25</td>
+            <td>April 2024</td>
+            <td>12,200,000</td>
+            <td><span class="status-chip status-success">Completed</span></td>
+          </tr>
+          <tr>
+            <td>PR-202403</td>
+            <td>2024-03-26</td>
+            <td>March 2024</td>
+            <td>12,180,000</td>
+            <td><span class="status-chip status-success">Completed</span></td>
+          </tr>
+          <tr>
+            <td>PR-202402</td>
+            <td>2024-02-25</td>
+            <td>Feb 2024</td>
+            <td>12,100,000</td>
+            <td><span class="status-chip status-success">Completed</span></td>
+          </tr>
+          <tr>
+            <td>PR-202401</td>
+            <td>2024-01-25</td>
+            <td>Jan 2024</td>
+            <td>12,050,000</td>
+            <td><span class="status-chip status-success">Completed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <script>
+    document.getElementById('addRowBtn').onclick = function() {
+      var runId = prompt('Enter Payroll Run ID (e.g., PR-202407):');
+      if (!runId) return;
+      var date = prompt('Enter Date (YYYY-MM-DD):');
+      if (!date) return;
+      var batch = prompt('Enter Batch Name (e.g., July 2024):');
+      if (!batch) return;
+      var amount = prompt('Enter Amount (AED):');
+      if (!amount) return;
+      var status = prompt('Enter Status (Completed, Processing, Pending, Error):', 'Processing');
+      if (!status) return;
+      var statusClass = 'status-processing';
+      var statusLabel = status;
+      if (status.toLowerCase() === 'completed') statusClass = 'status-success';
+      else if (status.toLowerCase() === 'pending') statusClass = 'status-pending';
+      else if (status.toLowerCase() === 'error') statusClass = 'status-error';
+      else statusClass = 'status-processing';
+      var tbody = document.getElementById('payrollTable').getElementsByTagName('tbody')[0];
+      var row = document.createElement('tr');
+      row.innerHTML = '<td>' + runId + '</td>' +
+        '<td>' + date + '</td>' +
+        '<td>' + batch + '</td>' +
+        '<td>' + amount + '</td>' +
+        '<td><span class="status-chip ' + statusClass + '">' + statusLabel + '</span></td>';
+      tbody.insertBefore(row, tbody.firstChild);
+    };
+  </script>
+</body>
+</html>
